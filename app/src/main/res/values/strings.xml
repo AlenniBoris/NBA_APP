@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">NBA_APP</string>
+    <string name="enter_logo_description">Enter screen logo</string>
+    <string name="text_email">Email</string>
+    <string name="text_password">Password</string>
+    <string name="text_password_check">Repeat password</string>
+    <string name="login_btn_text">Login</string>
+    <string name="register_btn_text">Register</string>
+    <string name="switch_to_login_process_text">Already have an account? Login</string>
+    <string name="switch_to_registration_process_text">Don\'t have an account? Register</string>
+    <string name="show_password_btn_descr">Icon lock</string>
 </resources>
