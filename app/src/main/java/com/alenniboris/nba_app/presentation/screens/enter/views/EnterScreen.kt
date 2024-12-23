@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.presentation.screens.enter.AuthIntent
 import com.alenniboris.nba_app.presentation.screens.enter.EnterScreenVM
@@ -43,11 +42,13 @@ import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldColor
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldTextColor
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun EnterScreen() {
 
-    val authViewModel: EnterScreenVM = viewModel()
+    val authViewModel: EnterScreenVM = koinViewModel<EnterScreenVM>()
+
     val state by authViewModel.screenState.collectAsStateWithLifecycle()
     val intent by remember { mutableStateOf(authViewModel::handleIntent) }
 

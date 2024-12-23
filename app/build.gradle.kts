@@ -69,4 +69,11 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
 
+    implementation(platform("io.insert-koin:koin-bom:3.5.6"))
+    implementation("io.insert-koin:koin-core")
+    implementation("io.insert-koin:koin-android")
+    implementation("io.insert-koin:koin-androidx-compose")
+
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
+
 }
