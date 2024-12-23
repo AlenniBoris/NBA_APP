@@ -14,7 +14,9 @@ class AppApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@AppApplication)
             modules(
-                ViewModels
+                ViewModels,
+                AuthModule,
+                AppDispatchersModule
             )
         }
     }

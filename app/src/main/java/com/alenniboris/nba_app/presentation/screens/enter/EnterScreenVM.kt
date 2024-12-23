@@ -1,27 +1,37 @@
 package com.alenniboris.nba_app.presentation.screens.enter
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
+import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
+import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
+import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import com.alenniboris.nba_app.presentation.screens.enter.state.IEnterState
 import com.alenniboris.nba_app.presentation.screens.enter.state.LoginState
 import com.alenniboris.nba_app.presentation.screens.enter.state.RegistrationState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class EnterScreenVM : ViewModel() {
+class EnterScreenVM(
+    private val authenticationManager: IAuthenticationManager,
+) : ViewModel() {
 
     private val _screenState = MutableStateFlow<IEnterState>(LoginState())
     val screenState = _screenState.asStateFlow()
 
+    private val _event = SingleFlowEvent<EnterScreenEvent>(viewModelScope)
+    val event = _event.flow
 
-    fun handleIntent(intent: AuthIntent) {
+
+    fun handleIntent(intent: AuthenticationIntent) {
         when (intent) {
-            is AuthIntent.UpdateEnteredEmail -> updateEnteredEmail(intent.value)
-            is AuthIntent.UpdateEnteredPassword -> updateEnteredPassword(intent.value)
-            is AuthIntent.UpdateEnteredPasswordCheck -> updateEnteredPasswordCheck(intent.value)
-            is AuthIntent.SwitchBetweenLoginAndRegister -> changeStateForAppropriateBecauseOfScreen()
-            is AuthIntent.ButtonClickProceed -> {
+            is AuthenticationIntent.UpdateEnteredEmail -> updateEnteredEmail(intent.value)
+            is AuthenticationIntent.UpdateEnteredPassword -> updateEnteredPassword(intent.value)
+            is AuthenticationIntent.UpdateEnteredPasswordCheck -> updateEnteredPasswordCheck(intent.value)
+            is AuthenticationIntent.SwitchBetweenLoginAndRegister -> changeStateForAppropriateBecauseOfScreen()
+            is AuthenticationIntent.ButtonClickProceed -> {
                 when (_screenState.value) {
                     is LoginState -> loginUser()
                     is RegistrationState -> registerUser()
@@ -58,11 +68,41 @@ class EnterScreenVM : ViewModel() {
     }
 
     private fun loginUser() {
-        Log.d("INTENT_ENTER", "User is logged in")
+        viewModelScope.launch {
+            val currentState = _screenState.value
+            val loginResult = authenticationManager.loginUser(
+                currentState.enteredEmail, currentState.enteredPassword
+            )
+
+            emitShowToastEventIfIsErrorCase(resultOfOperation = loginResult)
+        }
     }
 
     private fun registerUser() {
-        Log.d("INTENT_ENTER", "User is registered")
+        viewModelScope.launch {
+
+            val currentState = _screenState.value
+
+            (currentState as? RegistrationState)?.let {
+                val registerResult = authenticationManager.registerUser(
+                    currentState.enteredEmail,
+                    currentState.enteredPassword,
+                    currentState.enteredPasswordCheck
+                )
+
+                emitShowToastEventIfIsErrorCase(resultOfOperation = registerResult)
+            }
+        }
+    }
+
+    private fun emitShowToastEventIfIsErrorCase(resultOfOperation: CustomResultModelDomain<Unit>) {
+        (resultOfOperation as? CustomResultModelDomain.Error)?.let {
+            _event.emit(
+                EnterScreenEvent.ShowToastMessage(
+                    resultOfOperation.exception.toUiMessageString()
+                )
+            )
+        }
     }
 
     private fun changeStateForAppropriateBecauseOfScreen() {

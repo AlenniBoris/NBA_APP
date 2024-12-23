@@ -9,4 +9,17 @@
     <string name="switch_to_login_process_text">Already have an account? Login</string>
     <string name="switch_to_registration_process_text">Don\'t have an account? Register</string>
     <string name="show_password_btn_descr">Icon lock</string>
+    <string name="welcome_text">Welcome</string>
+    <string name="welcome_back_text">Welcome back</string>
+    <string name="goodbye_text">Goodbye</string>
+
+    <string name="invalid_credentials_exception">Your password or email is incorrect. Check input data</string>
+    <string name="invalid_user_exception">Such user is not valid anymore. Try to register again</string>
+    <string name="not_email_type_value_exception">Check your email. It should look like: text@text.text</string>
+    <string name="password_is_not_equal_with_its_check_exception">Your passwords are not equal</string>
+    <string name="weak_password_exception">This password is weak. It should be more then six symbols</string>
+    <string name="web_exception">Check your connection and try again.</string>
+    <string name="other_exception">Some unexpected error happened. Try to reopen the app</string>
+    <string name="user_collision_exception">Conflict with another user. Seems like this email is already used.</string>
+
 </resources>

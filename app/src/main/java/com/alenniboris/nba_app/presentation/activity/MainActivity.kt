@@ -1,6 +1,7 @@
-package com.alenniboris.nba_app
+package com.alenniboris.nba_app.presentation.activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,10 +12,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.alenniboris.nba_app.presentation.navigation.NavigationGraph
 import com.alenniboris.nba_app.presentation.uikit.theme.NBA_APPTheme
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,10 +48,29 @@ class MainActivity : ComponentActivity() {
 private fun MainActivityShow() {
 
     val navController = rememberNavController()
-    val isUserAuthenticated: Boolean = false
+    val mainActivityVM = koinViewModel<MainActivityVM>()
+    val isUserAuthenticated by mainActivityVM.userAuthenticationStatus.collectAsStateWithLifecycle()
+    val event by remember { mutableStateOf(mainActivityVM.event) }
+    val context = LocalContext.current
+    var toastMessage by remember {
+        mutableStateOf(
+            Toast.makeText(context, "", Toast.LENGTH_SHORT)
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        launch {
+            event.filterIsInstance<MainActivityEvent.ShowToastMessage>().collect { ev ->
+                toastMessage.cancel()
+                toastMessage =
+                    Toast.makeText(context, context.getString(ev.messageId), Toast.LENGTH_SHORT)
+                toastMessage.show()
+            }
+        }
+    }
 
     Scaffold { pv ->
-        Box(modifier = Modifier.padding(pv)){
+        Box(modifier = Modifier.padding(pv)) {
             NavigationGraph(
                 navController = navController,
                 isUserAuthenticated = isUserAuthenticated
