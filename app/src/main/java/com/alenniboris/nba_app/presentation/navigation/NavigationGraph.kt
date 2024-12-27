@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.alenniboris.nba_app.presentation.screens.enter.views.EnterScreen
-import com.alenniboris.nba_app.presentation.screens.games.GamesScreen
+import com.alenniboris.nba_app.presentation.screens.showing.views.ShowingScreen
 
 @Composable
 fun NavigationGraph(
@@ -25,7 +25,7 @@ fun NavigationGraph(
         }
 
         composable(Route.GamesScreenRoute.route) {
-            GamesScreen()
+            ShowingScreen()
         }
 
     }

@@ -1,4 +1,4 @@
-package com.alenniboris.nba_app.presentation.screens.enter.views
+package com.alenniboris.nba_app.presentation.uikit.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,42 +27,44 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.presentation.uikit.theme.EVTFInnerBoxPadding
-import com.alenniboris.nba_app.presentation.uikit.theme.EVTFTextSize
+import com.alenniboris.nba_app.presentation.uikit.theme.EnterValueTextFieldInnerBoxPadding
+import com.alenniboris.nba_app.presentation.uikit.theme.EnterValueTextFieldTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.PasswordHidePicture
 import com.alenniboris.nba_app.presentation.uikit.theme.PasswordShowPicture
-import com.alenniboris.nba_app.presentation.uikit.theme.SelectedTextBackgroundColor
 import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldColor
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldTextColor
+import com.alenniboris.nba_app.presentation.uikit.theme.selectedTextBackgroundColor
 import com.alenniboris.nba_app.presentation.uikit.theme.selectedTextHandlesColor
 
 
 @Composable
-fun CustomEnterValueField(
+fun AppTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChanged: (String) -> Unit,
     placeholder: String = "",
     isPasswordField: Boolean = false,
-    showPassword: Boolean = false,
-    changePasswordVisibility: () -> Unit = {}
+    isPasswordVisible: Boolean = false,
+    onPasswordVisibilityChange: () -> Unit = {},
+    isEnabled: Boolean = true,
 ) {
     val customTextSelectionColors = TextSelectionColors(
         handleColor = selectedTextHandlesColor,
-        backgroundColor = SelectedTextBackgroundColor
+        backgroundColor = selectedTextBackgroundColor
     )
 
     CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
         EnterValueTextField(
+            modifier = modifier,
             value = value,
             onValueChanged = onValueChanged,
             placeholder = placeholder,
             isPasswordField = isPasswordField,
-            modifier = modifier,
-            showPassword = showPassword,
-            changePasswordVisibility = changePasswordVisibility
+            isPasswordVisible = isPasswordVisible,
+            onPasswordVisibilityChange = onPasswordVisibilityChange,
+            isEnabled = isEnabled
         )
     }
 }
@@ -75,12 +77,14 @@ private fun EnterValueTextField(
     onValueChanged: (String) -> Unit = {},
     placeholder: String = "Hint",
     isPasswordField: Boolean = false,
-    showPassword: Boolean = false,
-    changePasswordVisibility: () -> Unit = {}
+    isPasswordVisible: Boolean = false,
+    onPasswordVisibilityChange: () -> Unit = {},
+    isEnabled: Boolean = true,
 ) {
     BasicTextField(
         value = value,
         onValueChange = onValueChanged,
+        enabled = isEnabled,
         modifier = modifier
             .width(IntrinsicSize.Max),
         decorationBox = { innerTextField ->
@@ -89,14 +93,14 @@ private fun EnterValueTextField(
             ) {
                 Box(
                     modifier = Modifier
-                        .padding(EVTFInnerBoxPadding)
+                        .padding(EnterValueTextFieldInnerBoxPadding)
                         .weight(1f),
                 ) {
                     if (value.isEmpty()) {
                         Text(
                             text = placeholder,
                             color = enterTextFieldTextColor,
-                            style = bodyStyle.copy(fontSize = EVTFTextSize)
+                            style = bodyStyle.copy(fontSize = EnterValueTextFieldTextSize)
                         )
                     }
                     innerTextField()
@@ -104,12 +108,12 @@ private fun EnterValueTextField(
 
                 if (isPasswordField) {
                     IconButton(
-                        onClick = { changePasswordVisibility() },
+                        onClick = { onPasswordVisibilityChange() },
                     ) {
                         Icon(
-                            painter = if (showPassword) painterResource(PasswordShowPicture)
+                            painter = if (isPasswordVisible) painterResource(PasswordShowPicture)
                             else painterResource(PasswordHidePicture),
-                            contentDescription = stringResource(R.string.show_password_btn_descr),
+                            contentDescription = stringResource(R.string.show_password_btn_description),
                             tint = enterTextFieldTextColor
                         )
                     }
@@ -118,10 +122,10 @@ private fun EnterValueTextField(
         },
         textStyle = bodyStyle.copy(
             color = enterTextFieldTextColor,
-            fontSize = EVTFTextSize
+            fontSize = EnterValueTextFieldTextSize
         ),
         cursorBrush = SolidColor(enterTextFieldTextColor),
-        visualTransformation = if (isPasswordField && !showPassword) PasswordVisualTransformation()
+        visualTransformation = if (isPasswordField && !isPasswordVisible) PasswordVisualTransformation()
         else VisualTransformation.None,
         maxLines = 1
     )
@@ -132,14 +136,14 @@ private fun EnterValueTextField(
 @Preview
 private fun CustomEnterValueFieldPreview() {
     Column {
-        CustomEnterValueField(
+        AppTextField(
             value = "",
             onValueChanged = {},
             placeholder = "Hello",
             isPasswordField = true
         )
 
-        CustomEnterValueField(
+        AppTextField(
             value = "",
             onValueChanged = {},
             placeholder = "world",
@@ -149,7 +153,7 @@ private fun CustomEnterValueFieldPreview() {
                 .fillMaxWidth()
         )
 
-        CustomEnterValueField(
+        AppTextField(
             value = "",
             onValueChanged = {},
             placeholder = "world coming true",
@@ -160,7 +164,7 @@ private fun CustomEnterValueFieldPreview() {
                 .width(100.dp)
         )
 
-        CustomEnterValueField(
+        AppTextField(
             value = "",
             onValueChanged = {},
             placeholder = "world",
@@ -171,7 +175,7 @@ private fun CustomEnterValueFieldPreview() {
                 .width(300.dp)
         )
 
-        CustomEnterValueField(
+        AppTextField(
             value = "",
             onValueChanged = {},
             placeholder = "world",

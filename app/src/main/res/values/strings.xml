@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">NBA_APP</string>
+
     <string name="enter_logo_description">Enter screen logo</string>
+    <string name="sidebar_icon_description">Sidebar opening button</string>
+    <string name="add_to_followed_icon_description">Add to followed button</string>
+    <string name="open_personal_screen_icon_description">Go to personal screen button</string>
+    <string name="show_password_btn_description">Icon lock</string>
+    <string name="progress_bar_description">Progress bar</string>
+    <string name="fab_icon_description">Fab icon</string>
+    <string name="decline_icon_description">Icon decline</string>
+    <string name="accept_icon_description">Icon accept</string>
+    <string name="top_bar_left_btn_description">Top bar left btn</string>
+    <string name="top_bar_right_btn_description">Top bar right btn</string>
+    <string name="following_icon_description">Icon following</string>
+    <string name="team_picture_description">Team picture</string>
+    <string name="empty_screen_icon_description">Empty icon</string>
+
     <string name="text_email">Email</string>
     <string name="text_password">Password</string>
     <string name="text_password_check">Repeat password</string>
@@ -8,10 +23,40 @@
     <string name="register_btn_text">Register</string>
     <string name="switch_to_login_process_text">Already have an account? Login</string>
     <string name="switch_to_registration_process_text">Don\'t have an account? Register</string>
-    <string name="show_password_btn_descr">Icon lock</string>
     <string name="welcome_text">Welcome</string>
     <string name="welcome_back_text">Welcome back</string>
     <string name="goodbye_text">Goodbye</string>
+    <string name="search_text">Search</string>
+    <string name="query_filter_placeholder">Enter name, or team</string>
+    <string name="date_selection_placeholder">Choose date</string>
+    <string name="date_chooser_btn_text">Game date</string>
+    <string name="date_chooser_approve_text">Approve</string>
+    <string name="date_chooser_cancel_text">Cancel</string>
+    <string name="country_filter">Countries</string>
+    <string name="nan_text">NaN</string>
+    <string name="league_national_text">League is national</string>
+    <string name="league_not_national_text">League is not national</string>
+    <string name="nothing_found">Nothing found</string>
+
+    <string name="games_category">Games</string>
+    <string name="teams_category">Teams</string>
+    <string name="players_category">Players</string>
+    <string name="open_personal_details">Details</string>
+    <string name="sign_out_action">Sign out</string>
+    <string name="filter_options_open_action">Filter</string>
+
+    <string name="status_filter">Status</string>
+    <string name="league_filter">League</string>
+    <string name="season_filter">Season</string>
+
+    <string name="status_in_play">In play</string>
+    <string name="status_not_started">Not started</string>
+    <string name="status_finished">Finished</string>
+    <string name="status_postponed">Postponed</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="status_suspended">Suspended</string>
+    <string name="status_awarded">Awarded</string>
+    <string name="status_abandoned">Abandoned</string>
 
     <string name="invalid_credentials_exception">Your password or email is incorrect. Check input data</string>
     <string name="invalid_user_exception">Such user is not valid anymore. Try to register again</string>

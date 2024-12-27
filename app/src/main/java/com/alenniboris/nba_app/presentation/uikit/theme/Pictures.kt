@@ -19,3 +19,11 @@ val PasswordHidePicture
         ThemeChooser.ThemeMode.LIGHT -> R.drawable.password_closed_light_theme
         ThemeChooser.ThemeMode.DARK -> R.drawable.password_closed_dark_theme
     }
+
+val TopBarDropdownMenuOpeningButton = R.drawable.basketball_ball
+
+val Placeholder
+    get() = when (ThemeChooser.themeMode.value) {
+        ThemeChooser.ThemeMode.LIGHT -> R.drawable.ic_placeholder_light
+        ThemeChooser.ThemeMode.DARK -> R.drawable.ic_placeholder_dark
+    }

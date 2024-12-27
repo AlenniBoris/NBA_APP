@@ -40,12 +40,13 @@ import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldShape
 import com.alenniboris.nba_app.presentation.uikit.theme.ESSpacerHeight
 import com.alenniboris.nba_app.presentation.uikit.theme.ESSpacerHeightDouble
-import com.alenniboris.nba_app.presentation.uikit.theme.EVTFTextSize
+import com.alenniboris.nba_app.presentation.uikit.theme.EnterValueTextFieldTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.EnterScreenPicture
 import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldColor
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldTextColor
+import com.alenniboris.nba_app.presentation.uikit.views.AppTextField
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -76,7 +77,7 @@ fun EnterScreen() {
         }
     }
 
-    UI(
+    EnterScreenUi(
         state = state,
         intent = intent,
     )
@@ -85,7 +86,7 @@ fun EnterScreen() {
 
 @Composable
 @Preview
-private fun UI(
+private fun EnterScreenUi(
     state: IEnterState = LoginState(),
     intent: (AuthenticationIntent) -> Unit = {},
 ) {
@@ -108,7 +109,7 @@ private fun UI(
 
         Spacer(modifier = Modifier.height(ESSpacerHeightDouble))
 
-        CustomEnterValueField(
+        AppTextField(
             value = state.enteredEmail,
             onValueChanged = { text ->
                 intent(AuthenticationIntent.UpdateEnteredEmail(text))
@@ -126,7 +127,7 @@ private fun UI(
 
         Spacer(modifier = Modifier.height(ESSpacerHeight))
 
-        CustomEnterValueField(
+        AppTextField(
             value = state.enteredPassword,
             onValueChanged = { text ->
                 intent(AuthenticationIntent.UpdateEnteredPassword(text))
@@ -140,14 +141,14 @@ private fun UI(
                 )
                 .padding(ESCustomTextFieldPadding)
                 .fillMaxWidth(),
-            showPassword = showPassword,
-            changePasswordVisibility = { showPassword = !showPassword }
+            isPasswordVisible = showPassword,
+            onPasswordVisibilityChange = { showPassword = !showPassword }
         )
 
         (state as? RegistrationState)?.let { registrationState ->
             Spacer(modifier = Modifier.height(ESSpacerHeight))
 
-            CustomEnterValueField(
+            AppTextField(
                 value = registrationState.enteredPasswordCheck,
                 onValueChanged = { text ->
                     intent(AuthenticationIntent.UpdateEnteredPasswordCheck(text))
@@ -161,8 +162,8 @@ private fun UI(
                     )
                     .padding(ESCustomTextFieldPadding)
                     .fillMaxWidth(),
-                showPassword = showPasswordCheck,
-                changePasswordVisibility = { showPasswordCheck = !showPasswordCheck }
+                isPasswordVisible = showPasswordCheck,
+                onPasswordVisibilityChange = { showPasswordCheck = !showPasswordCheck }
             )
         }
 
@@ -183,7 +184,7 @@ private fun UI(
                 else stringResource(R.string.login_btn_text),
                 color = enterTextFieldTextColor,
                 style = bodyStyle.copy(
-                    fontSize = EVTFTextSize,
+                    fontSize = EnterValueTextFieldTextSize,
                     fontWeight = FontWeight.Bold
                 )
             )
@@ -202,7 +203,7 @@ private fun UI(
                 text = if (state is RegistrationState) stringResource(R.string.switch_to_login_process_text)
                 else stringResource(R.string.switch_to_registration_process_text),
                 color = enterTextFieldColor,
-                style = bodyStyle.copy(fontSize = EVTFTextSize)
+                style = bodyStyle.copy(fontSize = EnterValueTextFieldTextSize)
             )
         }
     }
