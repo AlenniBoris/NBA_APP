@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenUpdateIntent
+import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.Category
 import com.alenniboris.nba_app.presentation.screens.showing.state.ShowingFilter
 import com.alenniboris.nba_app.presentation.uikit.theme.FilterDragHandleHeight
@@ -52,7 +52,7 @@ fun ShowingScreenFilter(
     sheetState: SheetState = rememberModalBottomSheetState(),
     currentCategory: Category = Category.Games,
     mutableFilter: ShowingFilter = ShowingFilter(),
-    proceedIntentAction: (ShowingScreenUpdateIntent) -> Unit = {}
+    proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
     ModalBottomSheet(
         modifier = Modifier.height(
@@ -125,7 +125,7 @@ private fun FilterColumn(
     modifier: Modifier = Modifier,
     currentCategory: Category = Category.Games,
     mutableFilter: ShowingFilter = ShowingFilter(),
-    proceedIntentAction: (ShowingScreenUpdateIntent) -> Unit = {}
+    proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -135,24 +135,38 @@ private fun FilterColumn(
             Category.Games -> GamesFilters(
                 currentDateTime = mutableFilter.selectedDate,
                 currentDateTimeText = mutableFilter.selectedDateText,
+
                 countries = mutableFilter.listOfCountries,
                 currentSelectedCountry = mutableFilter.selectedCountry,
+                isCountriesLoading = mutableFilter.isCountriesLoading,
+
                 statuses = mutableFilter.listOfStatuses,
                 currentSelectedStatus = mutableFilter.selectedStatus,
+
                 leagues = mutableFilter.listOfLeagues,
                 currentSelectedLeague = mutableFilter.selectedLeague,
+                isLeaguesLoading = mutableFilter.isLeaguesLoading,
+
                 seasons = mutableFilter.listOfSeasons,
                 currentSelectedSeason = mutableFilter.selectedSeason,
+                isSeasonsLoading = mutableFilter.isSeasonsLoading,
+
                 proceedIntentAction = proceedIntentAction
             )
 
             Category.Teams -> TeamsFilters(
                 seasons = mutableFilter.listOfSeasons,
                 currentSelectedSeason = mutableFilter.selectedSeason,
+                isSeasonsLoading = mutableFilter.isSeasonsLoading,
+
                 leagues = mutableFilter.listOfLeagues,
                 currentSelectedLeague = mutableFilter.selectedLeague,
+                isLeaguesLoading = mutableFilter.isLeaguesLoading,
+
                 countries = mutableFilter.listOfCountries,
                 currentSelectedCountry = mutableFilter.selectedCountry,
+                isCountriesLoading = mutableFilter.isCountriesLoading,
+
                 enteredQueryValue = mutableFilter.enteredQuery,
                 proceedIntentAction = proceedIntentAction
             )
@@ -160,10 +174,23 @@ private fun FilterColumn(
             Category.Players -> PlayersFilters(
                 seasons = mutableFilter.listOfSeasons,
                 currentSelectedSeason = mutableFilter.selectedSeason,
+                isSeasonsLoading = mutableFilter.isSeasonsLoading,
+
                 leagues = mutableFilter.listOfLeagues,
                 currentSelectedLeague = mutableFilter.selectedLeague,
+                isLeaguesLoading = mutableFilter.isLeaguesLoading,
+
                 enteredQueryValue = mutableFilter.enteredQuery,
-                proceedIntentAction = proceedIntentAction
+
+                countries = mutableFilter.listOfCountries,
+                currentSelectedCountry = mutableFilter.selectedCountry,
+                isCountriesLoading = mutableFilter.isCountriesLoading,
+
+                teams = mutableFilter.listOfTeams,
+                currentSelectedTeam = mutableFilter.selectedTeam,
+                isTeamsLoading = mutableFilter.isTeamsLoading,
+
+                proceedIntentAction= proceedIntentAction
             )
         }
 

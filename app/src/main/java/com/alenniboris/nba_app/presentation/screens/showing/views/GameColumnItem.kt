@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,13 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.utils.EnumValues.GameStatus
+import com.alenniboris.nba_app.domain.model.GameModelDomain
+import com.alenniboris.nba_app.domain.utils.GameStatus
 import com.alenniboris.nba_app.presentation.mappers.toColorValue
 import com.alenniboris.nba_app.presentation.mappers.toStringMessageForStatus
-import com.alenniboris.nba_app.presentation.model.GameUiModel
+import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemHorizontalPadding
+import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemShape
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionBoxSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionDateTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionHorizontalRowPadding
@@ -31,7 +34,9 @@ import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectio
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionTimeTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionVerticalMargin
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionVerticalRowPadding
+import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemVerticalMargin
 import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
+import com.alenniboris.nba_app.presentation.uikit.theme.categoryItemColor
 import com.alenniboris.nba_app.presentation.uikit.theme.categoryItemTextColor
 import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 import com.alenniboris.nba_app.presentation.uikit.views.AppItemPictureSection
@@ -40,60 +45,71 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppItemPictureSection
 @Preview
 fun GameColumnItem(
     modifier: Modifier = Modifier,
-    element: GameUiModel = GameUiModel(),
+    element: GameModelDomain? = null,
     isElementFollowed: Boolean = false,
     onGameCardClicked: () -> Unit = {},
     onFollowGameButtonClicked: () -> Unit = {}
 ) {
 
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-
-        AppIconButton(
-            isAnimated = true,
-            isReplaceable = true,
-            onClick = onFollowGameButtonClicked,
-            iconPainter =
-            if (isElementFollowed) painterResource(R.drawable.icon_in_followed)
-            else painterResource(R.drawable.icon_not_in_followed),
-            replacementPainter =
-            if (isElementFollowed) painterResource(R.drawable.icon_not_in_followed)
-            else painterResource(R.drawable.icon_in_followed),
-            tint = categoryItemTextColor,
-            contentDescription = stringResource(R.string.following_icon_description)
-        )
+    element?.let {
 
         Row(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            AppItemPictureSection(
-                modifier = Modifier.weight(1f),
-                name = element.homeTeam.name,
-                logoUrl = element.homeTeam.logoUrl
+            AppIconButton(
+                isAnimated = true,
+                isReplaceable = true,
+                onClick = onFollowGameButtonClicked,
+                iconPainter =
+                if (isElementFollowed) painterResource(R.drawable.icon_in_followed)
+                else painterResource(R.drawable.icon_not_in_followed),
+                replacementPainter =
+                if (isElementFollowed) painterResource(R.drawable.icon_not_in_followed)
+                else painterResource(R.drawable.icon_in_followed),
+                tint = categoryItemTextColor,
+                contentDescription = stringResource(R.string.following_icon_description)
             )
 
-            GameItemTextSection(
-                modifier = Modifier.weight(1f),
-                dateOfTheGame = element.date ?: stringResource(R.string.nan_text),
-                beginningTimeOfTheGame = element.time ?: stringResource(R.string.nan_text),
-                homeTeamScore = element.homeScores.totalScore,
-                visitorsTeamScore = element.visitorsScores.totalScore,
-                gameStatus = element.status
-            )
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            AppItemPictureSection(
-                modifier = Modifier.weight(1f),
-                name = element.visitorsTeam.name,
-                logoUrl = element.visitorsTeam.logoUrl,
-                textAlign = TextAlign.End
-            )
+                AppItemPictureSection(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f),
+                    name = element.homeTeam.name,
+                    logoUrl = element.homeTeam.logo
+                )
+
+                GameItemTextSection(
+                    modifier = Modifier.width(IntrinsicSize.Min),
+                    dateOfTheGame = element.dateOfTheGame,
+                    beginningTimeOfTheGame = element.startingTime,
+                    homeTeamScore = element.homeScores?.totalScore
+                        ?: stringResource(R.string.nan_text),
+                    visitorsTeamScore = element.visitorsScores?.totalScore
+                        ?: stringResource(R.string.nan_text),
+                    gameStatus = element.gameStatus
+                )
+
+                AppItemPictureSection(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f),
+                    name = element.visitorsTeam.name,
+                    logoUrl = element.visitorsTeam.logo,
+                    textAlign = Alignment.End,
+                    pictureAlignment = Alignment.End
+                )
+
+            }
 
         }
 
@@ -107,8 +123,8 @@ private fun GameItemTextSection(
     modifier: Modifier = Modifier,
     dateOfTheGame: String = "1111",
     beginningTimeOfTheGame: String = "0000",
-    homeTeamScore: Int = 1,
-    visitorsTeamScore: Int = 2,
+    homeTeamScore: String = "",
+    visitorsTeamScore: String = "",
     gameStatus: GameStatus = GameStatus.In_Play
 ) {
 
@@ -142,7 +158,7 @@ private fun GameItemTextSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = homeTeamScore.toString(),
+                text = homeTeamScore,
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionMainTextSize
                 ),
@@ -159,7 +175,7 @@ private fun GameItemTextSection(
             )
 
             Text(
-                text = visitorsTeamScore.toString(),
+                text = visitorsTeamScore,
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionMainTextSize
                 ),
@@ -193,5 +209,73 @@ private fun GameItemTextSection(
         }
 
     }
+
+}
+
+@Composable
+@Preview
+fun Preview(
+
+) {
+
+    Row(
+        modifier = Modifier
+            .padding(
+                GameColumnItemVerticalMargin
+            )
+            .background(
+                color = categoryItemColor,
+                shape = GameColumnItemShape
+            )
+
+            .padding(GameColumnItemHorizontalPadding),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        AppIconButton(
+            isAnimated = true,
+            isReplaceable = true,
+            onClick = { },
+            iconPainter =
+            painterResource(R.drawable.icon_in_followed),
+            tint = categoryItemTextColor,
+            contentDescription = stringResource(R.string.following_icon_description)
+        )
+
+        Row(
+            modifier = Modifier
+                .weight(1f),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AppItemPictureSection(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                name = "Los Angeles Clippers",
+                logoUrl = "https://media.api-sports.io/basketball/leagues/12.png"
+            )
+            GameItemTextSection(
+                modifier = Modifier.width(IntrinsicSize.Min),
+                dateOfTheGame = "2020-22-22",
+                beginningTimeOfTheGame = "12:00:00",
+                homeTeamScore = "163",
+                visitorsTeamScore = "98",
+                gameStatus = GameStatus.Game_Finished
+            )
+
+            AppItemPictureSection(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
+                name = "Miami hewat",
+                logoUrl = null,
+                textAlign = Alignment.End,
+                pictureAlignment = Alignment.End
+            )
+        }
+
+    }
+
 
 }

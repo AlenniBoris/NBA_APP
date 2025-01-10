@@ -8,13 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.utils.EnumValues.GameStatus
+import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
+import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
+import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
+import com.alenniboris.nba_app.domain.utils.GameStatus
 import com.alenniboris.nba_app.presentation.mappers.toStringMessageForStatus
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
-import com.alenniboris.nba_app.presentation.model.filter.CountryFilterUiModel
-import com.alenniboris.nba_app.presentation.model.filter.LeagueFilterUiModel
-import com.alenniboris.nba_app.presentation.model.filter.SeasonFilterUiModel
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenUpdateIntent
+import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.uikit.theme.CustomRowFilterTopPadding
 import com.alenniboris.nba_app.presentation.uikit.views.AppDateFilter
 import com.alenniboris.nba_app.presentation.uikit.views.AppRowFilter
@@ -25,16 +25,24 @@ import java.util.Date
 fun GamesFilters(
     currentDateTime: Date = Date(),
     currentDateTimeText: String = "",
-    countries: List<CountryFilterUiModel> = emptyList(),
-    currentSelectedCountry: CountryFilterUiModel = CountryFilterUiModel(),
-    seasons: List<SeasonFilterUiModel> = emptyList(),
-    currentSelectedSeason: SeasonFilterUiModel = SeasonFilterUiModel(),
+
+    countries: List<CountryModelDomain> = emptyList(),
+    currentSelectedCountry: CountryModelDomain? = null,
+    isCountriesLoading: Boolean = false,
+
+    seasons: List<SeasonModelDomain> = emptyList(),
+    currentSelectedSeason: SeasonModelDomain? = null,
+    isSeasonsLoading: Boolean = false,
+
     statuses: List<GameStatus> =
         GameStatus.entries.toList(),
     currentSelectedStatus: GameStatus? = null,
-    leagues: List<LeagueFilterUiModel> = emptyList(),
-    currentSelectedLeague: LeagueFilterUiModel = LeagueFilterUiModel(),
-    proceedIntentAction: (ShowingScreenUpdateIntent) -> Unit = {}
+
+    leagues: List<LeagueModelDomain> = emptyList(),
+    currentSelectedLeague: LeagueModelDomain? = null,
+    isLeaguesLoading: Boolean = false,
+
+    proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
 
     Column {
@@ -43,7 +51,7 @@ fun GamesFilters(
             currentDateTimeText = currentDateTimeText,
             onDateSelectedAction = { date ->
                 proceedIntentAction(
-                    ShowingScreenUpdateIntent.UpdateSelectedDate(
+                    IShowingScreenUpdateIntent.UpdateSelectedDate(
                         date
                     )
                 )
@@ -60,7 +68,7 @@ fun GamesFilters(
                     name = stringResource(it.toStringMessageForStatus()),
                     onClick = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateSelectedStatus(it)
+                            IShowingScreenUpdateIntent.UpdateSelectedStatus(it)
                         )
                     }
                 )
@@ -76,19 +84,41 @@ fun GamesFilters(
             modifier = Modifier
                 .padding(CustomRowFilterTopPadding)
                 .fillMaxWidth(),
-            headerText = stringResource(R.string.country_filter),
-            elements = countries.map {
+            headerText = stringResource(R.string.season_filter),
+            isLoading = isSeasonsLoading,
+            elements = seasons.map {
                 ActionImplementedUiModel(
-                    name = it.name ?: stringResource(R.string.nan_text),
+                    name = it.name,
                     onClick = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateSelectedCountry(it)
+                            IShowingScreenUpdateIntent.UpdateSelectedSeason(it)
                         )
                     }
                 )
             },
             currentSelectedElement = ActionImplementedUiModel(
-                name = currentSelectedCountry.name ?: stringResource(R.string.nan_text)
+                name = currentSelectedSeason?.name ?: stringResource(R.string.nan_text)
+            ),
+        )
+
+        AppRowFilter(
+            modifier = Modifier
+                .padding(CustomRowFilterTopPadding)
+                .fillMaxWidth(),
+            headerText = stringResource(R.string.country_filter),
+            isLoading = isCountriesLoading,
+            elements = countries.map {
+                ActionImplementedUiModel(
+                    name = it.name,
+                    onClick = {
+                        proceedIntentAction(
+                            IShowingScreenUpdateIntent.UpdateSelectedCountry(it)
+                        )
+                    }
+                )
+            },
+            currentSelectedElement = ActionImplementedUiModel(
+                name = currentSelectedCountry?.name ?: stringResource(R.string.nan_text)
             ),
         )
 
@@ -97,18 +127,20 @@ fun GamesFilters(
                 .padding(CustomRowFilterTopPadding)
                 .fillMaxWidth(),
             headerText = stringResource(R.string.league_filter),
+            isLoading = isLeaguesLoading,
+            emptyText = stringResource(R.string.empty_leagues_text),
             elements = leagues.map {
                 ActionImplementedUiModel(
-                    name = it.name ?: stringResource(R.string.nan_text),
+                    name = it.name,
                     onClick = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateSelectedLeague(it)
+                            IShowingScreenUpdateIntent.UpdateSelectedLeague(it)
                         )
                     }
                 )
             },
             currentSelectedElement = ActionImplementedUiModel(
-                name = currentSelectedLeague.name ?: stringResource(R.string.nan_text)
+                name = currentSelectedLeague?.name ?: stringResource(R.string.nan_text)
             ),
         )
     }

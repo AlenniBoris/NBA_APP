@@ -1,5 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NBA_APP</string>
+
+    <string name="game_request_id">Do request for game with only id</string>
+    <string name="game_request_date">Do request for game with only date</string>
+    <string name="game_request_season_league">Do request for game with season and league</string>
+    <string name="game_request_date_season_league">Do request for game with date, season and league</string>
+
+    <string name="team_request_country">Do request for team with country</string>
+    <string name="team_request_search">Do request for team with entered search query</string>
+    <string name="team_request_season_league">Do request for team with season, league</string>
+    <string name="team_request_search_season_league">Do request for team with entered search query, season, league</string>
+    <string name="team_request_search_season_league_country">Do request for team with entered search query, season, league, country</string>
+
+    <string name="player_request_search">Do request for player with entered search query</string>
+    <string name="player_request_season_team">Do request for player with season and team</string>
+    <string name="player_request_season_team_search">Do request for player with entered search query</string>
+
 
     <string name="enter_logo_description">Enter screen logo</string>
     <string name="sidebar_icon_description">Sidebar opening button</string>
@@ -15,6 +32,7 @@
     <string name="following_icon_description">Icon following</string>
     <string name="team_picture_description">Team picture</string>
     <string name="empty_screen_icon_description">Empty icon</string>
+    <string name="progress_bar_animation_description">Rotation progress animation</string>
 
     <string name="text_email">Email</string>
     <string name="text_password">Password</string>
@@ -36,7 +54,10 @@
     <string name="nan_text">NaN</string>
     <string name="league_national_text">League is national</string>
     <string name="league_not_national_text">League is not national</string>
+    <string name="league_national_no_text_text">No info if is national</string>
     <string name="nothing_found">Nothing found</string>
+    <string name="empty_leagues_text">Choose country</string>
+    <string name="empty_teams_text">Choose league</string>
 
     <string name="games_category">Games</string>
     <string name="teams_category">Teams</string>
@@ -48,10 +69,11 @@
     <string name="status_filter">Status</string>
     <string name="league_filter">League</string>
     <string name="season_filter">Season</string>
+    <string name="team_filter">Team</string>
 
     <string name="status_in_play">In play</string>
     <string name="status_not_started">Not started</string>
-    <string name="status_finished">Finished</string>
+    <string name="status_finished">Game Finished</string>
     <string name="status_postponed">Postponed</string>
     <string name="status_cancelled">Cancelled</string>
     <string name="status_suspended">Suspended</string>
@@ -66,5 +88,11 @@
     <string name="web_exception">Check your connection and try again.</string>
     <string name="other_exception">Some unexpected error happened. Try to reopen the app</string>
     <string name="user_collision_exception">Conflict with another user. Seems like this email is already used.</string>
+    <string name="league_and_season_exception">League and season should be selected together</string>
+    <string name="response_field_errors_exception">There are errors in fields. Check them and try again</string>
+    <string name="response_missing_parameters_exception">Data came from server with errors. Try again later</string>
+    <string name="request_country_missing">Country should be selected for this request</string>
+    <string name="request_query_size_to_small">Your query should contain more than 3 characters</string>
+    <string name="request_team_season_smth_is_empty">Your haven\'t chosen team or season. check your data</string>
 
 </resources>

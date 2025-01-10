@@ -3,9 +3,11 @@ package com.alenniboris.nba_app.presentation.screens.showing.views
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -31,16 +36,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alenniboris.nba_app.R
+import com.alenniboris.nba_app.domain.model.GameModelDomain
+import com.alenniboris.nba_app.domain.model.IStateModel
+import com.alenniboris.nba_app.domain.model.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestType
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestParams
+import com.alenniboris.nba_app.domain.model.params.api.nba.toRequestString
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
-import com.alenniboris.nba_app.presentation.model.GameUiModel
-import com.alenniboris.nba_app.presentation.model.IStateUiModel
-import com.alenniboris.nba_app.presentation.model.PlayerUiModel
-import com.alenniboris.nba_app.presentation.model.TeamUiModel
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenEvent
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenUpdateIntent
+import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenEvent
+import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.Category
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.PersonalBtnAction
@@ -51,15 +61,21 @@ import com.alenniboris.nba_app.presentation.uikit.theme.FloatingActionButtonWidt
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemHorizontalPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemShape
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemVerticalMargin
+import com.alenniboris.nba_app.presentation.uikit.theme.RequestTypeDialogFontSize
+import com.alenniboris.nba_app.presentation.uikit.theme.RequestTypeDialogShape
+import com.alenniboris.nba_app.presentation.uikit.theme.RequestTypeDialogTopPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.TBShowingScreenPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.TopBarUIBoxEndPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.appColor
+import com.alenniboris.nba_app.presentation.uikit.theme.appTopBarElementsColor
+import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.categoryItemColor
 import com.alenniboris.nba_app.presentation.uikit.theme.floatingActionButtonColor
 import com.alenniboris.nba_app.presentation.uikit.theme.floatingActionButtonTextColor
 import com.alenniboris.nba_app.presentation.uikit.theme.titleStyle
 import com.alenniboris.nba_app.presentation.uikit.views.AppDropdownMenu
 import com.alenniboris.nba_app.presentation.uikit.views.AppEmptyScreen
+import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 import com.alenniboris.nba_app.presentation.uikit.views.AppProgressBar
 import com.alenniboris.nba_app.presentation.uikit.views.AppTopBar
 import kotlinx.coroutines.flow.filterIsInstance
@@ -85,16 +101,20 @@ fun ShowingScreen() {
 
     LaunchedEffect(Unit) {
         launch {
-            event.filterIsInstance<ShowingScreenEvent.ShowToastMessage>().collect { value ->
+            event.filterIsInstance<IShowingScreenEvent.ShowToastMessage>().collect { value ->
                 toastMessage.cancel()
                 toastMessage =
-                    Toast.makeText(context, value.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        context,
+                        context.getString(value.message),
+                        Toast.LENGTH_SHORT
+                    )
                 toastMessage.show()
             }
         }
 
         launch {
-            event.filterIsInstance<ShowingScreenEvent.NavigateToUserDetailsScreen>().collect {
+            event.filterIsInstance<IShowingScreenEvent.NavigateToUserDetailsScreen>().collect {
                 toastMessage.cancel()
                 toastMessage =
                     Toast.makeText(context, "Navigation", Toast.LENGTH_SHORT)
@@ -115,7 +135,7 @@ fun ShowingScreen() {
 @Preview
 private fun ShowingScreenUi(
     state: ShowingState = ShowingState(),
-    proceedIntentAction: (ShowingScreenUpdateIntent) -> Unit = {}
+    proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
 
     Scaffold(
@@ -134,7 +154,7 @@ private fun ShowingScreenUi(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-                    proceedIntentAction(ShowingScreenUpdateIntent.UpdateFilterSheetVisibility)
+                    proceedIntentAction(IShowingScreenUpdateIntent.UpdateFilterSheetVisibility)
                 },
                 modifier = Modifier
                     .border(
@@ -182,22 +202,46 @@ private fun ShowingScreenUi(
                 )
             }
 
-            if (state.isFilterSheetVisible) {
-                ShowingScreenFilter(
-                    onDismiss = {
+            if (state.isRequestTypeChooserVisible) {
+                RequestTypeChooserDialog(
+                    requestParams = state.requestParams,
+                    onTypeSelected = { selectedType ->
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.ChangeFilterParametersToPreviousValues
-                        )
-                        proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateFilterSheetVisibility
+                            IShowingScreenUpdateIntent.UpdateRequestType(
+                                newType = selectedType
+                            )
                         )
                     },
                     onAccept = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.ProceedSearchRequestByFilterQuery
+                            IShowingScreenUpdateIntent.SearchForItemsAfterRequestType
+                        )
+                    },
+                    onDecline = {
+                        proceedIntentAction(
+                            IShowingScreenUpdateIntent.UpdateRequestTypeChooserVisibility(
+                                isVisible = false
+                            )
+                        )
+                    }
+                )
+            }
+
+            if (state.isFilterSheetVisible) {
+                ShowingScreenFilter(
+                    onDismiss = {
+                        proceedIntentAction(
+                            IShowingScreenUpdateIntent.ChangeFilterParametersToPreviousValues
                         )
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateFilterSheetVisibility
+                            IShowingScreenUpdateIntent.UpdateFilterSheetVisibility
+                        )
+                    },
+                    onAccept = {
+                        proceedIntentAction(
+                            IShowingScreenUpdateIntent.UpdateRequestTypeChooserVisibility(
+                                isVisible = true
+                            )
                         )
                     },
                     currentCategory = state.currentCategory,
@@ -213,11 +257,88 @@ private fun ShowingScreenUi(
 
 @Composable
 @Preview
+fun RequestTypeChooserDialog(
+    requestParams: INbaApiRequestParams = GameRequestParamsModelDomain(),
+    onTypeSelected: (INbaApiRequestType) -> Unit = {},
+    onAccept: () -> Unit = {},
+    onDecline: () -> Unit = {}
+) {
+
+    AlertDialog(
+        onDismissRequest = onDecline,
+        containerColor = appColor,
+        shape = RequestTypeDialogShape,
+        text = {
+
+            Column(
+                modifier = Modifier
+                    .background(appColor),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                LazyColumn {
+                    items(requestParams.possibleRequestTypes) { type ->
+
+                        Row(
+                            modifier = Modifier.padding(RequestTypeDialogTopPadding)
+                        ) {
+                            Checkbox(
+                                checked = type == requestParams.requestType,
+                                onCheckedChange = {
+                                    onTypeSelected(type)
+                                },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = appTopBarElementsColor,
+                                )
+                            )
+
+                            Text(
+                                textAlign = TextAlign.Center,
+                                text = stringResource(type.toRequestString()),
+                                color = appTopBarElementsColor,
+                                style = bodyStyle.copy(
+                                    fontSize = RequestTypeDialogFontSize
+                                ),
+                            )
+                        }
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    AppIconButton(
+                        onClick = onDecline,
+                        iconPainter = painterResource(R.drawable.close_filter_sheet_btn),
+                        contentDescription = stringResource(R.string.decline_icon_description),
+                        tint = appTopBarElementsColor
+                    )
+
+                    AppIconButton(
+                        onClick = onAccept,
+                        iconPainter = painterResource(R.drawable.accept_filter_changes_btn),
+                        contentDescription = stringResource(R.string.accept_icon_description),
+                        tint = appTopBarElementsColor
+                    )
+
+                }
+
+            }
+
+        },
+        confirmButton = {}
+    )
+
+}
+
+@Composable
+@Preview
 fun ShowElementsUi(
     category: Category = Category.Games,
-    elements: List<IStateUiModel> = emptyList(),
+    elements: List<IStateModel> = emptyList(),
     followedElementsIds: List<Int> = emptyList(),
-    proceedIntentAction: (ShowingScreenUpdateIntent) -> Unit = {}
+    proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
 
     LazyColumn(
@@ -227,7 +348,7 @@ fun ShowElementsUi(
         items(elements) { element ->
             when (category) {
                 Category.Games ->
-                    (element as? GameUiModel)?.let {
+                    (element as? GameModelDomain)?.let {
                         GameColumnItem(
                             modifier = Modifier
                                 .padding(
@@ -237,13 +358,12 @@ fun ShowElementsUi(
                                     color = categoryItemColor,
                                     shape = GameColumnItemShape
                                 )
-                                .height(IntrinsicSize.Max)
                                 .padding(GameColumnItemHorizontalPadding),
                             element = element,
                             isElementFollowed = followedElementsIds.contains(element.id),
                             onFollowGameButtonClicked = {
                                 proceedIntentAction(
-                                    ShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
+                                    IShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
                                         element
                                     )
                                 )
@@ -253,7 +373,7 @@ fun ShowElementsUi(
 
 
                 Category.Teams ->
-                    (element as? TeamUiModel)?.let {
+                    (element as? TeamModelDomain)?.let {
                         TeamColumnItem(
                             modifier = Modifier
                                 .padding(
@@ -263,13 +383,12 @@ fun ShowElementsUi(
                                     color = categoryItemColor,
                                     shape = GameColumnItemShape
                                 )
-                                .height(IntrinsicSize.Max)
                                 .padding(GameColumnItemHorizontalPadding),
                             element = element,
                             isElementFollowed = followedElementsIds.contains(element.id),
                             onFollowGameButtonClicked = {
                                 proceedIntentAction(
-                                    ShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
+                                    IShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
                                         element
                                     )
                                 )
@@ -279,7 +398,7 @@ fun ShowElementsUi(
 
 
                 Category.Players ->
-                    (element as? PlayerUiModel)?.let {
+                    (element as? PlayerModelDomain)?.let {
                         PlayerColumnItem(
                             modifier = Modifier
                                 .padding(
@@ -289,13 +408,12 @@ fun ShowElementsUi(
                                     color = categoryItemColor,
                                     shape = GameColumnItemShape
                                 )
-                                .height(IntrinsicSize.Max)
                                 .padding(GameColumnItemHorizontalPadding),
                             element = element,
                             isElementFollowed = followedElementsIds.contains(element.id),
                             onFollowGameButtonClicked = {
                                 proceedIntentAction(
-                                    ShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
+                                    IShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
                                         element
                                     )
                                 )
@@ -314,7 +432,7 @@ private fun TopBarUI(
     headerText: String = "",
     isCategoriesListVisible: Boolean = false,
     isPersonalActionsVisible: Boolean = false,
-    proceedIntentAction: (ShowingScreenUpdateIntent) -> Unit = {},
+    proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {},
 ) {
 
     val listOfCategories by remember {
@@ -336,7 +454,7 @@ private fun TopBarUI(
             leftBtnPainter = painterResource(R.drawable.basketball_ball),
             onLeftBtnClicked = {
                 proceedIntentAction(
-                    ShowingScreenUpdateIntent.UpdateCategoriesListVisibility(
+                    IShowingScreenUpdateIntent.UpdateCategoriesListVisibility(
                         isVisible = true
                     )
                 )
@@ -344,7 +462,7 @@ private fun TopBarUI(
             rightBtnPainter = painterResource(R.drawable.icon_personal_btn),
             onRightBtnClicked = {
                 proceedIntentAction(
-                    ShowingScreenUpdateIntent.UpdatePersonalActionsVisibility(
+                    IShowingScreenUpdateIntent.UpdatePersonalActionsVisibility(
                         isVisible = true
                     )
                 )
@@ -360,7 +478,7 @@ private fun TopBarUI(
                 isMenuVisible = isCategoriesListVisible,
                 onDismiss = {
                     proceedIntentAction(
-                        ShowingScreenUpdateIntent.UpdateCategoriesListVisibility(
+                        IShowingScreenUpdateIntent.UpdateCategoriesListVisibility(
                             isVisible = false
                         )
                     )
@@ -370,12 +488,12 @@ private fun TopBarUI(
                         name = category.name,
                         onClick = {
                             proceedIntentAction(
-                                ShowingScreenUpdateIntent.UpdateCurrentStateToAnother(
+                                IShowingScreenUpdateIntent.UpdateCurrentStateToAnother(
                                     category
                                 )
                             )
                             proceedIntentAction(
-                                ShowingScreenUpdateIntent.UpdateCategoriesListVisibility(
+                                IShowingScreenUpdateIntent.UpdateCategoriesListVisibility(
                                     false
                                 )
                             )
@@ -389,7 +507,7 @@ private fun TopBarUI(
                 isMenuVisible = isPersonalActionsVisible,
                 onDismiss = {
                     proceedIntentAction(
-                        ShowingScreenUpdateIntent.UpdatePersonalActionsVisibility(
+                        IShowingScreenUpdateIntent.UpdatePersonalActionsVisibility(
                             isVisible = false
                         )
                     )
@@ -399,10 +517,10 @@ private fun TopBarUI(
                         name = action.name,
                         onClick = {
                             proceedIntentAction(
-                                ShowingScreenUpdateIntent.ProceedPersonalAction(action)
+                                IShowingScreenUpdateIntent.ProceedPersonalAction(action)
                             )
                             proceedIntentAction(
-                                ShowingScreenUpdateIntent.UpdatePersonalActionsVisibility(
+                                IShowingScreenUpdateIntent.UpdatePersonalActionsVisibility(
                                     false
                                 )
                             )

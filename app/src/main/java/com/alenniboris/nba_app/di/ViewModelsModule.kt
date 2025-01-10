@@ -1,6 +1,7 @@
 package com.alenniboris.nba_app.di
 
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
+import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.presentation.activity.MainActivityVM
 import com.alenniboris.nba_app.presentation.screens.enter.EnterScreenVM
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
@@ -22,7 +23,8 @@ val ViewModels = module {
 
     viewModel<ShowingScreenVM> {
         ShowingScreenVM(
-            authenticationManager = get<IAuthenticationManager>()
+            authenticationManager = get<IAuthenticationManager>(),
+            nbaApiManager= get<INbaApiManager>()
         )
     }
 }

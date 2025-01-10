@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.presentation.model.TeamUiModel
+import com.alenniboris.nba_app.domain.model.TeamModelDomain
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionDateTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionMainTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionStartTextPadding
@@ -32,7 +32,7 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppItemPictureSection
 @Preview
 fun TeamColumnItem(
     modifier: Modifier = Modifier,
-    element: TeamUiModel = TeamUiModel(),
+    element: TeamModelDomain? = null,
     isElementFollowed: Boolean = false,
     onGameCardClicked: () -> Unit = {},
     onFollowGameButtonClicked: () -> Unit = {}
@@ -65,15 +65,21 @@ fun TeamColumnItem(
 
             AppItemPictureSection(
                 modifier = Modifier.weight(1f),
-                name = element.name,
-                logoUrl = element.logoUrl
+                name = element?.name,
+                logoUrl = element?.logo
             )
 
             TeamItemTextSection(
                 modifier = Modifier.weight(1f),
-                isNational = element.national,
-                countryName = element.country.name ?: stringResource(R.string.nan_text),
-                countryFlagUrl = element.country.flag
+                isNationalText =
+                (element?.isNational)?.let {
+                    stringResource(
+                        if (it) R.string.league_national_text
+                        else R.string.league_not_national_text
+                    )
+                } ?: stringResource(R.string.league_national_no_text_text),
+                countryName = element?.country?.name ?: stringResource(R.string.nan_text),
+                countryFlagUrl = element?.country?.flag
             )
 
         }
@@ -86,7 +92,7 @@ fun TeamColumnItem(
 @Preview
 private fun TeamItemTextSection(
     modifier: Modifier = Modifier,
-    isNational: Boolean = false,
+    isNationalText: String = "",
     countryName: String = "Name",
     countryFlagUrl: String? = null
 ) {
@@ -125,8 +131,7 @@ private fun TeamItemTextSection(
         ) {
             Text(
                 modifier = Modifier.padding(GameColumnItemTextSectionStartTextPadding),
-                text = if (isNational) stringResource(R.string.league_national_text)
-                else stringResource(R.string.league_not_national_text),
+                text = isNationalText,
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionDateTextSize
                 ),

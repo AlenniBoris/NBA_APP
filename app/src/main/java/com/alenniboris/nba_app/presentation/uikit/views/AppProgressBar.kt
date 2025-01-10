@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,6 +25,7 @@ import com.alenniboris.nba_app.presentation.uikit.theme.appTopBarElementsColor
 @Preview
 fun AppProgressBar(
     modifier: Modifier = Modifier,
+    iconTint: Color = appTopBarElementsColor
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val rotationAngle by infiniteTransition.animateFloat(
@@ -33,7 +35,7 @@ fun AppProgressBar(
             animation = tween(durationMillis = 1000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ),
-        label = ""
+        label = stringResource(R.string.progress_bar_animation_description)
     )
 
 
@@ -46,7 +48,7 @@ fun AppProgressBar(
                 .graphicsLayer(rotationZ = rotationAngle),
             painter = painterResource(TopBarDropdownMenuOpeningButton),
             contentDescription = stringResource(R.string.progress_bar_description),
-            tint = appTopBarElementsColor
+            tint = iconTint
         )
     }
 }

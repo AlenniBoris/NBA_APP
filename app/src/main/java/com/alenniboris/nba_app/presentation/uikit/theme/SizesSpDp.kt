@@ -94,3 +94,8 @@ val TeamColumnItemFlagSize = GameColumnItemTextSectionBoxSize * 2
 //Empty screen
 val EmptyScreenSpacerHeight = 20.dp
 val EmptyScreenFontSize = 25.sp
+
+// RequestType dialog
+val RequestTypeDialogShape = RoundedCornerShape(size = 40.dp)
+val RequestTypeDialogTopPadding = PaddingValues(top = 15.dp)
+val RequestTypeDialogFontSize = 15.sp

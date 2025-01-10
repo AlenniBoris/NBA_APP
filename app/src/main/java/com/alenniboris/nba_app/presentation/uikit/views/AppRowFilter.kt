@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -23,7 +25,9 @@ import com.alenniboris.nba_app.presentation.uikit.theme.RowFilterItemTextPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.RowFilterItemTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.RowFilterPossibleVariantPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.RowFilterTopPadding
+import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.rowFilterContainerColor
+import com.alenniboris.nba_app.presentation.uikit.theme.rowFilterTextColor
 import com.alenniboris.nba_app.presentation.uikit.theme.rowItemColor
 import com.alenniboris.nba_app.presentation.uikit.theme.rowItemTextColor
 import com.alenniboris.nba_app.presentation.uikit.theme.rowSelectedItemColor
@@ -35,6 +39,8 @@ fun AppRowFilter(
     modifier: Modifier = Modifier,
     itemsLazyListState: LazyListState = rememberLazyListState(),
     headerText: String = "Header",
+    emptyText: String = "Choose smth",
+    isLoading: Boolean = false,
     elements: List<ActionImplementedUiModel> = emptyList(),
     currentSelectedElement: ActionImplementedUiModel = ActionImplementedUiModel(),
 ) {
@@ -51,29 +57,54 @@ fun AppRowFilter(
     ) {
         AppDividerWithHeader(headerText = headerText)
 
-        LazyRow(
-            modifier = Modifier
-                .padding(RowFilterTopPadding)
-                .background(rowFilterContainerColor),
-            state = itemsLazyListState
-        ) {
-            itemsIndexed(elements) { index, element ->
-                RowFilterItem(
-                    modifier = Modifier
-                        .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                        .padding(
-                            if (index == 0) RowFilterFirstPossibleVariantPadding
-                            else RowFilterPossibleVariantPadding
-                        ),
-                    elementText = element.name,
-                    itemBackgroundColor = if (element.name == currentSelectedElement.name) rowSelectedItemColor
-                    else rowItemColor,
-                    itemTextColor = if (element.name == currentSelectedElement.name) rowSelectedItemTextColor
-                    else rowItemTextColor,
-                    onItemClicked = { element.onClick() },
+        if (isLoading) {
+            AppProgressBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(rowFilterContainerColor),
+                iconTint = rowFilterTextColor
+            )
+        } else if (elements.isEmpty() && emptyText.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = emptyText,
+                    color = rowFilterTextColor,
+                    style = bodyStyle.copy(
+                        fontSize = RowFilterItemTextSize
+                    ),
                 )
             }
+        } else {
+            LazyRow(
+                modifier = Modifier
+                    .padding(RowFilterTopPadding)
+                    .background(rowFilterContainerColor),
+                state = itemsLazyListState
+            ) {
+                itemsIndexed(elements) { index, element ->
+                    RowFilterItem(
+                        modifier = Modifier
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                            .padding(
+                                if (index == 0) RowFilterFirstPossibleVariantPadding
+                                else RowFilterPossibleVariantPadding
+                            ),
+                        elementText = element.name,
+                        itemBackgroundColor = if (element.name == currentSelectedElement.name) rowSelectedItemColor
+                        else rowItemColor,
+                        itemTextColor = if (element.name == currentSelectedElement.name) rowSelectedItemTextColor
+                        else rowItemTextColor,
+                        onItemClicked = { element.onClick() },
+                    )
+                }
+            }
         }
+
+
     }
 }
 

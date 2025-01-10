@@ -16,7 +16,8 @@ class AppApplication : Application() {
             modules(
                 ViewModels,
                 AuthModule,
-                AppDispatchersModule
+                IAppDispatchersModule,
+                NetworkModule
             )
         }
     }

@@ -13,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.presentation.model.PlayerUiModel
+import com.alenniboris.nba_app.domain.model.PlayerModelDomain
 import com.alenniboris.nba_app.presentation.uikit.theme.PlayerItemCountryTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.PlayerItemNameTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.PlayerItemNumberTextSize
@@ -26,7 +26,7 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 @Preview
 fun PlayerColumnItem(
     modifier: Modifier = Modifier,
-    element: PlayerUiModel = PlayerUiModel(),
+    element: PlayerModelDomain? = null,
     isElementFollowed: Boolean = false,
     onGameCardClicked: () -> Unit = {},
     onFollowGameButtonClicked: () -> Unit = {}
@@ -63,21 +63,21 @@ fun PlayerColumnItem(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = element.name,
+                    text = element?.name ?: stringResource(R.string.nan_text),
                     style = bodyStyle.copy(
                         fontSize = PlayerItemNameTextSize
                     ),
                     color = categoryItemTextColor
                 )
                 Text(
-                    text = element.position,
+                    text = element?.position ?: stringResource(R.string.nan_text),
                     style = bodyStyle.copy(
                         fontSize = PlayerItemPositionTextSize
                     ),
                     color = categoryItemTextColor
                 )
                 Text(
-                    text = element.country,
+                    text = element?.country ?: stringResource(R.string.nan_text),
                     style = bodyStyle.copy(
                         fontSize = PlayerItemCountryTextSize
                     ),
@@ -87,7 +87,7 @@ fun PlayerColumnItem(
             Box {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
-                    text = element.number,
+                    text = element?.number ?: stringResource(R.string.nan_text),
                     style = bodyStyle.copy(
                         fontSize = PlayerItemNumberTextSize
                     ),

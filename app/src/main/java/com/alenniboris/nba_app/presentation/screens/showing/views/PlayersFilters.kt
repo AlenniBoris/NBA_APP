@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
+import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
+import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
+import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
-import com.alenniboris.nba_app.presentation.model.filter.LeagueFilterUiModel
-import com.alenniboris.nba_app.presentation.model.filter.SeasonFilterUiModel
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenUpdateIntent
+import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.uikit.theme.CustomRowFilterTopPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldShape
@@ -25,12 +27,25 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppTextField
 @Composable
 @Preview
 fun PlayersFilters(
-    seasons: List<SeasonFilterUiModel> = emptyList(),
-    currentSelectedSeason: SeasonFilterUiModel = SeasonFilterUiModel(),
-    leagues: List<LeagueFilterUiModel> = emptyList(),
-    currentSelectedLeague: LeagueFilterUiModel = LeagueFilterUiModel(),
+    seasons: List<SeasonModelDomain> = emptyList(),
+    currentSelectedSeason: SeasonModelDomain? = null,
+    isSeasonsLoading: Boolean = false,
+
+    leagues: List<LeagueModelDomain> = emptyList(),
+    currentSelectedLeague: LeagueModelDomain? = null,
+    isLeaguesLoading: Boolean = false,
+
     enteredQueryValue: String = "",
-    proceedIntentAction: (ShowingScreenUpdateIntent) -> Unit = {}
+
+    countries: List<CountryModelDomain> = emptyList(),
+    currentSelectedCountry: CountryModelDomain? = null,
+    isCountriesLoading: Boolean = false,
+
+    teams: List<TeamModelDomain> = emptyList(),
+    currentSelectedTeam: TeamModelDomain? = null,
+    isTeamsLoading: Boolean = false,
+
+    proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
 
     Column {
@@ -51,7 +66,7 @@ fun PlayersFilters(
             value = enteredQueryValue,
             onValueChanged = { newValue ->
                 proceedIntentAction(
-                    ShowingScreenUpdateIntent.UpdateEnteredSearch(
+                    IShowingScreenUpdateIntent.UpdateEnteredSearch(
                         newValue
                     )
                 )
@@ -66,16 +81,17 @@ fun PlayersFilters(
             headerText = stringResource(R.string.season_filter),
             elements = seasons.map {
                 ActionImplementedUiModel(
-                    name = it.name ?: stringResource(R.string.nan_text),
+                    name = it.name,
                     onClick = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateSelectedSeason(it)
+                            IShowingScreenUpdateIntent.UpdateSelectedSeason(it)
                         )
                     }
                 )
             },
+            isLoading = isSeasonsLoading,
             currentSelectedElement = ActionImplementedUiModel(
-                name = currentSelectedSeason.name ?: stringResource(R.string.nan_text)
+                name = currentSelectedSeason?.name ?: stringResource(R.string.nan_text)
             )
         )
 
@@ -83,19 +99,64 @@ fun PlayersFilters(
             modifier = Modifier
                 .padding(CustomRowFilterTopPadding)
                 .fillMaxWidth(),
-            headerText = stringResource(R.string.league_filter),
-            elements = leagues.map {
+            headerText = stringResource(R.string.country_filter),
+            isLoading = isCountriesLoading,
+            elements = countries.map {
                 ActionImplementedUiModel(
-                    name = it.name ?: stringResource(R.string.nan_text),
+                    name = it.name,
                     onClick = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateSelectedLeague(it)
+                            IShowingScreenUpdateIntent.UpdateSelectedCountry(it)
                         )
                     }
                 )
             },
             currentSelectedElement = ActionImplementedUiModel(
-                name = currentSelectedLeague.name ?: stringResource(R.string.nan_text)
+                name = currentSelectedCountry?.name ?: stringResource(R.string.nan_text)
+            ),
+        )
+
+        AppRowFilter(
+            modifier = Modifier
+                .padding(CustomRowFilterTopPadding)
+                .fillMaxWidth(),
+            headerText = stringResource(R.string.league_filter),
+            emptyText = stringResource(R.string.empty_leagues_text),
+            elements = leagues.map {
+                ActionImplementedUiModel(
+                    name = it.name,
+                    onClick = {
+                        proceedIntentAction(
+                            IShowingScreenUpdateIntent.UpdateSelectedLeague(it)
+                        )
+                    }
+                )
+            },
+            isLoading = isLeaguesLoading,
+            currentSelectedElement = ActionImplementedUiModel(
+                name = currentSelectedLeague?.name ?: stringResource(R.string.nan_text)
+            ),
+        )
+
+        AppRowFilter(
+            modifier = Modifier
+                .padding(CustomRowFilterTopPadding)
+                .fillMaxWidth(),
+            headerText = stringResource(R.string.team_filter),
+            emptyText = stringResource(R.string.empty_teams_text),
+            elements = teams.map {
+                ActionImplementedUiModel(
+                    name = it.name,
+                    onClick = {
+                        proceedIntentAction(
+                            IShowingScreenUpdateIntent.UpdateSelectedTeam(it)
+                        )
+                    }
+                )
+            },
+            isLoading = isTeamsLoading,
+            currentSelectedElement = ActionImplementedUiModel(
+                name = currentSelectedTeam?.name ?: stringResource(R.string.nan_text)
             ),
         )
 

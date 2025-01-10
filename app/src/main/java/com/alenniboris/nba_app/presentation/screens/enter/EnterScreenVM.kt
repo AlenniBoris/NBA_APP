@@ -3,6 +3,7 @@ package com.alenniboris.nba_app.presentation.screens.enter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
+import com.alenniboris.nba_app.domain.model.exception.AuthenticationExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
@@ -95,11 +96,12 @@ class EnterScreenVM(
         }
     }
 
-    private fun emitShowToastEventIfIsErrorCase(resultOfOperation: CustomResultModelDomain<Unit>) {
+    private fun emitShowToastEventIfIsErrorCase(resultOfOperation: CustomResultModelDomain<Unit, AuthenticationExceptionModelDomain>) {
         (resultOfOperation as? CustomResultModelDomain.Error)?.let {
+            val exception = resultOfOperation.exception
             _event.emit(
                 EnterScreenEvent.ShowToastMessage(
-                    resultOfOperation.exception.toUiMessageString()
+                    exception.toUiMessageString()
                 )
             )
         }

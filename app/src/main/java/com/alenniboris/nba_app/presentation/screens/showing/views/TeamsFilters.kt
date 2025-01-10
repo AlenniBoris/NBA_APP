@@ -7,12 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
+import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
+import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
+import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
-import com.alenniboris.nba_app.presentation.model.filter.CountryFilterUiModel
-import com.alenniboris.nba_app.presentation.model.filter.LeagueFilterUiModel
-import com.alenniboris.nba_app.presentation.model.filter.SeasonFilterUiModel
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenUpdateIntent
+import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.uikit.theme.CustomRowFilterTopPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldShape
@@ -22,15 +23,22 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppRowFilter
 import com.alenniboris.nba_app.presentation.uikit.views.AppTextField
 
 @Composable
+@Preview
 fun TeamsFilters(
-    seasons: List<SeasonFilterUiModel> = emptyList(),
-    currentSelectedSeason: SeasonFilterUiModel = SeasonFilterUiModel(),
-    leagues: List<LeagueFilterUiModel> = emptyList(),
-    currentSelectedLeague: LeagueFilterUiModel = LeagueFilterUiModel(),
-    countries: List<CountryFilterUiModel> = emptyList(),
-    currentSelectedCountry: CountryFilterUiModel = CountryFilterUiModel(),
+    seasons: List<SeasonModelDomain> = emptyList(),
+    currentSelectedSeason: SeasonModelDomain? = null,
+    isSeasonsLoading: Boolean = false,
+
+    leagues: List<LeagueModelDomain> = emptyList(),
+    currentSelectedLeague: LeagueModelDomain? = null,
+    isLeaguesLoading: Boolean = false,
+
+    countries: List<CountryModelDomain> = emptyList(),
+    currentSelectedCountry: CountryModelDomain? = null,
+    isCountriesLoading: Boolean = false,
+
     enteredQueryValue: String = "",
-    proceedIntentAction: (ShowingScreenUpdateIntent) -> Unit = {}
+    proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
 
     Column {
@@ -49,7 +57,7 @@ fun TeamsFilters(
             value = enteredQueryValue,
             onValueChanged = { newValue ->
                 proceedIntentAction(
-                    ShowingScreenUpdateIntent.UpdateEnteredSearch(
+                    IShowingScreenUpdateIntent.UpdateEnteredSearch(
                         newValue
                     )
                 )
@@ -64,16 +72,17 @@ fun TeamsFilters(
             headerText = stringResource(R.string.season_filter),
             elements = seasons.map {
                 ActionImplementedUiModel(
-                    name = it.name ?: stringResource(R.string.nan_text),
+                    name = it.name,
                     onClick = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateSelectedSeason(it)
+                            IShowingScreenUpdateIntent.UpdateSelectedSeason(it)
                         )
                     }
                 )
             },
+            isLoading = isSeasonsLoading,
             currentSelectedElement = ActionImplementedUiModel(
-                name = currentSelectedSeason.name ?: stringResource(R.string.nan_text)
+                name = currentSelectedSeason?.name ?: stringResource(R.string.nan_text)
             )
         )
 
@@ -84,16 +93,17 @@ fun TeamsFilters(
             headerText = stringResource(R.string.country_filter),
             elements = countries.map {
                 ActionImplementedUiModel(
-                    name = it.name ?: stringResource(R.string.nan_text),
+                    name = it.name,
                     onClick = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateSelectedCountry(it)
+                            IShowingScreenUpdateIntent.UpdateSelectedCountry(it)
                         )
                     }
                 )
             },
+            isLoading = isCountriesLoading,
             currentSelectedElement = ActionImplementedUiModel(
-                name = currentSelectedCountry.name ?: stringResource(R.string.nan_text)
+                name = currentSelectedCountry?.name ?: stringResource(R.string.nan_text)
             ),
         )
 
@@ -102,18 +112,20 @@ fun TeamsFilters(
                 .padding(CustomRowFilterTopPadding)
                 .fillMaxWidth(),
             headerText = stringResource(R.string.league_filter),
+            emptyText = stringResource(R.string.empty_leagues_text),
             elements = leagues.map {
                 ActionImplementedUiModel(
-                    name = it.name ?: stringResource(R.string.nan_text),
+                    name = it.name,
                     onClick = {
                         proceedIntentAction(
-                            ShowingScreenUpdateIntent.UpdateSelectedLeague(it)
+                            IShowingScreenUpdateIntent.UpdateSelectedLeague(it)
                         )
                     }
                 )
             },
+            isLoading = isLeaguesLoading,
             currentSelectedElement = ActionImplementedUiModel(
-                name = currentSelectedLeague.name ?: stringResource(R.string.nan_text)
+                name = currentSelectedLeague?.name ?: stringResource(R.string.nan_text)
             ),
         )
 
