@@ -30,15 +30,11 @@ import com.alenniboris.nba_app.presentation.uikit.theme.titleStyle
 fun AppTopBar(
     modifier: Modifier = Modifier,
     headerTextString: String = "",
-    isLeftBtnReplaceable: Boolean = false,
     isLeftBtnAnimated: Boolean = false,
     leftBtnPainter: Painter = ColorPainter(appColor),
-    leftBtnReplacementPainter: Painter = ColorPainter(appColor),
     onLeftBtnClicked: () -> Unit = {},
-    isRightBtnReplaceable: Boolean = false,
     isRightBtnAnimated: Boolean = false,
     rightBtnPainter: Painter = ColorPainter(appColor),
-    rightBtnReplacementPainter: Painter = ColorPainter(appColor),
     onRightBtnClicked: () -> Unit = {},
 ) {
     Row(
@@ -49,9 +45,7 @@ fun AppTopBar(
 
         AppIconButton(
             isAnimated = isLeftBtnAnimated,
-            isReplaceable = isLeftBtnReplaceable,
             iconPainter = leftBtnPainter,
-            replacementPainter = leftBtnReplacementPainter,
             onClick = onLeftBtnClicked,
             tint = appTopBarElementsColor,
             contentDescription = stringResource(R.string.top_bar_left_btn_description)
@@ -68,9 +62,7 @@ fun AppTopBar(
 
         AppIconButton(
             isAnimated = isRightBtnAnimated,
-            isReplaceable = isRightBtnReplaceable,
             iconPainter = rightBtnPainter,
-            replacementPainter = rightBtnReplacementPainter,
             onClick = onRightBtnClicked,
             tint = appTopBarElementsColor,
             contentDescription = stringResource(R.string.top_bar_right_btn_description)

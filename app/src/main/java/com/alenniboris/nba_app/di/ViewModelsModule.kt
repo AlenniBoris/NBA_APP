@@ -17,14 +17,15 @@ val ViewModels = module {
 
     viewModel<MainActivityVM> {
         MainActivityVM(
-            authenticationManager = get<IAuthenticationManager>()
+            authenticationManager = get<IAuthenticationManager>(),
+            nbaApiManager = get<INbaApiManager>()
         )
     }
 
     viewModel<ShowingScreenVM> {
         ShowingScreenVM(
             authenticationManager = get<IAuthenticationManager>(),
-            nbaApiManager= get<INbaApiManager>()
+            nbaApiManager = get<INbaApiManager>()
         )
     }
 }

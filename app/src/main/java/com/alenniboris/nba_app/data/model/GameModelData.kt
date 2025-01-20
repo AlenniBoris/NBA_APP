@@ -81,14 +81,7 @@ fun GameModelData.toModelDomain(): GameModelDomain? = runCatching {
     GameModelDomain(
         id = this.id?.toInt()!!,
         isFollowed = false,
-        dateOfTheGame = date?.let {
-            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                .format(it)
-        }!!,
-        startingTime = date.let {
-            SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                .format(it)
-        },
+        dateOfTheGame = date!!,
         gameStage = this.gameStage,
         weekOfTheGame = this.weekOfTheGame,
         venueOfTheGame = this.venueOfTheGame,

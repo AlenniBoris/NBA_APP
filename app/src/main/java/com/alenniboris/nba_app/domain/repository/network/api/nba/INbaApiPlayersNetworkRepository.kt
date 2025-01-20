@@ -1,0 +1,26 @@
+package com.alenniboris.nba_app.domain.repository.network.api.nba
+
+import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
+import com.alenniboris.nba_app.domain.model.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
+import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
+
+interface INbaApiPlayersNetworkRepository {
+
+    suspend fun getPlayersBySearchQuery(
+        searchQuery: String
+    ): CustomResultModelDomain<List<PlayerModelDomain>, NbaApiExceptionModelDomain>
+
+    suspend fun getPlayersBySeasonAndTeam(
+        season: SeasonModelDomain?,
+        team: TeamModelDomain?
+    ): CustomResultModelDomain<List<PlayerModelDomain>, NbaApiExceptionModelDomain>
+
+    suspend fun getPlayersBySearchQueryAndSeasonAndTeam(
+        searchQuery: String,
+        season: SeasonModelDomain?,
+        team: TeamModelDomain?
+    ): CustomResultModelDomain<List<PlayerModelDomain>, NbaApiExceptionModelDomain>
+
+}

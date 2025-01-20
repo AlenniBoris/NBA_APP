@@ -1,6 +1,8 @@
 package com.alenniboris.nba_app.presentation.uikit.views
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,34 +25,26 @@ import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 @Preview
 fun AppIconButton(
     isAnimated: Boolean = false,
-    isReplaceable: Boolean = false,
     isEnabled: Boolean = true,
     onClick: () -> Unit = {},
     iconPainter: Painter = ColorPainter(appColor),
-    replacementPainter: Painter = ColorPainter(appColor),
     tint: Color = Color(0xff050300),
     contentDescription: String = ""
 ) {
 
-    var rotationAngle by remember { mutableFloatStateOf(0f) }
-    val rotation by animateFloatAsState(targetValue = rotationAngle, label = "")
+    var _rotationAngle by remember { mutableFloatStateOf(0f) }
+    val rotationAngle by animateFloatAsState(_rotationAngle, tween(durationMillis = 700), label = "")
     var isClockwise by remember { mutableStateOf(true) }
-    var painter by remember { mutableStateOf(iconPainter) }
-    var isIconReplaced by remember { mutableStateOf(false) }
 
     IconButton(
         onClick = {
             if (isAnimated) {
                 if (isClockwise) {
-                    rotationAngle += 360f
+                    _rotationAngle += 360f
                 } else {
-                    rotationAngle -= 360f
+                    _rotationAngle -= 360f
                 }
                 isClockwise = !isClockwise
-            }
-            if (isReplaceable) {
-                painter = if (isIconReplaced) iconPainter else replacementPainter
-                isIconReplaced = !isIconReplaced
             }
             onClick()
         },
@@ -58,10 +52,10 @@ fun AppIconButton(
         enabled = isEnabled
     ) {
         Icon(
-            painter = painter,
+            painter = iconPainter,
             contentDescription = contentDescription,
             tint = tint,
-            modifier = Modifier.graphicsLayer(rotationZ = if (isAnimated) rotation else 0f)
+            modifier = Modifier.graphicsLayer(rotationZ = if (isAnimated) rotationAngle else 0f)
         )
     }
 }

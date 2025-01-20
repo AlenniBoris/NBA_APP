@@ -1,0 +1,33 @@
+package com.alenniboris.nba_app.data.source.remote.api.nba
+
+object NbaApiValues {
+
+    const val BASE_URL_NBA_API = "https://v1.basketball.api-sports.io/"
+
+    const val PLAYER_REQUEST = "players"
+
+    const val GAME_REQUEST = "games"
+
+    const val TEAM_REQUEST = "teams"
+
+    const val SEASON_REQUEST = "seasons"
+
+    const val COUNTRY_REQUEST = "countries"
+
+    const val LEAGUE_REQUEST = "leagues"
+
+    const val DATE_PARAMETER = "date"
+
+    const val LEAGUE_PARAMETER = "league"
+
+    const val SEASON_PARAMETER = "season"
+
+    const val COUNTRY_ID_PARAMETER = "country_id"
+
+    const val SEARCH_PARAMETER = "search"
+
+    const val COUNTRY_PARAMETER = "country"
+
+    const val TEAM_PARAMETER = "team"
+
+}

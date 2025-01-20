@@ -4,7 +4,7 @@ import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
-val IAppDispatchersModule = module {
+val DispatchersModule = module {
     single<IAppDispatchers> {
         object : IAppDispatchers {
             override val Main = Dispatchers.Main

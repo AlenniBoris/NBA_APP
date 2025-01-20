@@ -1,10 +1,10 @@
 package com.alenniboris.nba_app.di
 
-import com.alenniboris.nba_app.data.repository.AuthenticationRepositoryImpl
+import com.alenniboris.nba_app.data.repository.authentication.AuthenticationRepositoryImpl
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
 import com.alenniboris.nba_app.domain.manager.impl.AuthenticationManagerImpl
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
-import com.alenniboris.nba_app.domain.repository.IAuthenticationRepository
+import com.alenniboris.nba_app.domain.repository.authentication.IAuthenticationRepository
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.dsl.module
 

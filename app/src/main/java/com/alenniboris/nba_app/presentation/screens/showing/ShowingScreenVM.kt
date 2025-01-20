@@ -2,6 +2,7 @@ package com.alenniboris.nba_app.presentation.screens.showing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
@@ -9,6 +10,9 @@ import com.alenniboris.nba_app.domain.model.GameModelDomain
 import com.alenniboris.nba_app.domain.model.IStateModel
 import com.alenniboris.nba_app.domain.model.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.entity.GameEntityModelDomain
+import com.alenniboris.nba_app.domain.model.entity.PlayerEntityModelDomain
+import com.alenniboris.nba_app.domain.model.entity.TeamEntityModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
@@ -24,13 +28,20 @@ import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.Category
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.PersonalBtnAction
 import com.alenniboris.nba_app.presentation.screens.showing.state.ShowingState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ShowingScreenVM(
     private val authenticationManager: IAuthenticationManager,
     private val nbaApiManager: INbaApiManager
@@ -45,6 +56,53 @@ class ShowingScreenVM(
     private var _jobLoadingElements: Job? = null
     private var _jobLoadingLeagues: Job? = null
     private var _jobLoadingTeams: Job? = null
+
+    init {
+        viewModelScope.launch {
+            _screenState.map {
+                it.currentCategory
+            }
+                .flatMapLatest { category ->
+                    when (category) {
+                        Category.Games -> nbaApiManager.followedGames
+                        Category.Teams -> nbaApiManager.followedTeams
+                        Category.Players -> nbaApiManager.followedPlayers
+                    }
+                }
+                .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
+                .distinctUntilChanged()
+                .collect { selected ->
+
+                    val ids = selected.map {
+                        when (it) {
+                            is GameEntityModelDomain -> it.gameId
+                            is PlayerEntityModelDomain -> it.playerId
+                            is TeamEntityModelDomain -> it.teamId
+                        }
+                    }
+
+                    _screenState.update { state ->
+                        state.copy(
+                            elements = state.elements.map { el ->
+                                if (ids.contains(el.id)) {
+                                    when (el) {
+                                        is GameModelDomain -> el.copy(isFollowed = true)
+                                        is PlayerModelDomain -> el.copy(isFollowed = true)
+                                        is TeamModelDomain -> el.copy(isFollowed = true)
+                                    }
+                                } else {
+                                    when (el) {
+                                        is GameModelDomain -> el.copy(isFollowed = false)
+                                        is PlayerModelDomain -> el.copy(isFollowed = false)
+                                        is TeamModelDomain -> el.copy(isFollowed = false)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                }
+        }
+    }
 
     init {
         makeSearchRequest()
@@ -213,42 +271,23 @@ class ShowingScreenVM(
     }
 
     private fun proceedElementActionWithFollowedDatabase(element: IStateModel) {
-        if (!element.isFollowed) {
-            addElementToFollowedDatabase(element)
-        } else {
-            removeElementFromFollowedDatabase(element)
-        }
-    }
+        viewModelScope.launch {
+            val followingActionResult =
+                nbaApiManager.proceedElementIsFollowingUpdate(element)
+            when (followingActionResult) {
+                is CustomResultModelDomain.Success ->
+                    _event.emit(
+                        IShowingScreenEvent.ShowToastMessage(
+                            R.string.action_to_followed_successful
+                        )
+                    )
 
-    private fun addElementToFollowedDatabase(element: IStateModel) {
-        _screenState.update { state ->
-            state.copy(
-                elements = state.elements.map { currentElement ->
-                    if (currentElement == element) {
-                        when (currentElement) {
-                            is GameModelDomain -> currentElement.copy(isFollowed = true)
-                            is PlayerModelDomain -> currentElement.copy(isFollowed = true)
-                            is TeamModelDomain -> currentElement.copy(isFollowed = true)
-                        }
-                    } else currentElement
-                }
-            )
-        }
-    }
+                is CustomResultModelDomain.Error ->
+                    _event.emit(
+                        IShowingScreenEvent.ShowToastMessage(followingActionResult.exception.toUiMessageString())
+                    )
 
-    private fun removeElementFromFollowedDatabase(element: IStateModel) {
-        _screenState.update { state ->
-            state.copy(
-                elements = state.elements.map { currentElement ->
-                    if (currentElement == element) {
-                        when (currentElement) {
-                            is GameModelDomain -> currentElement.copy(isFollowed = false)
-                            is PlayerModelDomain -> currentElement.copy(isFollowed = false)
-                            is TeamModelDomain -> currentElement.copy(isFollowed = false)
-                        }
-                    } else currentElement
-                }
-            )
+            }
         }
     }
 
@@ -626,7 +665,7 @@ class ShowingScreenVM(
                 when (teamsResult) {
                     is CustomResultModelDomain.Success -> {
 
-                        val newList = teamsResult.result.map { it as TeamModelDomain }
+                        val newList = teamsResult.result.mapNotNull { it as? TeamModelDomain }
 
                         _screenState.update { state ->
                             state.copy(

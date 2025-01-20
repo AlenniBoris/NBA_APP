@@ -58,6 +58,7 @@
     <string name="nothing_found">Nothing found</string>
     <string name="empty_leagues_text">Choose country</string>
     <string name="empty_teams_text">Choose league</string>
+    <string name="action_to_followed_successful">Operation successful</string>
 
     <string name="games_category">Games</string>
     <string name="teams_category">Teams</string>
@@ -94,5 +95,8 @@
     <string name="request_country_missing">Country should be selected for this request</string>
     <string name="request_query_size_to_small">Your query should contain more than 3 characters</string>
     <string name="request_team_season_smth_is_empty">Your haven\'t chosen team or season. check your data</string>
+    <string name="getting_followed_games_exception">Sorry, we can`t load your followed games. Reopen the app</string>
+    <string name="getting_followed_teams_exception">Sorry, we can`t load your followed teams. Reopen the app</string>
+    <string name="getting_followed_players_exception">Sorry, we can`t load your followed players. Reopen the app</string>
 
 </resources>

@@ -4,19 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
+import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
-import com.alenniboris.nba_app.presentation.mappers.toUserUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainActivityVM(
-    private val authenticationManager: IAuthenticationManager
+    private val authenticationManager: IAuthenticationManager,
+    private val nbaApiManager: INbaApiManager
 ) : ViewModel() {
 
     private val _userAuthenticationState = MutableStateFlow(
-        authenticationManager.user.value?.toUserUiModel() != null
+        authenticationManager.user.value != null
     )
     val userAuthenticationStatus = _userAuthenticationState.asStateFlow()
 

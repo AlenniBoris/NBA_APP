@@ -14,10 +14,12 @@ class AppApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@AppApplication)
             modules(
+                ManagerModule,
                 ViewModels,
                 AuthModule,
-                IAppDispatchersModule,
-                NetworkModule
+                DispatchersModule,
+                NetworkModule,
+                DatabaseModule
             )
         }
     }

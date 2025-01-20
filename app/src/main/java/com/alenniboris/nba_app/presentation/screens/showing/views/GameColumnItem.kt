@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -40,18 +41,25 @@ import com.alenniboris.nba_app.presentation.uikit.theme.categoryItemColor
 import com.alenniboris.nba_app.presentation.uikit.theme.categoryItemTextColor
 import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 import com.alenniboris.nba_app.presentation.uikit.views.AppItemPictureSection
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 @Preview
 fun GameColumnItem(
     modifier: Modifier = Modifier,
     element: GameModelDomain? = null,
-    isElementFollowed: Boolean = false,
     onGameCardClicked: () -> Unit = {},
     onFollowGameButtonClicked: () -> Unit = {}
 ) {
 
     element?.let {
+
+        val iconPainterRes = remember(element.isFollowed) {
+            if (element.isFollowed) {
+                R.drawable.icon_in_followed
+            } else R.drawable.icon_not_in_followed
+        }
 
         Row(
             modifier = modifier,
@@ -60,14 +68,8 @@ fun GameColumnItem(
 
             AppIconButton(
                 isAnimated = true,
-                isReplaceable = true,
                 onClick = onFollowGameButtonClicked,
-                iconPainter =
-                if (isElementFollowed) painterResource(R.drawable.icon_in_followed)
-                else painterResource(R.drawable.icon_not_in_followed),
-                replacementPainter =
-                if (isElementFollowed) painterResource(R.drawable.icon_not_in_followed)
-                else painterResource(R.drawable.icon_in_followed),
+                iconPainter = painterResource(iconPainterRes),
                 tint = categoryItemTextColor,
                 contentDescription = stringResource(R.string.following_icon_description)
             )
@@ -90,8 +92,18 @@ fun GameColumnItem(
 
                 GameItemTextSection(
                     modifier = Modifier.width(IntrinsicSize.Min),
-                    dateOfTheGame = element.dateOfTheGame,
-                    beginningTimeOfTheGame = element.startingTime,
+                    dateOfTheGame = remember(element) {
+                        element.dateOfTheGame.let {
+                            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                .format(it)
+                        }
+                    },
+                    beginningTimeOfTheGame = remember(element) {
+                        element.dateOfTheGame.let {
+                            SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                                .format(it)
+                        }
+                    },
                     homeTeamScore = element.homeScores?.totalScore
                         ?: stringResource(R.string.nan_text),
                     visitorsTeamScore = element.visitorsScores?.totalScore
@@ -234,7 +246,6 @@ fun Preview(
 
         AppIconButton(
             isAnimated = true,
-            isReplaceable = true,
             onClick = { },
             iconPainter =
             painterResource(R.drawable.icon_in_followed),

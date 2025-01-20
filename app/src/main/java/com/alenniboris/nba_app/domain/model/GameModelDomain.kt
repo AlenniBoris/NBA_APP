@@ -1,12 +1,12 @@
 package com.alenniboris.nba_app.domain.model
 
 import com.alenniboris.nba_app.domain.utils.GameStatus
+import java.util.Date
 
 data class GameModelDomain(
     override val id: Int,
     override val isFollowed: Boolean,
-    val dateOfTheGame: String,
-    val startingTime: String,
+    val dateOfTheGame: Date,
     val gameStage: String?,
     val weekOfTheGame: String?,
     val venueOfTheGame: String?,
@@ -25,4 +25,3 @@ data class GameModelDomain(
     val visitorsTeam: TeamModelDomain,
     val visitorsScores: ScoresModelDomain?,
 ) : IStateModel
-

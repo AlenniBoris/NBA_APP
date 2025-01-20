@@ -4,7 +4,7 @@ import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.exception.AuthenticationExceptionModelDomain
-import com.alenniboris.nba_app.domain.repository.IAuthenticationRepository
+import com.alenniboris.nba_app.domain.repository.authentication.IAuthenticationRepository
 import kotlinx.coroutines.withContext
 
 class AuthenticationManagerImpl(

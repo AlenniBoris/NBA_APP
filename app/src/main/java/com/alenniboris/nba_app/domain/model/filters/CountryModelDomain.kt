@@ -5,4 +5,13 @@ data class CountryModelDomain(
     override val name: String,
     val code: String?,
     val flag: String?
-) : IShowingFilterModel
+) : IShowingFilterModel{
+    constructor(
+        name: String
+    ): this(
+        id = -1,
+        name = name,
+        code = null,
+        flag = null
+    )
+}

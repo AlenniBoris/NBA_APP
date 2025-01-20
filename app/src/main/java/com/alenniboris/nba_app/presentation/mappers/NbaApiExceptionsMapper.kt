@@ -16,4 +16,13 @@ fun NbaApiExceptionModelDomain.toUiMessageString(): Int = when (this) {
 
     NbaApiExceptionModelDomain.LeagueOrTeamIsNotChosen -> R.string.request_team_season_smth_is_empty
 
+    NbaApiExceptionModelDomain.DeletingElementError -> R.string.request_team_season_smth_is_empty
+
+    NbaApiExceptionModelDomain.SavingElementError -> R.string.request_team_season_smth_is_empty
+
+    NbaApiExceptionModelDomain.ErrorGettingFollowedGames -> R.string.getting_followed_games_exception
+
+    NbaApiExceptionModelDomain.ErrorGettingFollowedPlayers -> R.string.getting_followed_players_exception
+
+    NbaApiExceptionModelDomain.ErrorGettingFollowedTeams -> R.string.getting_followed_teams_exception
 }

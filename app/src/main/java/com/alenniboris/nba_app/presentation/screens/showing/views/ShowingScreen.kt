@@ -6,11 +6,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -45,8 +43,8 @@ import com.alenniboris.nba_app.domain.model.IStateModel
 import com.alenniboris.nba_app.domain.model.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
-import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestType
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestParams
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestType
 import com.alenniboris.nba_app.domain.model.params.api.nba.toRequestString
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenEvent
@@ -360,7 +358,6 @@ fun ShowElementsUi(
                                 )
                                 .padding(GameColumnItemHorizontalPadding),
                             element = element,
-                            isElementFollowed = followedElementsIds.contains(element.id),
                             onFollowGameButtonClicked = {
                                 proceedIntentAction(
                                     IShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
@@ -385,8 +382,7 @@ fun ShowElementsUi(
                                 )
                                 .padding(GameColumnItemHorizontalPadding),
                             element = element,
-                            isElementFollowed = followedElementsIds.contains(element.id),
-                            onFollowGameButtonClicked = {
+                            onFollowTeamButtonClicked = {
                                 proceedIntentAction(
                                     IShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
                                         element
@@ -410,8 +406,7 @@ fun ShowElementsUi(
                                 )
                                 .padding(GameColumnItemHorizontalPadding),
                             element = element,
-                            isElementFollowed = followedElementsIds.contains(element.id),
-                            onFollowGameButtonClicked = {
+                            onFollowPlayerButtonClicked = {
                                 proceedIntentAction(
                                     IShowingScreenUpdateIntent.ProceedElementActionWithFollowedDatabase(
                                         element

@@ -8,17 +8,9 @@ val EnterScreenPicture
         ThemeChooser.ThemeMode.DARK -> R.drawable.basketball_pl_dark
     }
 
-val PasswordShowPicture
-    get() = when (ThemeChooser.themeMode.value) {
-        ThemeChooser.ThemeMode.LIGHT -> R.drawable.password_opened_light_theme
-        ThemeChooser.ThemeMode.DARK -> R.drawable.password_opened_dark_theme
-    }
+val PasswordShowPicture = R.drawable.password_opened_light_theme
 
-val PasswordHidePicture
-    get() = when (ThemeChooser.themeMode.value) {
-        ThemeChooser.ThemeMode.LIGHT -> R.drawable.password_closed_light_theme
-        ThemeChooser.ThemeMode.DARK -> R.drawable.password_closed_dark_theme
-    }
+val PasswordHidePicture = R.drawable.password_closed_light_theme
 
 val TopBarDropdownMenuOpeningButton = R.drawable.basketball_ball
 
