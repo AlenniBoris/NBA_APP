@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alenniboris.nba_app.presentation.screens.NavGraphs
 import com.alenniboris.nba_app.presentation.screens.destinations.EnterScreenDestination
+import com.alenniboris.nba_app.data.source.local.database.test.TestUi
 import com.alenniboris.nba_app.presentation.screens.destinations.ShowingScreenDestination
 import com.alenniboris.nba_app.presentation.uikit.theme.NbaAppTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -45,7 +46,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainActivityShow()
+                    TestUi()
+//                    MainActivityShow()
                 }
             }
         }
