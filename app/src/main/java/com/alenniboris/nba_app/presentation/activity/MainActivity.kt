@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.alenniboris.nba_app.data.source.local.database.test.TestUi
 import com.alenniboris.nba_app.presentation.navigation.NavigationGraph
 import com.alenniboris.nba_app.presentation.uikit.theme.NBA_APPTheme
 import kotlinx.coroutines.flow.filterIsInstance
@@ -37,7 +38,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainActivityShow()
+                    TestUi()
+//                    MainActivityShow()
                 }
             }
         }
