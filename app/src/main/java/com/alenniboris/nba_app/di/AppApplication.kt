@@ -1,6 +1,7 @@
 package com.alenniboris.nba_app.di
 
 import android.app.Application
+import com.alenniboris.nba_app.data.source.local.database.test.TestModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -14,6 +15,7 @@ class AppApplication : Application() {
             androidLogger(Level.DEBUG)
             androidContext(this@AppApplication)
             modules(
+                TestModule,
                 ManagerModule,
                 ViewModels,
                 AuthModule,
