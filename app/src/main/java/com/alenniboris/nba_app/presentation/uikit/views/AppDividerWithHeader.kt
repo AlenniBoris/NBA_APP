@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.alenniboris.nba_app.presentation.uikit.theme.CustomDividerHeight
@@ -22,7 +23,8 @@ import com.alenniboris.nba_app.presentation.uikit.theme.rowFilterTextColor
 @Composable
 @Preview
 fun AppDividerWithHeader(
-    headerText: String = ""
+    headerText: String = "",
+    insidesColor: Color = rowFilterTextColor
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -32,12 +34,12 @@ fun AppDividerWithHeader(
             modifier = Modifier
                 .width(CustomDividerWidth)
                 .height(CustomDividerHeight)
-                .background(rowFilterTextColor)
+                .background(insidesColor)
         )
         Text(
             modifier = Modifier.padding(CustomDividerStartPadding),
             text = headerText,
-            color = rowFilterTextColor,
+            color = insidesColor,
             style = bodyStyle.copy(
                 fontSize = 20.sp
             )
@@ -47,7 +49,7 @@ fun AppDividerWithHeader(
                 .padding(CustomDividerStartPadding)
                 .fillMaxWidth()
                 .height(CustomDividerHeight)
-                .background(rowFilterTextColor)
+                .background(insidesColor)
         )
     }
 }

@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.alenniboris.nba_app.presentation.screens.enter.views.EnterScreen
+import com.alenniboris.nba_app.presentation.screens.followed.views.FollowedScreen
 import com.alenniboris.nba_app.presentation.screens.showing.views.ShowingScreen
 
 @Composable
@@ -17,15 +18,23 @@ fun NavigationGraph(
         navController = navController,
         startDestination =
         if (!isUserAuthenticated) Route.EnterScreenRoute.route
-        else Route.GamesScreenRoute.route,
+        else Route.ShowingScreenRoute.route,
     ) {
 
         composable(Route.EnterScreenRoute.route) {
             EnterScreen()
         }
 
-        composable(Route.GamesScreenRoute.route) {
-            ShowingScreen()
+        composable(Route.ShowingScreenRoute.route) {
+            ShowingScreen(
+                navHostController = navController
+            )
+        }
+
+        composable(Route.FollowedScreenRoute.route) {
+            FollowedScreen(
+                navHostController = navController
+            )
         }
 
     }

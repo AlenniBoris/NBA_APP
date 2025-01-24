@@ -99,3 +99,9 @@ val EmptyScreenFontSize = 25.sp
 val RequestTypeDialogShape = RoundedCornerShape(size = 40.dp)
 val RequestTypeDialogTopPadding = PaddingValues(top = 15.dp)
 val RequestTypeDialogFontSize = 15.sp
+
+// PAger
+val pagerCurrentPagePadding = PaddingValues(all = 2.dp)
+val pagerCurrentPageCircleSize = 16.dp
+val pagerSectionPadding = PaddingValues(top = 15.dp)
+val pagerElementsEmptyHeight = 40.dp

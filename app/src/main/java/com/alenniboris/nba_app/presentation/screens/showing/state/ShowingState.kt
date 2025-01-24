@@ -3,11 +3,11 @@ package com.alenniboris.nba_app.presentation.screens.showing.state
 import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestParams
 import com.alenniboris.nba_app.domain.model.IStateModel
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.Category
+import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 
 
 data class ShowingState(
-    val currentCategory: Category = Category.Games,
+    val currentCategory: NbaApiCategory = NbaApiCategory.Games,
     val elements: List<IStateModel> = emptyList(),
     val isLoading: Boolean = false,
     val filter: ShowingFilter = ShowingFilter(),

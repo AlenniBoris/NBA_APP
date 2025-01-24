@@ -6,6 +6,8 @@ sealed class Route(
 
     data object EnterScreenRoute : Route("enter_screen")
 
-    data object GamesScreenRoute : Route("games_screen")
+    data object ShowingScreenRoute : Route("showing_screen")
+
+    data object FollowedScreenRoute : Route("followed_screen")
 
 }

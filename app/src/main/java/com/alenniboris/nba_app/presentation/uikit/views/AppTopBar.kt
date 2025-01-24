@@ -1,9 +1,8 @@
 package com.alenniboris.nba_app.presentation.uikit.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,27 +29,29 @@ fun AppTopBar(
     modifier: Modifier = Modifier,
     headerTextString: String = "",
     isLeftBtnAnimated: Boolean = false,
-    leftBtnPainter: Painter = ColorPainter(appColor),
+    leftBtnPainter: Painter? = null,
     onLeftBtnClicked: () -> Unit = {},
     isRightBtnAnimated: Boolean = false,
-    rightBtnPainter: Painter = ColorPainter(appColor),
+    rightBtnPainter: Painter? = null,
     onRightBtnClicked: () -> Unit = {},
 ) {
-    Row(
+    Box(
         modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        AppIconButton(
-            isAnimated = isLeftBtnAnimated,
-            iconPainter = leftBtnPainter,
-            onClick = onLeftBtnClicked,
-            tint = appTopBarElementsColor,
-            contentDescription = stringResource(R.string.top_bar_left_btn_description)
-        )
+        leftBtnPainter?.let {
+            AppIconButton(
+                modifier = Modifier.align(Alignment.CenterStart),
+                isAnimated = isLeftBtnAnimated,
+                iconPainter = leftBtnPainter,
+                onClick = onLeftBtnClicked,
+                tint = appTopBarElementsColor,
+                contentDescription = stringResource(R.string.top_bar_left_btn_description)
+            )
+        }
 
         Text(
+            modifier = Modifier.align(Alignment.Center),
             text = headerTextString,
             color = appTopBarElementsColor,
             style = titleStyle.copy(
@@ -60,13 +60,16 @@ fun AppTopBar(
             )
         )
 
-        AppIconButton(
-            isAnimated = isRightBtnAnimated,
-            iconPainter = rightBtnPainter,
-            onClick = onRightBtnClicked,
-            tint = appTopBarElementsColor,
-            contentDescription = stringResource(R.string.top_bar_right_btn_description)
-        )
+        rightBtnPainter?.let {
+            AppIconButton(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                isAnimated = isRightBtnAnimated,
+                iconPainter = rightBtnPainter,
+                onClick = onRightBtnClicked,
+                tint = appTopBarElementsColor,
+                contentDescription = stringResource(R.string.top_bar_right_btn_description)
+            )
+        }
 
     }
 }
@@ -98,6 +101,17 @@ fun UiPreview() {
             isRightBtnAnimated = true,
             leftBtnPainter = painterResource(R.drawable.basketball_ball),
             rightBtnPainter = painterResource(R.drawable.icon_in_followed)
+        )
+
+        Spacer(Modifier.height(10.dp))
+
+        AppTopBar(
+            modifier = Modifier
+                .background(appColor)
+                .fillMaxWidth()
+                .padding(TBShowingScreenPadding),
+            headerTextString = "hello",
+            isLeftBtnAnimated = true,
         )
     }
 }

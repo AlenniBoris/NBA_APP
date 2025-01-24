@@ -1,7 +1,6 @@
 package com.alenniboris.nba_app.presentation.uikit.views
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -24,16 +23,21 @@ import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 @Composable
 @Preview
 fun AppIconButton(
+    modifier: Modifier = Modifier,
     isAnimated: Boolean = false,
     isEnabled: Boolean = true,
     onClick: () -> Unit = {},
     iconPainter: Painter = ColorPainter(appColor),
-    tint: Color = Color(0xff050300),
+    tint: Color = appColor,
     contentDescription: String = ""
 ) {
 
     var _rotationAngle by remember { mutableFloatStateOf(0f) }
-    val rotationAngle by animateFloatAsState(_rotationAngle, tween(durationMillis = 700), label = "")
+    val rotationAngle by animateFloatAsState(
+        _rotationAngle,
+        tween(durationMillis = 700),
+        label = ""
+    )
     var isClockwise by remember { mutableStateOf(true) }
 
     IconButton(
@@ -48,7 +52,7 @@ fun AppIconButton(
             }
             onClick()
         },
-        modifier = Modifier.clip(CircleShape),
+        modifier = modifier.clip(CircleShape),
         enabled = isEnabled
     ) {
         Icon(

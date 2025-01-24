@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.Category
+import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.screens.showing.state.ShowingFilter
 import com.alenniboris.nba_app.presentation.uikit.theme.FilterDragHandleHeight
 import com.alenniboris.nba_app.presentation.uikit.theme.FilterDragHandlePadding
@@ -50,7 +50,7 @@ fun ShowingScreenFilter(
     onDismiss: () -> Unit = {},
     onAccept: () -> Unit = {},
     sheetState: SheetState = rememberModalBottomSheetState(),
-    currentCategory: Category = Category.Games,
+    currentCategory: NbaApiCategory = NbaApiCategory.Games,
     mutableFilter: ShowingFilter = ShowingFilter(),
     proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
@@ -123,7 +123,7 @@ fun ShowingScreenFilter(
 @Preview
 private fun FilterColumn(
     modifier: Modifier = Modifier,
-    currentCategory: Category = Category.Games,
+    currentCategory: NbaApiCategory = NbaApiCategory.Games,
     mutableFilter: ShowingFilter = ShowingFilter(),
     proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
@@ -132,7 +132,7 @@ private fun FilterColumn(
     ) {
 
         when (currentCategory) {
-            Category.Games -> GamesFilters(
+            NbaApiCategory.Games -> GamesFilters(
                 currentDateTime = mutableFilter.selectedDate,
                 currentDateTimeText = mutableFilter.selectedDateText,
 
@@ -154,7 +154,7 @@ private fun FilterColumn(
                 proceedIntentAction = proceedIntentAction
             )
 
-            Category.Teams -> TeamsFilters(
+            NbaApiCategory.Teams -> TeamsFilters(
                 seasons = mutableFilter.listOfSeasons,
                 currentSelectedSeason = mutableFilter.selectedSeason,
                 isSeasonsLoading = mutableFilter.isSeasonsLoading,
@@ -171,7 +171,7 @@ private fun FilterColumn(
                 proceedIntentAction = proceedIntentAction
             )
 
-            Category.Players -> PlayersFilters(
+            NbaApiCategory.Players -> PlayersFilters(
                 seasons = mutableFilter.listOfSeasons,
                 currentSelectedSeason = mutableFilter.selectedSeason,
                 isSeasonsLoading = mutableFilter.isSeasonsLoading,

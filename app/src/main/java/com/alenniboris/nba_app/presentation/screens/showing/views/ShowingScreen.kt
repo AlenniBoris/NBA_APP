@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.GameModelDomain
 import com.alenniboris.nba_app.domain.model.IStateModel
@@ -46,11 +47,13 @@ import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsMode
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestParams
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestType
 import com.alenniboris.nba_app.domain.model.params.api.nba.toRequestString
+import com.alenniboris.nba_app.domain.utils.NbaApiCategory
+import com.alenniboris.nba_app.presentation.mappers.toStringMessage
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
+import com.alenniboris.nba_app.presentation.navigation.Route
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenEvent
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.Category
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.PersonalBtnAction
 import com.alenniboris.nba_app.presentation.screens.showing.state.ShowingState
 import com.alenniboris.nba_app.presentation.uikit.theme.FloatingActionButtonShape
@@ -81,7 +84,9 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ShowingScreen() {
+fun ShowingScreen(
+    navHostController: NavHostController
+) {
 
     val showingScreenVM: ShowingScreenVM = koinViewModel<ShowingScreenVM>()
 
@@ -113,10 +118,7 @@ fun ShowingScreen() {
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToUserDetailsScreen>().collect {
-                toastMessage.cancel()
-                toastMessage =
-                    Toast.makeText(context, "Navigation", Toast.LENGTH_SHORT)
-                toastMessage.show()
+                navHostController.navigate(Route.FollowedScreenRoute.route)
             }
         }
     }
@@ -333,7 +335,7 @@ fun RequestTypeChooserDialog(
 @Composable
 @Preview
 fun ShowElementsUi(
-    category: Category = Category.Games,
+    category: NbaApiCategory = NbaApiCategory.Games,
     elements: List<IStateModel> = emptyList(),
     followedElementsIds: List<Int> = emptyList(),
     proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
@@ -345,7 +347,7 @@ fun ShowElementsUi(
     ) {
         items(elements) { element ->
             when (category) {
-                Category.Games ->
+                NbaApiCategory.Games ->
                     (element as? GameModelDomain)?.let {
                         GameColumnItem(
                             modifier = Modifier
@@ -369,7 +371,7 @@ fun ShowElementsUi(
                     }
 
 
-                Category.Teams ->
+                NbaApiCategory.Teams ->
                     (element as? TeamModelDomain)?.let {
                         TeamColumnItem(
                             modifier = Modifier
@@ -393,7 +395,7 @@ fun ShowElementsUi(
                     }
 
 
-                Category.Players ->
+                NbaApiCategory.Players ->
                     (element as? PlayerModelDomain)?.let {
                         PlayerColumnItem(
                             modifier = Modifier
@@ -432,7 +434,7 @@ private fun TopBarUI(
 
     val listOfCategories by remember {
         mutableStateOf(
-            Category.entries.toList()
+            NbaApiCategory.entries.toList()
         )
     }
     val listOfPersonalActions by remember {
@@ -480,7 +482,7 @@ private fun TopBarUI(
                 },
                 listOfItems = listOfCategories.map { category ->
                     ActionImplementedUiModel(
-                        name = category.name,
+                        name = stringResource(category.toStringMessage()),
                         onClick = {
                             proceedIntentAction(
                                 IShowingScreenUpdateIntent.UpdateCurrentStateToAnother(

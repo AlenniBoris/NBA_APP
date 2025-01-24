@@ -18,8 +18,6 @@ data class TeamEntityModelData(
     val isNational: Boolean?,
     @ColumnInfo("country_name")
     val countryName: String?,
-    @ColumnInfo("team_logo")
-    val logo: String?,
     @PrimaryKey(autoGenerate = false)
     val id: String = teamId.toString() + userId
 )
@@ -31,7 +29,6 @@ fun TeamModelDomain.toEntityModel(userId: String): TeamEntityModelData =
         teamName = this.name,
         isNational = this.isNational,
         countryName = this.country?.name,
-        logo = this.logo
     )
 
 fun TeamEntityModelData.toModelDomain(): TeamEntityModelDomain =
@@ -42,5 +39,4 @@ fun TeamEntityModelData.toModelDomain(): TeamEntityModelDomain =
         teamName = this.teamName,
         isNational = this.isNational,
         countryName = this.countryName,
-        logo = this.logo
     )

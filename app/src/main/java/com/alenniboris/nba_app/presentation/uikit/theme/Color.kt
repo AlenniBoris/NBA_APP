@@ -207,3 +207,20 @@ val emptyScreenIconColor
         ThemeChooser.ThemeMode.LIGHT -> EmptyScreenIconColorLight
         ThemeChooser.ThemeMode.DARK -> EmptyScreenIconColorDark
     }
+
+// Pager
+private val PagerSelectedColorLight = Color(0xffffffff)
+private val PagerSelectedColorDark = Color(0xfff77e56)
+val pagerSelectedColor
+    get() = when(ThemeChooser.themeMode.value){
+        ThemeChooser.ThemeMode.LIGHT -> PagerSelectedColorLight
+        ThemeChooser.ThemeMode.DARK -> PagerSelectedColorDark
+    }
+
+private val PagerNotSelectedColorLight = Color(0xff050300)
+private val PagerNotSelectedColorDark = Color(0xffffffff)
+val pagerNotSelectedColor
+    get() = when(ThemeChooser.themeMode.value){
+        ThemeChooser.ThemeMode.LIGHT -> PagerNotSelectedColorLight
+        ThemeChooser.ThemeMode.DARK -> PagerNotSelectedColorDark
+    }

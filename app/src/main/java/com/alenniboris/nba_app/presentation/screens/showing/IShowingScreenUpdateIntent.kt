@@ -7,6 +7,7 @@ import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestType
 import com.alenniboris.nba_app.domain.utils.GameStatus
+import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import java.util.Date
 
 interface IShowingScreenUpdateIntent {
@@ -25,7 +26,7 @@ interface IShowingScreenUpdateIntent {
 
     data class UpdateSelectedLeague(val newLeague: LeagueModelDomain) : IShowingScreenUpdateIntent
 
-    data class UpdateCurrentStateToAnother(val category: ShowingScreenValues.Category) :
+    data class UpdateCurrentStateToAnother(val category: NbaApiCategory) :
         IShowingScreenUpdateIntent
 
     data class ProceedPersonalAction(val action: ShowingScreenValues.PersonalBtnAction) :

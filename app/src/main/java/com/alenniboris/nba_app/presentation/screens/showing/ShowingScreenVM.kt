@@ -25,7 +25,7 @@ import com.alenniboris.nba_app.domain.model.params.api.nba.TeamRequestParamsMode
 import com.alenniboris.nba_app.domain.utils.GameStatus
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
-import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.Category
+import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.PersonalBtnAction
 import com.alenniboris.nba_app.presentation.screens.showing.state.ShowingState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,9 +64,9 @@ class ShowingScreenVM(
             }
                 .flatMapLatest { category ->
                     when (category) {
-                        Category.Games -> nbaApiManager.followedGames
-                        Category.Teams -> nbaApiManager.followedTeams
-                        Category.Players -> nbaApiManager.followedPlayers
+                        NbaApiCategory.Games -> nbaApiManager.followedGames
+                        NbaApiCategory.Teams -> nbaApiManager.followedTeams
+                        NbaApiCategory.Players -> nbaApiManager.followedPlayers
                     }
                 }
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -423,12 +423,12 @@ class ShowingScreenVM(
         }
     }
 
-    private fun updateCurrentStateToAnother(category: Category) {
+    private fun updateCurrentStateToAnother(category: NbaApiCategory) {
         _screenState.update { state ->
             state.copy(
                 currentCategory = category,
                 requestParams = when (category) {
-                    Category.Games -> {
+                    NbaApiCategory.Games -> {
                         GameRequestParamsModelDomain(
                             requestedDate = _screenState.value.filter.selectedDate,
                             requestedSeason = _screenState.value.filter.selectedSeason,
@@ -436,7 +436,7 @@ class ShowingScreenVM(
                         )
                     }
 
-                    Category.Teams -> {
+                    NbaApiCategory.Teams -> {
                         TeamRequestParamsModelDomain(
                             requestedQuery = _screenState.value.filter.enteredQuery,
                             requestedSeason = _screenState.value.filter.selectedSeason,
@@ -445,7 +445,7 @@ class ShowingScreenVM(
                         )
                     }
 
-                    Category.Players -> {
+                    NbaApiCategory.Players -> {
                         PlayerRequestParamsModelDomain(
                             requestedQuery = _screenState.value.filter.enteredQuery,
                             requestedSeason = _screenState.value.filter.selectedSeason,

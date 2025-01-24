@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 
 class MainActivityVM(
     private val authenticationManager: IAuthenticationManager,
-    private val nbaApiManager: INbaApiManager
 ) : ViewModel() {
 
     private val _userAuthenticationState = MutableStateFlow(

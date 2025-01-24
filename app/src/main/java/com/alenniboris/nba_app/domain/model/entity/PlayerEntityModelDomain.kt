@@ -1,5 +1,7 @@
 package com.alenniboris.nba_app.domain.model.entity
 
+import com.alenniboris.nba_app.domain.model.PlayerModelDomain
+
 data class PlayerEntityModelDomain(
     val playerId: Int,
     val userId: String,
@@ -9,3 +11,13 @@ data class PlayerEntityModelDomain(
     val playerNumber: String?,
     val id: String
 ) : IEntityModelDomain
+
+fun PlayerEntityModelDomain.toPlayerModelDomain() =
+    PlayerModelDomain(
+        id = this.playerId,
+        isFollowed = true,
+        name = this.playerName,
+        country = this.countryName,
+        position = this.playerPosition,
+        number = this.playerNumber
+    )

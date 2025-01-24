@@ -27,6 +27,7 @@ fun AppItemPictureSection(
     pictureAlignment: Alignment.Horizontal = Alignment.Start,
     name: String? = "name",
     logoUrl: String? = "11",
+    isPictureNeeded: Boolean = true
 ) {
     Column(
         modifier = modifier.padding(GameColumnItemPictureSectionVerticalMargin),
@@ -43,14 +44,16 @@ fun AppItemPictureSection(
             color = categoryItemTextColor
         )
 
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(pictureAlignment),
-            model = logoUrl,
-            placeholder = painterResource(Placeholder),
-            error = painterResource(Placeholder),
-            contentDescription = "Team picture"
-        )
+        if (isPictureNeeded){
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(pictureAlignment),
+                model = logoUrl,
+                placeholder = painterResource(Placeholder),
+                error = painterResource(Placeholder),
+                contentDescription = "Team picture"
+            )
+        }
     }
 }

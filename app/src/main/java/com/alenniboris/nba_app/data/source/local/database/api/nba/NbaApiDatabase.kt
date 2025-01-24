@@ -1,9 +1,12 @@
 package com.alenniboris.nba_app.data.source.local.database.api.nba
 
 import android.app.Application
+import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.AutoMigrationSpec
 import com.alenniboris.nba_app.data.source.local.dao.api.nba.INbaGamesDao
 import com.alenniboris.nba_app.data.source.local.dao.api.nba.INbaPlayersDao
 import com.alenniboris.nba_app.data.source.local.dao.api.nba.INbaTeamsDao
@@ -18,14 +21,22 @@ import com.alenniboris.nba_app.data.source.local.model.api.nba.TeamEntityModelDa
         PlayerEntityModelData::class,
         TeamEntityModelData::class
     ],
-    version = 1,
-    exportSchema = false
+    version = 2,
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2, spec = NbaApiDatabase.MigrationToVersion2::class)
+    ]
 )
 abstract class NbaApiDatabase : RoomDatabase() {
 
     abstract val nbaApiGamesDao: INbaGamesDao
     abstract val nbaApiTeamsDao: INbaTeamsDao
     abstract val nbaApiPlayersDao: INbaPlayersDao
+
+    @DeleteColumn.Entries(
+        DeleteColumn(tableName = "table_teams", columnName = "team_logo")
+    )
+    class MigrationToVersion2 : AutoMigrationSpec
 
     companion object {
         fun get(
