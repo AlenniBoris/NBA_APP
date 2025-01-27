@@ -1,18 +1,22 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import com.alenniboris.nba_app.data.model.toModelDomain
+import android.util.Log
+import com.alenniboris.nba_app.data.model.api.nba.team.toModelDomain
 import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.TeamResponseErrorsModelData
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.TeamResponseModel
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.team.TeamResponseErrorsModelData
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.team.TeamResponseModel
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.team.TeamStatisticsResponseErrorsModelData
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
 import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiTeamsNetworkRepository
 import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
+import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson
 import kotlinx.coroutines.withContext
 
 class NbaApiTeamsNetworkRepositoryImpl(
@@ -146,5 +150,55 @@ class NbaApiTeamsNetworkRepositoryImpl(
             )
         }
     }
+
+    override suspend fun getTeamStatisticsByTeamSeasonLeague(
+        team: TeamModelDomain,
+        league: LeagueModelDomain?,
+        season: SeasonModelDomain?
+    ): CustomResultModelDomain<TeamStatisticsModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+
+            if (season == null || league == null) {
+                return@withContext CustomResultModelDomain.Error(
+                    NbaApiExceptionModelDomain.LeagueAndSeasonFieldIsNeededToBeFilledBoth
+                )
+            }
+
+            return@withContext runCatching {
+                val response = apiService.getTeamStatisticsByTeamIdLeagueSeason(
+                    teamId = team.id.toString(),
+                    leagueId = league.id.toString(),
+                    season = season.name
+                )
+
+                if (response.isSomePropertyNotReceived) {
+                    return@runCatching CustomResultModelDomain.Error(
+                        NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                    )
+                }
+
+                runCatching {
+                    response.responseErrors?.toJson()
+                        ?.fromJson<TeamStatisticsResponseErrorsModelData>()
+                }.getOrNull()?.let {
+                    return@runCatching CustomResultModelDomain.Error(
+                        NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                    )
+                }
+
+                val resultList = response.response?.toModelDomain()
+                    ?: return@runCatching CustomResultModelDomain.Error(
+                        NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                    )
+
+                CustomResultModelDomain.Success<TeamStatisticsModelDomain, NbaApiExceptionModelDomain>(
+                    resultList
+                )
+
+            }.getOrElse { exception ->
+                Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
+                CustomResultModelDomain.Error(NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred)
+            }
+        }
 
 }

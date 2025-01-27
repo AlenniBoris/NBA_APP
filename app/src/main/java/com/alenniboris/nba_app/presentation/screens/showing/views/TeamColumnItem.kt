@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionDateTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionMainTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionStartTextPadding

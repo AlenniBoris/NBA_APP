@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain

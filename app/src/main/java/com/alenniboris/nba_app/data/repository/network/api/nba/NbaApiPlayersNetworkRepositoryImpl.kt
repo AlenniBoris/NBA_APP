@@ -1,13 +1,13 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import com.alenniboris.nba_app.data.model.toModelDomain
+import com.alenniboris.nba_app.data.model.api.nba.player.toModelDomain
 import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.PlayerResponseErrorsModelData
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.PlayerResponseModel
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.player.PlayerResponseErrorsModelData
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.player.PlayerResponseModel
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiPlayersNetworkRepository

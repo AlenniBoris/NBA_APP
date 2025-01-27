@@ -5,10 +5,10 @@ import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 
 data class TeamRequestParamsModelDomain(
-    override val requestType: INbaApiRequestType = NbaApiTeamRequestType.TEAMS_COUNTRY,
-    override val possibleRequestTypes: List<INbaApiRequestType> = NbaApiTeamRequestType.entries,
+    override val elementsRequestType: INbaApiElementsRequestType = NbaApiTeamTypeElementsRequest.TEAMS_COUNTRY,
+    override val possibleElementsRequestTypes: List<INbaApiElementsRequestType> = NbaApiTeamTypeElementsRequest.entries,
     val requestedQuery: String = "",
     val requestedSeason: SeasonModelDomain? = null,
     val requestedCountry: CountryModelDomain? = null,
     val requestedLeague: LeagueModelDomain? = null
-) : INbaApiRequestParams
+) : INbaApiElementsRequestParams

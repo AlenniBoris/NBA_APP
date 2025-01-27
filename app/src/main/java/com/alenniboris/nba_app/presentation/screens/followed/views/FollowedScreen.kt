@@ -34,10 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.model.GameModelDomain
-import com.alenniboris.nba_app.domain.model.IStateModel
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.mappers.toStringMessage
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM

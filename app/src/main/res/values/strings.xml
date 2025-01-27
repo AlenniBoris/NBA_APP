@@ -33,6 +33,8 @@
     <string name="team_picture_description">Team picture</string>
     <string name="empty_screen_icon_description">Empty icon</string>
     <string name="progress_bar_animation_description">Rotation progress animation</string>
+    <string name="home_team_text">Home</string>
+    <string name="visitors_team_text">Visitors</string>
 
     <string name="text_email">Email</string>
     <string name="text_password">Password</string>

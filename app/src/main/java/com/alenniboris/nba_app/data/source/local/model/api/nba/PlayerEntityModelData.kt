@@ -3,8 +3,8 @@ package com.alenniboris.nba_app.data.source.local.model.api.nba
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
-import com.alenniboris.nba_app.domain.model.entity.PlayerEntityModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.PlayerEntityModelDomain
 
 @Entity(tableName = "table_players")
 data class PlayerEntityModelData(

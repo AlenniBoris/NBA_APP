@@ -3,10 +3,10 @@ package com.alenniboris.nba_app.presentation.screens.followed
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
-import com.alenniboris.nba_app.domain.model.IStateModel
-import com.alenniboris.nba_app.domain.model.entity.toGameModelDomain
-import com.alenniboris.nba_app.domain.model.entity.toPlayerModelDomain
-import com.alenniboris.nba_app.domain.model.entity.toTeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.entity.api.nba.toGameModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.toPlayerModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.toTeamModelDomain
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow

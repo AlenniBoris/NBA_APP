@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.model.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.presentation.screens.followed.IFollowedScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionDateTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionHorizontalRowPadding

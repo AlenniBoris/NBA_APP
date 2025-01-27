@@ -2,22 +2,25 @@ package com.alenniboris.nba_app.domain.manager.impl
 
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.GameModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
-import com.alenniboris.nba_app.domain.model.IStateModel
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
-import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestParams
-import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiGameRequestType
-import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiPlayerRequestType
-import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiTeamRequestType
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestParams
+import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiGameTypeElementsRequest
+import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiPlayerTypeElementsRequest
+import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiTeamTypeElementsRequest
 import com.alenniboris.nba_app.domain.model.params.api.nba.PlayerRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.TeamRequestParamsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayersInGameStatisticsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.repository.authentication.IAuthenticationRepository
 import com.alenniboris.nba_app.domain.repository.database.api.nba.INbaApiGamesDatabaseRepository
 import com.alenniboris.nba_app.domain.repository.database.api.nba.INbaApiPlayersDatabaseRepository
@@ -144,57 +147,57 @@ class NbaApiManagerImpl(
         }
 
     override suspend fun makeRequestForListOfElements(
-        requestParameters: INbaApiRequestParams
+        elementsRequestParameters: INbaApiElementsRequestParams
     ): CustomResultModelDomain<List<IStateModel>, NbaApiExceptionModelDomain>? =
         withContext(dispatchers.IO) {
-            return@withContext when (requestParameters.requestType) {
-                NbaApiGameRequestType.GAMES_DATE -> {
+            return@withContext when (elementsRequestParameters.elementsRequestType) {
+                NbaApiGameTypeElementsRequest.GAMES_DATE -> {
 
-                    (requestParameters as? GameRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? GameRequestParamsModelDomain)?.let {
                         val res = nbaApiGamesNetworkRepository.getGamesByDate(
-                            date = requestParameters.requestedDate
+                            date = elementsRequestParameters.requestedDate
                         )
                         mapComingResult(res)
                     }
 
                 }
 
-                NbaApiGameRequestType.GAMES_SEASON_LEAGUE -> {
+                NbaApiGameTypeElementsRequest.GAMES_SEASON_LEAGUE -> {
 
-                    (requestParameters as? GameRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? GameRequestParamsModelDomain)?.let {
                         val res = nbaApiGamesNetworkRepository.getGamesBySeasonAndLeague(
-                            season = requestParameters.requestedSeason,
-                            league = requestParameters.requestedLeague
+                            season = elementsRequestParameters.requestedSeason,
+                            league = elementsRequestParameters.requestedLeague
                         )
                         mapComingResult(res)
                     }
 
                 }
 
-                NbaApiTeamRequestType.TEAMS_COUNTRY -> {
+                NbaApiTeamTypeElementsRequest.TEAMS_COUNTRY -> {
 
-                    (requestParameters as? TeamRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? TeamRequestParamsModelDomain)?.let {
                         val res = nbaApiTeamsNetworkRepository.getTeamsByCountry(
-                            country = requestParameters.requestedCountry
+                            country = elementsRequestParameters.requestedCountry
                         )
                         mapComingResult(res)
                     }
 
                 }
 
-                NbaApiTeamRequestType.TEAMS_SEARCH -> {
+                NbaApiTeamTypeElementsRequest.TEAMS_SEARCH -> {
 
-                    (requestParameters as? TeamRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? TeamRequestParamsModelDomain)?.let {
                         val res = nbaApiTeamsNetworkRepository.getTeamsBySearchQuery(
-                            searchQuery = requestParameters.requestedQuery
+                            searchQuery = elementsRequestParameters.requestedQuery
                         )
                         mapComingResult(res)
                     }
 
                 }
 
-                NbaApiTeamRequestType.TEAMS_SEASON_LEAGUE -> {
-                    val parameters = requestParameters as TeamRequestParamsModelDomain
+                NbaApiTeamTypeElementsRequest.TEAMS_SEASON_LEAGUE -> {
+                    val parameters = elementsRequestParameters as TeamRequestParamsModelDomain
                     val res = nbaApiTeamsNetworkRepository.getTeamsBySeasonAndLeague(
                         season = parameters.requestedSeason,
                         league = parameters.requestedLeague
@@ -202,66 +205,66 @@ class NbaApiManagerImpl(
                     mapComingResult(res)
                 }
 
-                NbaApiTeamRequestType.TEAMS_SEARCH_SEASON_LEAGUE -> {
+                NbaApiTeamTypeElementsRequest.TEAMS_SEARCH_SEASON_LEAGUE -> {
 
-                    (requestParameters as? TeamRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? TeamRequestParamsModelDomain)?.let {
                         val res =
                             nbaApiTeamsNetworkRepository.getTeamsBySearchQueryAndSeasonAndLeague(
-                                searchQuery = requestParameters.requestedQuery,
-                                season = requestParameters.requestedSeason,
-                                league = requestParameters.requestedLeague
+                                searchQuery = elementsRequestParameters.requestedQuery,
+                                season = elementsRequestParameters.requestedSeason,
+                                league = elementsRequestParameters.requestedLeague
                             )
                         mapComingResult(res)
                     }
 
                 }
 
-                NbaApiTeamRequestType.TEAMS_SEARCH_SEASON_LEAGUE_COUNTRY -> {
+                NbaApiTeamTypeElementsRequest.TEAMS_SEARCH_SEASON_LEAGUE_COUNTRY -> {
 
-                    (requestParameters as? TeamRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? TeamRequestParamsModelDomain)?.let {
                         val res =
                             nbaApiTeamsNetworkRepository.getTeamsBySearchQueryAndSeasonAndLeagueAndCountry(
-                                searchQuery = requestParameters.requestedQuery,
-                                season = requestParameters.requestedSeason,
-                                league = requestParameters.requestedLeague,
-                                country = requestParameters.requestedCountry
+                                searchQuery = elementsRequestParameters.requestedQuery,
+                                season = elementsRequestParameters.requestedSeason,
+                                league = elementsRequestParameters.requestedLeague,
+                                country = elementsRequestParameters.requestedCountry
                             )
                         mapComingResult(res)
                     }
 
                 }
 
-                NbaApiPlayerRequestType.PLAYER_SEARCH -> {
+                NbaApiPlayerTypeElementsRequest.PLAYER_SEARCH -> {
 
-                    (requestParameters as? PlayerRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? PlayerRequestParamsModelDomain)?.let {
                         val res = nbaApiPlayersNetworkRepository.getPlayersBySearchQuery(
-                            searchQuery = requestParameters.requestedQuery,
+                            searchQuery = elementsRequestParameters.requestedQuery,
                         )
                         mapComingResult(res)
                     }
 
                 }
 
-                NbaApiPlayerRequestType.PLAYER_SEASON_TEAM -> {
+                NbaApiPlayerTypeElementsRequest.PLAYER_SEASON_TEAM -> {
 
-                    (requestParameters as? PlayerRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? PlayerRequestParamsModelDomain)?.let {
                         val res = nbaApiPlayersNetworkRepository.getPlayersBySeasonAndTeam(
-                            season = requestParameters.requestedSeason,
-                            team = requestParameters.requestedTeam
+                            season = elementsRequestParameters.requestedSeason,
+                            team = elementsRequestParameters.requestedTeam
                         )
                         mapComingResult(res)
                     }
 
                 }
 
-                NbaApiPlayerRequestType.PLAYER_SEASON_TEAM_SEARCH -> {
+                NbaApiPlayerTypeElementsRequest.PLAYER_SEASON_TEAM_SEARCH -> {
 
-                    (requestParameters as? PlayerRequestParamsModelDomain)?.let {
+                    (elementsRequestParameters as? PlayerRequestParamsModelDomain)?.let {
                         val res =
                             nbaApiPlayersNetworkRepository.getPlayersBySearchQueryAndSeasonAndTeam(
-                                searchQuery = requestParameters.requestedQuery,
-                                season = requestParameters.requestedSeason,
-                                team = requestParameters.requestedTeam
+                                searchQuery = elementsRequestParameters.requestedQuery,
+                                season = elementsRequestParameters.requestedSeason,
+                                team = elementsRequestParameters.requestedTeam
                             )
                         mapComingResult(res)
                     }
@@ -334,4 +337,30 @@ class NbaApiManagerImpl(
 
     }
 
+    override suspend fun requestForTeamsStatisticsInGame(
+        game: GameModelDomain
+    ): CustomResultModelDomain<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            return@withContext nbaApiGamesNetworkRepository.getTeamsStatisticsInGame(game = game)
+        }
+
+    override suspend fun requestForPlayersStatisticsInGame(
+        game: GameModelDomain
+    ): CustomResultModelDomain<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            return@withContext nbaApiGamesNetworkRepository.getGameStatisticsForPlayersInGame(game = game)
+        }
+
+    override suspend fun requestForTeamStatistics(
+        team: TeamModelDomain,
+        season: SeasonModelDomain?,
+        league: LeagueModelDomain?
+    ): CustomResultModelDomain<TeamStatisticsModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            return@withContext nbaApiTeamsNetworkRepository.getTeamStatisticsByTeamSeasonLeague(
+                team = team,
+                season = season,
+                league = league
+            )
+        }
 }

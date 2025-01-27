@@ -1,17 +1,24 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import com.alenniboris.nba_app.data.model.toModelDomain
+import android.util.Log
+import com.alenniboris.nba_app.data.model.api.nba.game.toModelDomain
+import com.alenniboris.nba_app.data.model.api.nba.player.toModelDomain
 import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.GameResponseModel
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.GamesResponseErrorsModelData
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GamePlayerStatisticsErrorsModelData
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GameResponseModel
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GameTeamStatisticsErrorsModelData
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GamesResponseErrorsModelData
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.GameModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayersInGameStatisticsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiGamesNetworkRepository
 import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
+import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -68,5 +75,103 @@ class NbaApiGamesNetworkRepositoryImpl(
             )
         }
     }
+
+    override suspend fun getTeamsStatisticsInGame(
+        game: GameModelDomain
+    ): CustomResultModelDomain<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain> =
+        runCatching {
+            val response = apiService.getGameStatisticsForTeamsByGameId(game.id.toString())
+
+            if (response.isSomePropertyNotReceived) {
+                return@runCatching CustomResultModelDomain.Error(
+                    NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                )
+            }
+
+            runCatching {
+                response.responseErrors?.toJson()
+                    ?.fromJson<GameTeamStatisticsErrorsModelData>()
+            }.getOrNull()?.let {
+                return@runCatching CustomResultModelDomain.Error(
+                    NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                )
+            }
+
+            val listOfTeams = response.responseList?.mapNotNull { statistics ->
+                statistics?.toModelDomain()
+            }
+
+            val res = listOfTeams?.let {
+                TeamsInGameStatisticsModelDomain(
+                    homeTeamStatistics = it.first { teamsStatistics ->
+                        teamsStatistics.teamId == game.homeTeam.id
+                    },
+                    visitorsTeamStatistics = it.first { teamsStatistics ->
+                        teamsStatistics.teamId == game.visitorsTeam.id
+                    }
+                )
+            } ?: return@runCatching CustomResultModelDomain.Error(
+                NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+            )
+
+            CustomResultModelDomain.Success<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain>(
+                res
+            )
+
+        }.getOrElse { exception ->
+            Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
+            CustomResultModelDomain.Error(NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred)
+        }
+
+    override suspend fun getGameStatisticsForPlayersInGame(
+        game: GameModelDomain
+    ): CustomResultModelDomain<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+
+            runCatching {
+                val response = apiService.getGameStatisticsForPlayersByGameId(game.id.toString())
+
+                if (response.isSomePropertyNotReceived) {
+                    return@runCatching CustomResultModelDomain.Error(
+                        NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                    )
+                }
+
+                runCatching {
+                    response.responseErrors?.toJson()
+                        ?.fromJson<GamePlayerStatisticsErrorsModelData>()
+                }.getOrNull()?.let {
+                    return@runCatching CustomResultModelDomain.Error(
+                        NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                    )
+                }
+
+                val listOfPlayers = response.responseList?.mapNotNull { statistics ->
+                    statistics?.toModelDomain()
+                }
+
+                val res = listOfPlayers?.let {
+                    PlayersInGameStatisticsModelDomain(
+                        homeTeamPlayersStatistics = it.filter { playerStatistics ->
+                            playerStatistics.teamId == game.homeTeam.id
+                        },
+                        visitorTeamPlayersStatistics = it.filter { playerStatistics ->
+                            playerStatistics.teamId == game.visitorsTeam.id
+                        }
+                    )
+                } ?: return@runCatching CustomResultModelDomain.Error(
+                    NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                )
+
+                CustomResultModelDomain.Success<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain>(
+                    res
+                )
+
+            }.getOrElse { exception ->
+                Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
+                CustomResultModelDomain.Error(NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred)
+            }
+
+        }
 
 }

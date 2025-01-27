@@ -1,9 +1,9 @@
 package com.alenniboris.nba_app.domain.repository.database.api.nba
 
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.UserModelDomain
-import com.alenniboris.nba_app.domain.model.entity.PlayerEntityModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.PlayerEntityModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import kotlinx.coroutines.flow.Flow
 

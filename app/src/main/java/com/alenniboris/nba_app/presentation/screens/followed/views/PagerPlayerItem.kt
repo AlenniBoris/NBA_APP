@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.presentation.screens.followed.IFollowedScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.uikit.theme.PlayerItemCountryTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.PlayerItemNameTextSize

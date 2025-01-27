@@ -5,9 +5,9 @@ import com.alenniboris.nba_app.data.source.local.model.api.nba.toEntityModel
 import com.alenniboris.nba_app.data.source.local.model.api.nba.toModelDomain
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.UserModelDomain
-import com.alenniboris.nba_app.domain.model.entity.PlayerEntityModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.PlayerEntityModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.repository.database.api.nba.INbaApiPlayersDatabaseRepository
 import kotlinx.coroutines.flow.Flow

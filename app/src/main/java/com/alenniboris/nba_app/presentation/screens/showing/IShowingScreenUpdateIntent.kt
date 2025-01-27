@@ -1,11 +1,11 @@
 package com.alenniboris.nba_app.presentation.screens.showing
 
-import com.alenniboris.nba_app.domain.model.IStateModel
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
-import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestType
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestType
 import com.alenniboris.nba_app.domain.utils.GameStatus
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import java.util.Date
@@ -47,7 +47,7 @@ interface IShowingScreenUpdateIntent {
 
     data class UpdateRequestTypeChooserVisibility(val isVisible: Boolean): IShowingScreenUpdateIntent
 
-    data class UpdateRequestType(val newType: INbaApiRequestType): IShowingScreenUpdateIntent
+    data class UpdateRequestType(val newType: INbaApiElementsRequestType): IShowingScreenUpdateIntent
 
     data object SearchForItemsAfterRequestType: IShowingScreenUpdateIntent
 

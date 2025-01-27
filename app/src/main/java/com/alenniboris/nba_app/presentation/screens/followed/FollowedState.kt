@@ -1,8 +1,8 @@
 package com.alenniboris.nba_app.presentation.screens.followed
 
-import com.alenniboris.nba_app.domain.model.GameModelDomain
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 
 data class FollowedState(
     val followedGames: List<GameModelDomain> = emptyList(),

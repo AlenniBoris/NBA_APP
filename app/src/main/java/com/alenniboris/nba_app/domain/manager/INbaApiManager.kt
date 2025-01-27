@@ -1,15 +1,20 @@
 package com.alenniboris.nba_app.domain.manager
 
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.IStateModel
-import com.alenniboris.nba_app.domain.model.entity.GameEntityModelDomain
-import com.alenniboris.nba_app.domain.model.entity.PlayerEntityModelDomain
-import com.alenniboris.nba_app.domain.model.entity.TeamEntityModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.GameEntityModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.PlayerEntityModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.TeamEntityModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
-import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestParams
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestParams
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayersInGameStatisticsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameStatisticsModelDomain
 import kotlinx.coroutines.flow.SharedFlow
 
 interface INbaApiManager {
@@ -19,7 +24,7 @@ interface INbaApiManager {
     val followedPlayers: SharedFlow<List<PlayerEntityModelDomain>>
 
     suspend fun makeRequestForListOfElements(
-        requestParameters: INbaApiRequestParams
+        elementsRequestParameters: INbaApiElementsRequestParams
     ): CustomResultModelDomain<List<IStateModel>, NbaApiExceptionModelDomain>?
 
     suspend fun getAllSeasons(): CustomResultModelDomain<List<SeasonModelDomain>, NbaApiExceptionModelDomain>
@@ -33,5 +38,19 @@ interface INbaApiManager {
     suspend fun proceedElementIsFollowingUpdate(
         element: IStateModel
     ): CustomResultModelDomain<Unit, NbaApiExceptionModelDomain>
+
+    suspend fun requestForTeamsStatisticsInGame(
+        game: GameModelDomain
+    ): CustomResultModelDomain<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain>
+
+    suspend fun requestForPlayersStatisticsInGame(
+        game: GameModelDomain
+    ): CustomResultModelDomain<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain>
+
+    suspend fun requestForTeamStatistics(
+        team: TeamModelDomain,
+        season: SeasonModelDomain?,
+        league: LeagueModelDomain?
+    ): CustomResultModelDomain<TeamStatisticsModelDomain, NbaApiExceptionModelDomain>
 
 }

@@ -6,20 +6,20 @@ import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.GameModelDomain
-import com.alenniboris.nba_app.domain.model.IStateModel
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
-import com.alenniboris.nba_app.domain.model.entity.GameEntityModelDomain
-import com.alenniboris.nba_app.domain.model.entity.PlayerEntityModelDomain
-import com.alenniboris.nba_app.domain.model.entity.TeamEntityModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.GameEntityModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.PlayerEntityModelDomain
+import com.alenniboris.nba_app.domain.model.entity.api.nba.TeamEntityModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
-import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestType
-import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiTeamRequestType
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestType
+import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiTeamTypeElementsRequest
 import com.alenniboris.nba_app.domain.model.params.api.nba.PlayerRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.TeamRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.utils.GameStatus
@@ -225,14 +225,14 @@ class ShowingScreenVM(
         updateRequestTypeChooserVisibility(false)
     }
 
-    private fun updateRequestType(newType: INbaApiRequestType) {
+    private fun updateRequestType(newType: INbaApiElementsRequestType) {
 
         _screenState.update {
             it.copy(
                 requestParams = when (it.requestParams) {
-                    is GameRequestParamsModelDomain -> it.requestParams.copy(requestType = newType)
-                    is PlayerRequestParamsModelDomain -> it.requestParams.copy(requestType = newType)
-                    is TeamRequestParamsModelDomain -> it.requestParams.copy(requestType = newType)
+                    is GameRequestParamsModelDomain -> it.requestParams.copy(elementsRequestType = newType)
+                    is PlayerRequestParamsModelDomain -> it.requestParams.copy(elementsRequestType = newType)
+                    is TeamRequestParamsModelDomain -> it.requestParams.copy(elementsRequestType = newType)
                 }
             )
         }
@@ -356,7 +356,7 @@ class ShowingScreenVM(
             changeIsElementsLoading(true)
 
             val requestResult = nbaApiManager.makeRequestForListOfElements(
-                requestParameters = params
+                elementsRequestParameters = params
             )
 
             requestResult?.let {
@@ -405,6 +405,7 @@ class ShowingScreenVM(
     }
 
     private fun proceedPersonalAction(action: PersonalBtnAction) {
+        _screenState.update { it.copy(isPersonalActionsVisible = false) }
         when (action) {
             PersonalBtnAction.Details -> emitOpenUserDetailScreenEvent()
             PersonalBtnAction.Exit -> signOutCurrentUserFromApplication()
@@ -651,13 +652,13 @@ class ShowingScreenVM(
             changeIsTeamsLoading(true)
 
             val requestParams = TeamRequestParamsModelDomain(
-                requestType = NbaApiTeamRequestType.TEAMS_SEASON_LEAGUE,
+                elementsRequestType = NbaApiTeamTypeElementsRequest.TEAMS_SEASON_LEAGUE,
                 requestedLeague = league,
                 requestedSeason = season
             )
 
             val teamsResult = nbaApiManager.makeRequestForListOfElements(
-                requestParameters = requestParams
+                elementsRequestParameters = requestParams
             )
 
             teamsResult?.let {

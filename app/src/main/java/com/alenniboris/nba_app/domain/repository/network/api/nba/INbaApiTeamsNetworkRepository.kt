@@ -1,11 +1,12 @@
 package com.alenniboris.nba_app.domain.repository.network.api.nba
 
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
 
 interface INbaApiTeamsNetworkRepository {
 
@@ -34,5 +35,11 @@ interface INbaApiTeamsNetworkRepository {
         league: LeagueModelDomain?,
         country: CountryModelDomain?
     ): CustomResultModelDomain<List<TeamModelDomain>, NbaApiExceptionModelDomain>
+
+    suspend fun getTeamStatisticsByTeamSeasonLeague(
+        team: TeamModelDomain,
+        league: LeagueModelDomain?,
+        season: SeasonModelDomain?
+    ): CustomResultModelDomain<TeamStatisticsModelDomain, NbaApiExceptionModelDomain>
 
 }

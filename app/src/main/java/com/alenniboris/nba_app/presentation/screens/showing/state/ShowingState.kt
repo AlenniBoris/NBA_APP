@@ -1,8 +1,8 @@
 package com.alenniboris.nba_app.presentation.screens.showing.state
 
 import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
-import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestParams
-import com.alenniboris.nba_app.domain.model.IStateModel
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestParams
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 
 
@@ -11,7 +11,7 @@ data class ShowingState(
     val elements: List<IStateModel> = emptyList(),
     val isLoading: Boolean = false,
     val filter: ShowingFilter = ShowingFilter(),
-    val requestParams: INbaApiRequestParams = GameRequestParamsModelDomain(
+    val requestParams: INbaApiElementsRequestParams = GameRequestParamsModelDomain(
         requestedDate = filter.selectedDate
     ),
     val mutableFilter: ShowingFilter = filter,

@@ -39,13 +39,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.model.GameModelDomain
-import com.alenniboris.nba_app.domain.model.IStateModel
-import com.alenniboris.nba_app.domain.model.PlayerModelDomain
-import com.alenniboris.nba_app.domain.model.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
-import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestParams
-import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiRequestType
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestParams
+import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestType
 import com.alenniboris.nba_app.domain.model.params.api.nba.toRequestString
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.mappers.toStringMessage
@@ -258,8 +258,8 @@ private fun ShowingScreenUi(
 @Composable
 @Preview
 fun RequestTypeChooserDialog(
-    requestParams: INbaApiRequestParams = GameRequestParamsModelDomain(),
-    onTypeSelected: (INbaApiRequestType) -> Unit = {},
+    requestParams: INbaApiElementsRequestParams = GameRequestParamsModelDomain(),
+    onTypeSelected: (INbaApiElementsRequestType) -> Unit = {},
     onAccept: () -> Unit = {},
     onDecline: () -> Unit = {}
 ) {
@@ -276,13 +276,13 @@ fun RequestTypeChooserDialog(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 LazyColumn {
-                    items(requestParams.possibleRequestTypes) { type ->
+                    items(requestParams.possibleElementsRequestTypes) { type ->
 
                         Row(
                             modifier = Modifier.padding(RequestTypeDialogTopPadding)
                         ) {
                             Checkbox(
-                                checked = type == requestParams.requestType,
+                                checked = type == requestParams.elementsRequestType,
                                 onCheckedChange = {
                                     onTypeSelected(type)
                                 },
@@ -515,11 +515,6 @@ private fun TopBarUI(
                         onClick = {
                             proceedIntentAction(
                                 IShowingScreenUpdateIntent.ProceedPersonalAction(action)
-                            )
-                            proceedIntentAction(
-                                IShowingScreenUpdateIntent.UpdatePersonalActionsVisibility(
-                                    false
-                                )
                             )
                         }
                     )

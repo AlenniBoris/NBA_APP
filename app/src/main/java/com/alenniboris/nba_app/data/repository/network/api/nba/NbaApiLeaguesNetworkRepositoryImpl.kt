@@ -1,8 +1,8 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import com.alenniboris.nba_app.data.model.toModelDomain
+import com.alenniboris.nba_app.data.model.api.nba.league.toModelDomain
 import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.LeaguesResponseErrorsModelData
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.league.LeaguesResponseErrorsModelData
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain

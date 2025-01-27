@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
 import android.util.Log
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.NbaApiResponse
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.NbaApiResponse
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson

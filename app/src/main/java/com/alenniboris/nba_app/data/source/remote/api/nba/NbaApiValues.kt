@@ -8,6 +8,12 @@ object NbaApiValues {
 
     const val GAME_REQUEST = "games"
 
+    const val GAME_STATISTICS_TEAMS_REQUEST = "games/statistics/teams"
+
+    const val GAME_STATISTICS_PLAYERS_REQUEST = "games/statistics/players"
+
+    const val TEAM_STATISTICS_REQUEST = "statistics"
+
     const val TEAM_REQUEST = "teams"
 
     const val SEASON_REQUEST = "seasons"
@@ -17,6 +23,8 @@ object NbaApiValues {
     const val LEAGUE_REQUEST = "leagues"
 
     const val DATE_PARAMETER = "date"
+
+    const val ID_PARAMETER = "id"
 
     const val LEAGUE_PARAMETER = "league"
 
@@ -29,5 +37,7 @@ object NbaApiValues {
     const val COUNTRY_PARAMETER = "country"
 
     const val TEAM_PARAMETER = "team"
+
+    const val API_HEADER = "x-rapidapi-key:"
 
 }
