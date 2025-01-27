@@ -22,7 +22,7 @@ class NbaApiPlayersNetworkRepositoryImpl(
     private suspend fun getPlayers(
         apiCall: suspend () -> PlayerResponseModel
     ) = withContext(dispatchers.IO) {
-        return@withContext NbaApiNetworkRepositoryFunctions.getDataFromApi(
+        return@withContext NbaApiNetworkRepositoryFunctions.getElementsFromApi(
             apiCall = apiCall,
             dispatcher = dispatchers.IO,
             transform = { responseList ->

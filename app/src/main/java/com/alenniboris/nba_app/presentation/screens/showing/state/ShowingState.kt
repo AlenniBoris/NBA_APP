@@ -1,8 +1,8 @@
 package com.alenniboris.nba_app.presentation.screens.showing.state
 
+import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
 import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestParams
-import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 
 

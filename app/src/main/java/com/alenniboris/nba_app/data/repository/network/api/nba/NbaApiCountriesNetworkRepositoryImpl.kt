@@ -17,7 +17,7 @@ class NbaApiCountriesNetworkRepositoryImpl(
 
     override suspend fun getAllCountries()
             : CustomResultModelDomain<List<CountryModelDomain>, NbaApiExceptionModelDomain> =
-        NbaApiNetworkRepositoryFunctions.getDataFromApi(
+        NbaApiNetworkRepositoryFunctions.getElementsFromApi(
             apiCall = {
                 apiService.getAllCountries()
             },

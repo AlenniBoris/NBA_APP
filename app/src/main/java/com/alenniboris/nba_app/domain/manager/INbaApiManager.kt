@@ -12,6 +12,7 @@ import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestParams
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.GameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayersInGameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameStatisticsModelDomain
@@ -31,6 +32,10 @@ interface INbaApiManager {
 
     suspend fun getAllCountries(): CustomResultModelDomain<List<CountryModelDomain>, NbaApiExceptionModelDomain>
 
+    suspend fun getGameDataById(
+        id: Int
+    ): CustomResultModelDomain<GameModelDomain, NbaApiExceptionModelDomain>
+
     suspend fun getLeaguesByCountry(
         country: CountryModelDomain
     ): CustomResultModelDomain<List<LeagueModelDomain>, NbaApiExceptionModelDomain>
@@ -43,9 +48,9 @@ interface INbaApiManager {
         game: GameModelDomain
     ): CustomResultModelDomain<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain>
 
-    suspend fun requestForPlayersStatisticsInGame(
+    suspend fun requestForGameStatistics(
         game: GameModelDomain
-    ): CustomResultModelDomain<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain>
+    ): CustomResultModelDomain<GameStatisticsModelDomain, NbaApiExceptionModelDomain>
 
     suspend fun requestForTeamStatistics(
         team: TeamModelDomain,

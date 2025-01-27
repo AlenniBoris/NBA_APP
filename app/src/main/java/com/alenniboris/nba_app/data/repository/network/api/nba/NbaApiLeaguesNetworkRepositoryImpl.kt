@@ -19,7 +19,7 @@ class NbaApiLeaguesNetworkRepositoryImpl(
     override suspend fun getLeaguesByCountry(
         country: CountryModelDomain
     ): CustomResultModelDomain<List<LeagueModelDomain>, NbaApiExceptionModelDomain> =
-        NbaApiNetworkRepositoryFunctions.getDataFromApi(
+        NbaApiNetworkRepositoryFunctions.getElementsFromApi(
             apiCall = {
                 apiService.getLeaguesByCountry(
                     countryId = country.id

@@ -3,6 +3,7 @@ package com.alenniboris.nba_app.presentation.screens.showing.views
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,7 @@ import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.mappers.toStringMessage
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
 import com.alenniboris.nba_app.presentation.navigation.Route
+import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenEvent
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
@@ -119,6 +121,24 @@ fun ShowingScreen(
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToUserDetailsScreen>().collect {
                 navHostController.navigate(Route.FollowedScreenRoute.route)
+            }
+        }
+
+        launch {
+            event.filterIsInstance<IShowingScreenEvent.NavigateToGameDetailsPage>().collect {
+                navHostController.navigate(getGameDetailsScreenRoute(game = it.game))
+            }
+        }
+
+        launch {
+            event.filterIsInstance<IShowingScreenEvent.NavigateToTeamDetailsPage>().collect {
+                navHostController.navigate(Route.TeamDetailsScreenRoute.route)
+            }
+        }
+
+        launch {
+            event.filterIsInstance<IShowingScreenEvent.NavigateToPlayerDetailsPage>().collect {
+                navHostController.navigate(Route.PlayerDetailsScreenRoute.route)
             }
         }
     }
@@ -358,7 +378,14 @@ fun ShowElementsUi(
                                     color = categoryItemColor,
                                     shape = GameColumnItemShape
                                 )
-                                .padding(GameColumnItemHorizontalPadding),
+                                .padding(GameColumnItemHorizontalPadding)
+                                .clickable {
+                                    proceedIntentAction(
+                                        IShowingScreenUpdateIntent.ProceedNavigationToGameDetailsScreen(
+                                            game = it
+                                        )
+                                    )
+                                },
                             element = element,
                             onFollowGameButtonClicked = {
                                 proceedIntentAction(
@@ -382,7 +409,14 @@ fun ShowElementsUi(
                                     color = categoryItemColor,
                                     shape = GameColumnItemShape
                                 )
-                                .padding(GameColumnItemHorizontalPadding),
+                                .padding(GameColumnItemHorizontalPadding)
+                                .clickable {
+                                    proceedIntentAction(
+                                        IShowingScreenUpdateIntent.ProceedNavigationToTeamDetailsScreen(
+                                            team = it
+                                        )
+                                    )
+                                },
                             element = element,
                             onFollowTeamButtonClicked = {
                                 proceedIntentAction(
@@ -406,7 +440,14 @@ fun ShowElementsUi(
                                     color = categoryItemColor,
                                     shape = GameColumnItemShape
                                 )
-                                .padding(GameColumnItemHorizontalPadding),
+                                .padding(GameColumnItemHorizontalPadding)
+                                .clickable {
+                                    proceedIntentAction(
+                                        IShowingScreenUpdateIntent.ProceedNavigationToPlayerDetailsScreen(
+                                            player = it
+                                        )
+                                    )
+                                },
                             element = element,
                             onFollowPlayerButtonClicked = {
                                 proceedIntentAction(

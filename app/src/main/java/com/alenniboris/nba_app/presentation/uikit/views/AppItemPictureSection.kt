@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
@@ -24,6 +25,7 @@ import com.alenniboris.nba_app.presentation.uikit.theme.categoryItemTextColor
 fun AppItemPictureSection(
     modifier: Modifier = Modifier,
     textAlign: Alignment.Horizontal = Alignment.Start,
+    textColor: Color = categoryItemTextColor,
     pictureAlignment: Alignment.Horizontal = Alignment.Start,
     name: String? = "name",
     logoUrl: String? = "11",
@@ -41,10 +43,10 @@ fun AppItemPictureSection(
             style = bodyStyle.copy(
                 fontSize = GameColumnItemPictureSectionTextSize
             ),
-            color = categoryItemTextColor
+            color = textColor
         )
 
-        if (isPictureNeeded){
+        if (isPictureNeeded) {
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()

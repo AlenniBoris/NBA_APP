@@ -15,8 +15,12 @@ data class GameEntityModelData(
     val userId: String,
     @ColumnInfo("home_team_name")
     val homeTeamName: String,
+    @ColumnInfo(name = "home_team_id", defaultValue = "0")
+    val homeTeamId: Int,
     @ColumnInfo("visitors_team_name")
     val visitorsTeamName: String,
+    @ColumnInfo(name = "visitors_team_id", defaultValue = "0")
+    val visitorsTeamId: Int,
     @ColumnInfo("date_of_game")
     val dateOfTheGame: Long,
     @PrimaryKey(autoGenerate = false)
@@ -29,7 +33,9 @@ fun GameModelDomain.toEntityModel(userId: String): GameEntityModelData =
         gameId = this.id,
         userId = userId,
         homeTeamName = this.homeTeam.name,
+        homeTeamId = this.homeTeam.id,
         visitorsTeamName = this.visitorsTeam.name,
+        visitorsTeamId = this.visitorsTeam.id,
         dateOfTheGame = this.dateOfTheGame.time
     )
 
@@ -39,7 +45,9 @@ fun GameEntityModelData.toModelDomain(): GameEntityModelDomain =
         gameId = this.gameId,
         userId = this.userId,
         homeTeamName = this.homeTeamName,
+        homeTeamId = this.homeTeamId,
         visitorsTeamName = this.visitorsTeamName,
+        visitorsTeamId = this.visitorsTeamId,
         dateOfTheGame = Date(this.dateOfTheGame)
     )
 

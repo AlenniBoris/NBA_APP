@@ -18,7 +18,7 @@ import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiPlayerTypeEleme
 import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiTeamTypeElementsRequest
 import com.alenniboris.nba_app.domain.model.params.api.nba.PlayerRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.TeamRequestParamsModelDomain
-import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayersInGameStatisticsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.GameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.repository.authentication.IAuthenticationRepository
@@ -34,6 +34,7 @@ import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiTeamsNet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.buffer
@@ -144,6 +145,13 @@ class NbaApiManagerImpl(
 
                 is CustomResultModelDomain.Error -> res
             }
+        }
+
+    override suspend fun getGameDataById(
+        id: Int
+    ): CustomResultModelDomain<GameModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            return@withContext nbaApiGamesNetworkRepository.getGameDataById(id = id)
         }
 
     override suspend fun makeRequestForListOfElements(
@@ -344,11 +352,39 @@ class NbaApiManagerImpl(
             return@withContext nbaApiGamesNetworkRepository.getTeamsStatisticsInGame(game = game)
         }
 
-    override suspend fun requestForPlayersStatisticsInGame(
+    override suspend fun requestForGameStatistics(
         game: GameModelDomain
-    ): CustomResultModelDomain<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain> =
+    ): CustomResultModelDomain<GameStatisticsModelDomain, NbaApiExceptionModelDomain> =
         withContext(dispatchers.IO) {
-            return@withContext nbaApiGamesNetworkRepository.getGameStatisticsForPlayersInGame(game = game)
+
+            val _teamsStatistics = async {
+                nbaApiGamesNetworkRepository.getTeamsStatisticsInGame(game = game)
+            }
+
+            val _playersStatistics = async {
+                nbaApiGamesNetworkRepository.getGameStatisticsForPlayersInGame(game = game)
+            }
+
+            val teamsStatistics = _teamsStatistics.await()
+            val playersStatistics = _playersStatistics.await()
+
+            if (
+                teamsStatistics is CustomResultModelDomain.Success &&
+                playersStatistics is CustomResultModelDomain.Success
+            ) {
+                return@withContext CustomResultModelDomain.Success(
+                    GameStatisticsModelDomain(
+                        homeTeamStatistics = teamsStatistics.result.homeTeamStatistics,
+                        homePlayersStatistics = playersStatistics.result.homeTeamPlayersStatistics,
+                        visitorsTeamStatistics = teamsStatistics.result.visitorsTeamStatistics,
+                        visitorPlayersStatistics = playersStatistics.result.visitorsTeamPlayersStatistics,
+                    )
+                )
+            }
+
+            return@withContext CustomResultModelDomain.Error(
+                NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+            )
         }
 
     override suspend fun requestForTeamStatistics(

@@ -1,6 +1,7 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
 import android.util.Log
+import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.team.toModelDomain
 import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.team.TeamResponseErrorsModelData
@@ -27,7 +28,7 @@ class NbaApiTeamsNetworkRepositoryImpl(
     private suspend fun getTeams(
         apiCall: suspend () -> TeamResponseModel
     ) = withContext(dispatchers.IO) {
-        return@withContext NbaApiNetworkRepositoryFunctions.getDataFromApi(
+        return@withContext NbaApiNetworkRepositoryFunctions.getElementsFromApi(
             apiCall = apiCall,
             dispatcher = dispatchers.IO,
             transform = { responseList ->
@@ -197,7 +198,7 @@ class NbaApiTeamsNetworkRepositoryImpl(
 
             }.getOrElse { exception ->
                 Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
-                CustomResultModelDomain.Error(NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred)
+                CustomResultModelDomain.Error(exception.toNbaApiExceptionModelDomain())
             }
         }
 

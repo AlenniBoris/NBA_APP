@@ -105,3 +105,13 @@ val pagerCurrentPagePadding = PaddingValues(all = 2.dp)
 val pagerCurrentPageCircleSize = 16.dp
 val pagerSectionPadding = PaddingValues(top = 15.dp)
 val pagerElementsEmptyHeight = 40.dp
+
+//statistcs
+val statisticsColumnTopPadding = PaddingValues(top = 20.dp)
+val statisticsColumnHorizontalPadding = PaddingValues(horizontal = 10.dp)
+val statisticsColumnShape = RoundedCornerShape(size = 10.dp)
+val statisticsRowFontSize = 20.sp
+val statisticsElementTopPadding = PaddingValues(top = 10.dp)
+val statisticsElementHorizontalPadding = PaddingValues(horizontal = 15.dp)
+val statisticsElementVerticalPadding = PaddingValues(vertical = 15.dp)
+val statisticsPBHeight = 100.dp

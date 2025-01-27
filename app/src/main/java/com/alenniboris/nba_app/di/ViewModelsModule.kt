@@ -2,7 +2,9 @@ package com.alenniboris.nba_app.di
 
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.presentation.activity.MainActivityVM
+import com.alenniboris.nba_app.presentation.screens.details.game.GameDetailsScreenVM
 import com.alenniboris.nba_app.presentation.screens.enter.EnterScreenVM
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
@@ -32,6 +34,14 @@ val ViewModels = module {
     viewModel<FollowedScreenVM> {
         FollowedScreenVM(
             nbaApiManager = get<INbaApiManager>()
+        )
+    }
+
+    viewModel<GameDetailsScreenVM> { (game: GameModelDomain, isReloadingDataNeeded: Boolean) ->
+        GameDetailsScreenVM(
+            nbaApiManager = get<INbaApiManager>(),
+            game = game,
+            isReloadingDataNeeded = isReloadingDataNeeded
         )
     }
 }

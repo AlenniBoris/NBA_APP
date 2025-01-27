@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
-import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

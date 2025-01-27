@@ -1,9 +1,9 @@
 package com.alenniboris.nba_app.presentation.screens.followed.views
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +40,8 @@ import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.mappers.toStringMessage
+import com.alenniboris.nba_app.presentation.navigation.Route
+import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedState
 import com.alenniboris.nba_app.presentation.screens.followed.IFollowedScreenEvent
@@ -84,10 +86,26 @@ fun FollowedScreen(
         }
 
         launch {
-            event.filterIsInstance<IFollowedScreenEvent.NavigateToElementDetailsPage>()
-                .collect() { received ->
-                    Log.e("!!!!", "${received.element.id}")
-                }
+            event.filterIsInstance<IFollowedScreenEvent.NavigateToGameDetailsPage>().collect {
+                navHostController.navigate(
+                    getGameDetailsScreenRoute(
+                        game = it.game,
+                        isReloadingDataNeeded = true
+                    )
+                )
+            }
+        }
+
+        launch {
+            event.filterIsInstance<IFollowedScreenEvent.NavigateToTeamDetailsPage>().collect {
+                navHostController.navigate(Route.TeamDetailsScreenRoute.route)
+            }
+        }
+
+        launch {
+            event.filterIsInstance<IFollowedScreenEvent.NavigateToPlayerDetailsPage>().collect {
+                navHostController.navigate(Route.PlayerDetailsScreenRoute.route)
+            }
         }
     }
 
@@ -123,7 +141,7 @@ private fun FollowedScreenUi(
                 leftBtnPainter = painterResource(R.drawable.icon_navigate_to_previous_page),
                 onLeftBtnClicked = {
                     proceedIntentAction(
-                        IFollowedScreenUpdateIntent.navigateToPreviousScreen
+                        IFollowedScreenUpdateIntent.NavigateToPreviousScreen
                     )
                 }
             )
@@ -271,8 +289,19 @@ fun PagerItem(
                             color = categoryItemColor,
                             shape = GameColumnItemShape
                         )
-                        .padding(GameColumnItemHorizontalPadding),
-                    proceedIntentAction = proceedIntentAction
+                        .padding(GameColumnItemHorizontalPadding)
+                        .clickable {
+                            proceedIntentAction(
+                                IFollowedScreenUpdateIntent.ProceedNavigationToGameDetailsScreen(
+                                    element
+                                )
+                            )
+                        },
+                    onFollowedBtnClicked = {
+                        proceedIntentAction(
+                            IFollowedScreenUpdateIntent.ProceedRemovingFromFollowedAction(element)
+                        )
+                    },
                 )
 
             is PlayerModelDomain ->
@@ -282,9 +311,20 @@ fun PagerItem(
                             color = categoryItemColor,
                             shape = GameColumnItemShape
                         )
-                        .padding(GameColumnItemHorizontalPadding),
+                        .padding(GameColumnItemHorizontalPadding)
+                        .clickable {
+                            proceedIntentAction(
+                                IFollowedScreenUpdateIntent.ProceedNavigationToPlayerDetailsScreen(
+                                    element
+                                )
+                            )
+                        },
                     element = element,
-                    proceedIntentAction = proceedIntentAction
+                    onFollowedBtnClicked = {
+                        proceedIntentAction(
+                            IFollowedScreenUpdateIntent.ProceedRemovingFromFollowedAction(element)
+                        )
+                    }
                 )
 
             is TeamModelDomain ->
@@ -294,9 +334,20 @@ fun PagerItem(
                             color = categoryItemColor,
                             shape = GameColumnItemShape
                         )
-                        .padding(GameColumnItemHorizontalPadding),
+                        .padding(GameColumnItemHorizontalPadding)
+                        .clickable {
+                            proceedIntentAction(
+                                IFollowedScreenUpdateIntent.ProceedNavigationToTeamDetailsScreen(
+                                    element
+                                )
+                            )
+                        },
                     element = element,
-                    proceedIntentAction = proceedIntentAction
+                    onFollowedBtnClicked = {
+                        proceedIntentAction(
+                            IFollowedScreenUpdateIntent.ProceedRemovingFromFollowedAction(element)
+                        )
+                    }
                 )
 
         }

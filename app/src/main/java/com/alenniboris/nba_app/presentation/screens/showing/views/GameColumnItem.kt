@@ -20,7 +20,6 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 fun GameColumnItem(
     modifier: Modifier = Modifier,
     element: GameModelDomain? = null,
-    onGameCardClicked: () -> Unit = {},
     onFollowGameButtonClicked: () -> Unit = {}
 ) {
 

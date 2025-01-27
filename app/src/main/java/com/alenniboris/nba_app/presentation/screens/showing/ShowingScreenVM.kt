@@ -23,9 +23,9 @@ import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiTeamTypeElement
 import com.alenniboris.nba_app.domain.model.params.api.nba.PlayerRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.TeamRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.utils.GameStatus
+import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
-import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.PersonalBtnAction
 import com.alenniboris.nba_app.presentation.screens.showing.state.ShowingState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -216,7 +216,37 @@ class ShowingScreenVM(
 
             is IShowingScreenUpdateIntent.SearchForItemsAfterRequestType -> searchItemsAfterConfirmingRequestType()
 
+            is IShowingScreenUpdateIntent.ProceedNavigationToGameDetailsScreen -> navigateToGameDetailsScreen(
+                updateIntent.game
+            )
+
+            is IShowingScreenUpdateIntent.ProceedNavigationToTeamDetailsScreen -> navigateToTeamDetailsScreen(
+                updateIntent.team
+            )
+
+            is IShowingScreenUpdateIntent.ProceedNavigationToPlayerDetailsScreen -> navigateToPlayerDetailsScreen(
+                updateIntent.player
+            )
+
         }
+    }
+
+    private fun navigateToGameDetailsScreen(game: GameModelDomain) {
+        _event.emit(
+            IShowingScreenEvent.NavigateToGameDetailsPage(game = game)
+        )
+    }
+
+    private fun navigateToTeamDetailsScreen(team: TeamModelDomain) {
+        _event.emit(
+            IShowingScreenEvent.NavigateToTeamDetailsPage(team = team)
+        )
+    }
+
+    private fun navigateToPlayerDetailsScreen(player: PlayerModelDomain) {
+        _event.emit(
+            IShowingScreenEvent.NavigateToPlayerDetailsPage(player = player)
+        )
     }
 
     private fun searchItemsAfterConfirmingRequestType() {

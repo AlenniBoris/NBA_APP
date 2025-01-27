@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
-import com.alenniboris.nba_app.presentation.screens.followed.IFollowedScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionDateTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionHorizontalRowPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionMainTextSize
@@ -35,7 +34,7 @@ import java.util.Locale
 fun PagerGameItem(
     modifier: Modifier = Modifier,
     element: GameModelDomain = GameModelDomain(),
-    proceedIntentAction: (IFollowedScreenUpdateIntent) -> Unit = {}
+    onFollowedBtnClicked: () -> Unit = {}
 ) {
 
     val iconPainterRes = remember(element.isFollowed) {
@@ -51,11 +50,7 @@ fun PagerGameItem(
 
         AppIconButton(
             isAnimated = true,
-            onClick = {
-                proceedIntentAction(
-                    IFollowedScreenUpdateIntent.proceedRemovingAction(element)
-                )
-            },
+            onClick = onFollowedBtnClicked,
             iconPainter = painterResource(iconPainterRes),
             tint = categoryItemTextColor,
             contentDescription = stringResource(R.string.following_icon_description)

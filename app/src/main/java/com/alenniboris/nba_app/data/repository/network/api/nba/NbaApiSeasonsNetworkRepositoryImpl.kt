@@ -16,7 +16,7 @@ class NbaApiSeasonsNetworkRepositoryImpl(
 
     override suspend fun getAllSeasons()
             : CustomResultModelDomain<List<SeasonModelDomain>, NbaApiExceptionModelDomain> =
-        NbaApiNetworkRepositoryFunctions.getDataFromApi(
+        NbaApiNetworkRepositoryFunctions.getElementsFromApi(
             apiCall = {
                 apiService.getAllSeasons()
             },

@@ -3,8 +3,8 @@ package com.alenniboris.nba_app.presentation.screens.enter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
-import com.alenniboris.nba_app.domain.model.exception.AuthenticationExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
+import com.alenniboris.nba_app.domain.model.exception.AuthenticationExceptionModelDomain
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import com.alenniboris.nba_app.presentation.screens.enter.state.IEnterState

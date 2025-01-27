@@ -4,9 +4,9 @@ import com.alenniboris.nba_app.data.source.local.dao.api.nba.INbaGamesDao
 import com.alenniboris.nba_app.data.source.local.model.api.nba.toEntityModel
 import com.alenniboris.nba_app.data.source.local.model.api.nba.toModelDomain
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.UserModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.GameEntityModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.repository.database.api.nba.INbaApiGamesDatabaseRepository

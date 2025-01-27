@@ -40,8 +40,8 @@ import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldShape
 import com.alenniboris.nba_app.presentation.uikit.theme.ESSpacerHeight
 import com.alenniboris.nba_app.presentation.uikit.theme.ESSpacerHeightDouble
-import com.alenniboris.nba_app.presentation.uikit.theme.EnterValueTextFieldTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.EnterScreenPicture
+import com.alenniboris.nba_app.presentation.uikit.theme.EnterValueTextFieldTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldColor

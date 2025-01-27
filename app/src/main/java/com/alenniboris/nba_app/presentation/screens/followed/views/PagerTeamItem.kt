@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
-import com.alenniboris.nba_app.presentation.screens.followed.IFollowedScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemPictureSectionTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionDateTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionMainTextSize
@@ -30,7 +29,7 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 fun PagerTeamItem(
     modifier: Modifier = Modifier,
     element: TeamModelDomain = TeamModelDomain(),
-    proceedIntentAction: (IFollowedScreenUpdateIntent) -> Unit = {}
+    onFollowedBtnClicked: () -> Unit = {}
 ) {
 
     Row(
@@ -46,11 +45,7 @@ fun PagerTeamItem(
 
         AppIconButton(
             isAnimated = true,
-            onClick = {
-                proceedIntentAction(
-                    IFollowedScreenUpdateIntent.proceedRemovingAction(element)
-                )
-            },
+            onClick = onFollowedBtnClicked,
             iconPainter = painterResource(iconPainterRes),
             tint = categoryItemTextColor,
             contentDescription = stringResource(R.string.following_icon_description)

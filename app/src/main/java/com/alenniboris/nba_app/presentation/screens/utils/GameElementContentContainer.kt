@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,6 +49,7 @@ import java.util.Locale
 @Preview
 fun GameElementContentContainer(
     modifier: Modifier = Modifier,
+    textColor: Color = categoryItemTextColor,
     element: GameModelDomain = GameModelDomain()
 ) {
 
@@ -57,59 +59,67 @@ fun GameElementContentContainer(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight().weight(1f),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+            .fillMaxHeight()
+            .weight(1f),
+        verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = stringResource(R.string.home_team_text),
-                color = categoryItemTextColor
-            )
-            AppItemPictureSection(
-                modifier = Modifier
-                    .fillMaxHeight(),
-                name = element.homeTeam.name,
-                logoUrl = element.homeTeam.logo
-            )
-        }
+        Text(
+            text = stringResource(R.string.home_team_text),
+        color = textColor
+        )
+        AppItemPictureSection(
+            modifier = Modifier
+                .fillMaxHeight(),
+        textColor = textColor,
+        name = element.homeTeam.name,
+        logoUrl = element.homeTeam.logo
+        )
+    }
 
 
         GameItemTextSection(
             modifier = Modifier.width(IntrinsicSize.Min),
-            dateOfTheGame = remember(element) {
-                element.dateOfTheGame.let {
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                        .format(it)
-                }
-            },
-            beginningTimeOfTheGame = remember(element) {
-                element.dateOfTheGame.let {
-                    SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                        .format(it)
-                }
-            },
-            homeTeamScore = element.homeScores?.totalScore
-                ?: stringResource(R.string.nan_text),
-            visitorsTeamScore = element.visitorsScores?.totalScore
-                ?: stringResource(R.string.nan_text),
-            gameStatus = element.gameStatus
+            textColor = textColor,
+        dateOfTheGame = remember(element) {
+            element.dateOfTheGame.let {
+                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    .format(it)
+            }
+        },
+        beginningTimeOfTheGame = remember(element) {
+            element.dateOfTheGame.let {
+                SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                    .format(it)
+            }
+        },
+        homeTeamScore = element.homeScores?.totalScore
+            ?: stringResource(R.string.nan_text),
+        visitorsTeamScore = element.visitorsScores?.totalScore
+            ?: stringResource(R.string.nan_text),
+        gameStatus = element.gameStatus
         )
 
         Column(
-            modifier = Modifier.fillMaxHeight().weight(1f),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+            .fillMaxHeight()
+            .weight(1f),
+        verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = stringResource(R.string.visitors_team_text),
-                color = categoryItemTextColor
-            )
-            AppItemPictureSection(
-                modifier = Modifier
-                    .fillMaxHeight(),
-                name = element.visitorsTeam.name,
-                logoUrl = element.visitorsTeam.logo,
-                textAlign = Alignment.End,
-                pictureAlignment = Alignment.End
-            )
+        Text(
+            text = stringResource(R.string.visitors_team_text),
+        color = textColor,
+        modifier = Modifier.align(Alignment.End)
+        )
+        AppItemPictureSection(
+            modifier = Modifier
+                .fillMaxHeight(),
+        textColor = textColor,
+        name = element.visitorsTeam.name,
+        logoUrl = element.visitorsTeam.logo,
+        textAlign = Alignment.End,
+        pictureAlignment = Alignment.End
+        )
 
         }
 
@@ -121,6 +131,7 @@ fun GameElementContentContainer(
 @Preview
 private fun GameItemTextSection(
     modifier: Modifier = Modifier,
+    textColor: Color = categoryItemTextColor,
     dateOfTheGame: String = "1111",
     beginningTimeOfTheGame: String = "0000",
     homeTeamScore: String = "",
@@ -142,14 +153,14 @@ private fun GameItemTextSection(
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionDateTextSize
                 ),
-                color = categoryItemTextColor
+                color = textColor
             )
             Text(
                 text = beginningTimeOfTheGame,
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionTimeTextSize
                 ),
-                color = categoryItemTextColor
+                color = textColor
             )
         }
 
@@ -162,7 +173,7 @@ private fun GameItemTextSection(
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionMainTextSize
                 ),
-                color = categoryItemTextColor
+                color = textColor
             )
 
             Text(
@@ -171,7 +182,7 @@ private fun GameItemTextSection(
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionMainTextSize
                 ),
-                color = categoryItemTextColor
+                color = textColor
             )
 
             Text(
@@ -179,7 +190,7 @@ private fun GameItemTextSection(
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionMainTextSize
                 ),
-                color = categoryItemTextColor
+                color = textColor
             )
         }
 
@@ -204,7 +215,7 @@ private fun GameItemTextSection(
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionDateTextSize
                 ),
-                color = categoryItemTextColor
+                color = textColor
             )
         }
 
@@ -248,7 +259,9 @@ fun Preview(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier.weight(1f).fillMaxHeight()
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
             ) {
                 Text(
                     text = stringResource(R.string.home_team_text),
@@ -271,7 +284,9 @@ fun Preview(
             )
 
             Column(
-                modifier = Modifier.weight(1f).fillMaxHeight()
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
             ) {
                 Text(
                     text = stringResource(R.string.visitors_team_text),

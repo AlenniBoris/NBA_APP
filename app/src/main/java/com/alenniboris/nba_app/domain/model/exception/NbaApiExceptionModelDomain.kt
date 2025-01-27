@@ -14,14 +14,15 @@ sealed class NbaApiExceptionModelDomain : Throwable() {
 
     data object LeagueOrTeamIsNotChosen : NbaApiExceptionModelDomain()
 
-    data object SavingElementError: NbaApiExceptionModelDomain()
+    data object SavingElementError : NbaApiExceptionModelDomain()
 
-    data object DeletingElementError: NbaApiExceptionModelDomain()
+    data object DeletingElementError : NbaApiExceptionModelDomain()
 
-    data object ErrorGettingFollowedGames: NbaApiExceptionModelDomain()
+    data object ErrorGettingFollowedGames : NbaApiExceptionModelDomain()
 
-    data object ErrorGettingFollowedTeams: NbaApiExceptionModelDomain()
+    data object ErrorGettingFollowedTeams : NbaApiExceptionModelDomain()
 
-    data object ErrorGettingFollowedPlayers: NbaApiExceptionModelDomain()
+    data object ErrorGettingFollowedPlayers : NbaApiExceptionModelDomain()
 
+    data object NoInternetException : NbaApiExceptionModelDomain()
 }

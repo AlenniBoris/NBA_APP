@@ -1,6 +1,8 @@
 package com.alenniboris.nba_app.presentation.screens.showing
 
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
@@ -45,12 +47,23 @@ interface IShowingScreenUpdateIntent {
 
     data class UpdatePersonalActionsVisibility(val isVisible: Boolean) : IShowingScreenUpdateIntent
 
-    data class UpdateRequestTypeChooserVisibility(val isVisible: Boolean): IShowingScreenUpdateIntent
+    data class UpdateRequestTypeChooserVisibility(val isVisible: Boolean) :
+        IShowingScreenUpdateIntent
 
-    data class UpdateRequestType(val newType: INbaApiElementsRequestType): IShowingScreenUpdateIntent
+    data class UpdateRequestType(val newType: INbaApiElementsRequestType) :
+        IShowingScreenUpdateIntent
 
-    data object SearchForItemsAfterRequestType: IShowingScreenUpdateIntent
+    data object SearchForItemsAfterRequestType : IShowingScreenUpdateIntent
 
-    data class UpdateSelectedTeam(val newTeam: TeamModelDomain): IShowingScreenUpdateIntent
+    data class UpdateSelectedTeam(val newTeam: TeamModelDomain) : IShowingScreenUpdateIntent
+
+    data class ProceedNavigationToGameDetailsScreen(val game: GameModelDomain) :
+        IShowingScreenUpdateIntent
+
+    data class ProceedNavigationToTeamDetailsScreen(val team: TeamModelDomain) :
+        IShowingScreenUpdateIntent
+
+    data class ProceedNavigationToPlayerDetailsScreen(val player: PlayerModelDomain) :
+        IShowingScreenUpdateIntent
 
 }

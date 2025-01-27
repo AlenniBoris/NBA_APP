@@ -21,10 +21,11 @@ import com.alenniboris.nba_app.data.source.local.model.api.nba.TeamEntityModelDa
         PlayerEntityModelData::class,
         TeamEntityModelData::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2, spec = NbaApiDatabase.MigrationToVersion2::class)
+        AutoMigration(from = 1, to = 2, spec = NbaApiDatabase.MigrationToVersion2::class),
+        AutoMigration(from = 2, to = 3, spec = NbaApiDatabase.MigrationToVersion3::class)
     ]
 )
 abstract class NbaApiDatabase : RoomDatabase() {
@@ -38,6 +39,8 @@ abstract class NbaApiDatabase : RoomDatabase() {
     )
     class MigrationToVersion2 : AutoMigrationSpec
 
+    class MigrationToVersion3 : AutoMigrationSpec
+
     companion object {
         fun get(
             apl: Application
@@ -46,7 +49,8 @@ abstract class NbaApiDatabase : RoomDatabase() {
                 context = apl,
                 klass = NbaApiDatabase::class.java,
                 name = NbaDatabaseValues.DATABASE_FILE
-            ).build()
+            )
+                .build()
     }
 
 }

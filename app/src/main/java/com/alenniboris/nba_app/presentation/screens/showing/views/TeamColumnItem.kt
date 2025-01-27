@@ -34,7 +34,6 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppItemPictureSection
 fun TeamColumnItem(
     modifier: Modifier = Modifier,
     element: TeamModelDomain? = null,
-    onGameCardClicked: () -> Unit = {},
     onFollowTeamButtonClicked: () -> Unit = {}
 ) {
 

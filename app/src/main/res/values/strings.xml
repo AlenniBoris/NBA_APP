@@ -32,6 +32,7 @@
     <string name="following_icon_description">Icon following</string>
     <string name="team_picture_description">Team picture</string>
     <string name="empty_screen_icon_description">Empty icon</string>
+    <string name="alert_screen_icon_description">Alert icon</string>
     <string name="progress_bar_animation_description">Rotation progress animation</string>
     <string name="home_team_text">Home</string>
     <string name="visitors_team_text">Visitors</string>
@@ -58,12 +59,29 @@
     <string name="league_not_national_text">League is not national</string>
     <string name="league_national_no_text_text">No info if is national</string>
     <string name="nothing_found">Nothing found</string>
+    <string name="alert_screen_text">Something unknown happened. Try this operation again</string>
     <string name="empty_leagues_text">Choose country</string>
     <string name="empty_teams_text">Choose league</string>
     <string name="action_to_followed_successful">Operation successful</string>
     <string name="followed_screen_header">Followed</string>
     <string name="nothing_followed_category">Nothing is followed in this category</string>
     <string name="versus_text">VS</string>
+    <string name="played_minutes_text">Played minutes</string>
+    <string name="assists_text">Assists</string>
+    <string name="steals_text">Steals</string>
+    <string name="blocks_text">Blocks</string>
+    <string name="turnovers_text">Turnovers</string>
+    <string name="personal_fouls_text">Personal fouls</string>
+    <string name="points_text">Points</string>
+    <string name="field_goals_text">Field goals</string>
+    <string name="attempts_text">Attempts</string>
+    <string name="total_text">Total</string>
+    <string name="percentage_text">Percentage</string>
+    <string name="three_point_goals_text">Three point goals</string>
+    <string name="free_throws_goals_text">Free throws goals</string>
+    <string name="rebounds_text">Rebounds</string>
+    <string name="defence_text">Defence</string>
+    <string name="offence_text">Offence</string>
 
     <string name="games_category">Games</string>
     <string name="teams_category">Teams</string>

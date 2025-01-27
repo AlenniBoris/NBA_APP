@@ -6,4 +6,4 @@ data class LeagueModelDomain(
     val type: String? = null,
     val logo: String? = null,
     val country: CountryModelDomain? = null,
-): IShowingFilterModel
+) : IShowingFilterModel

@@ -29,7 +29,7 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 fun PagerPlayerItem(
     modifier: Modifier = Modifier,
     element: PlayerModelDomain = PlayerModelDomain(),
-    proceedIntentAction: (IFollowedScreenUpdateIntent) -> Unit = {}
+    onFollowedBtnClicked: () -> Unit = {}
 ) {
 
     Row(
@@ -45,11 +45,7 @@ fun PagerPlayerItem(
 
         AppIconButton(
             isAnimated = true,
-            onClick = {
-                proceedIntentAction(
-                    IFollowedScreenUpdateIntent.proceedRemovingAction(element)
-                )
-            },
+            onClick = onFollowedBtnClicked,
             iconPainter = painterResource(iconPainterRes),
             tint = categoryItemTextColor,
             contentDescription = stringResource(R.string.following_icon_description)

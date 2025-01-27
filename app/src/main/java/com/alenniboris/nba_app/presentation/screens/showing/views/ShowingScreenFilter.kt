@@ -25,8 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
+import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.showing.state.ShowingFilter
 import com.alenniboris.nba_app.presentation.uikit.theme.FilterDragHandleHeight
 import com.alenniboris.nba_app.presentation.uikit.theme.FilterDragHandlePadding
@@ -190,7 +190,7 @@ private fun FilterColumn(
                 currentSelectedTeam = mutableFilter.selectedTeam,
                 isTeamsLoading = mutableFilter.isTeamsLoading,
 
-                proceedIntentAction= proceedIntentAction
+                proceedIntentAction = proceedIntentAction
             )
         }
 

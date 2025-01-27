@@ -45,6 +45,12 @@ interface INbaApiService {
         @Query(NbaApiValues.ID_PARAMETER) gameId: String
     ): GameStatisticsForPlayersResponseModel
 
+    @GET(NbaApiValues.GAME_REQUEST)
+    @Headers(NbaApiValues.API_HEADER + BuildConfig.API_KEY)
+    suspend fun getDataForGameById(
+        @Query(NbaApiValues.ID_PARAMETER) gameId: Int
+    ): GameResponseModel
+
     @GET(NbaApiValues.TEAM_STATISTICS_REQUEST)
     @Headers(NbaApiValues.API_HEADER + BuildConfig.API_KEY)
     suspend fun getTeamStatisticsByTeamIdLeagueSeason(

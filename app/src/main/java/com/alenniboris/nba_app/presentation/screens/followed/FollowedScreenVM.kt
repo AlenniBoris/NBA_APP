@@ -3,7 +3,10 @@ package com.alenniboris.nba_app.presentation.screens.followed
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.toGameModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.toPlayerModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.toTeamModelDomain
@@ -28,9 +31,7 @@ class FollowedScreenVM(
     val event = _event.flow
 
     init {
-
         viewModelScope.launch(Dispatchers.IO) {
-
             nbaApiManager.followedGames
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
@@ -77,25 +78,48 @@ class FollowedScreenVM(
 
     fun proceedUpdateIntent(intent: IFollowedScreenUpdateIntent) {
         when (intent) {
-            is IFollowedScreenUpdateIntent.proceedRemovingAction -> deleteElementFromDatabase(intent.element)
-            is IFollowedScreenUpdateIntent.proceedOpeningElementDetailsScreenAction -> navigateToElementDetailsScreen(
+            is IFollowedScreenUpdateIntent.ProceedRemovingFromFollowedAction -> deleteElementFromDatabase(
                 intent.element
             )
 
-            is IFollowedScreenUpdateIntent.navigateToPreviousScreen -> navigateToPreviousScreen()
+            is IFollowedScreenUpdateIntent.ProceedNavigationToGameDetailsScreen -> navigateToGameDetailsScreen(
+                intent.game
+            )
+
+            is IFollowedScreenUpdateIntent.ProceedNavigationToTeamDetailsScreen -> navigateToTeamDetailsScreen(
+                intent.team
+            )
+
+            is IFollowedScreenUpdateIntent.ProceedNavigationToPlayerDetailsScreen -> navigateToPlayerDetailsScreen(
+                intent.player
+            )
+
+            is IFollowedScreenUpdateIntent.NavigateToPreviousScreen -> navigateToPreviousScreen()
         }
+    }
+
+    private fun navigateToGameDetailsScreen(game: GameModelDomain) {
+        _event.emit(
+            IFollowedScreenEvent.NavigateToGameDetailsPage(game = game)
+        )
+    }
+
+    private fun navigateToTeamDetailsScreen(team: TeamModelDomain) {
+        _event.emit(
+            IFollowedScreenEvent.NavigateToTeamDetailsPage(team = team)
+        )
+    }
+
+    private fun navigateToPlayerDetailsScreen(player: PlayerModelDomain) {
+        _event.emit(
+            IFollowedScreenEvent.NavigateToPlayerDetailsPage(player = player)
+        )
     }
 
     private fun deleteElementFromDatabase(element: IStateModel) {
         viewModelScope.launch(Dispatchers.IO) {
             nbaApiManager.proceedElementIsFollowingUpdate(element)
         }
-    }
-
-    private fun navigateToElementDetailsScreen(element: IStateModel) {
-        _event.emit(
-            IFollowedScreenEvent.NavigateToElementDetailsPage(element)
-        )
     }
 
     private fun navigateToPreviousScreen() {

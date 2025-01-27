@@ -28,4 +28,8 @@ interface INbaApiGamesNetworkRepository {
         game: GameModelDomain
     ): CustomResultModelDomain<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain>
 
+    suspend fun getGameDataById(
+        id: Int
+    ): CustomResultModelDomain<GameModelDomain, NbaApiExceptionModelDomain>
+
 }

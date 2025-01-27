@@ -28,7 +28,6 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 fun PlayerColumnItem(
     modifier: Modifier = Modifier,
     element: PlayerModelDomain? = null,
-    onGameCardClicked: () -> Unit = {},
     onFollowPlayerButtonClicked: () -> Unit = {}
 ) {
 

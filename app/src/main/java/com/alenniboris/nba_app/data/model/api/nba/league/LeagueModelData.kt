@@ -15,7 +15,7 @@ data class LeagueModelData(
     val season: String?,
     @SerializedName("seasons")
     val playedSeasons: List<SeasonModelData?>?
-){
+) {
     data class SeasonModelData(
         val season: String?,
         @SerializedName("start")
