@@ -1,10 +1,10 @@
 package com.alenniboris.nba_app.data.model.api.nba.player
 
-import android.util.Log
 import com.alenniboris.nba_app.data.model.api.nba.game.GoalsStatisticModelData
 import com.alenniboris.nba_app.data.model.api.nba.game.ReboundsModelData
 import com.alenniboris.nba_app.data.model.api.nba.game.toModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayerStatisticsModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.gson.annotations.SerializedName
 
 data class StatisticsForPlayerModelData(
@@ -63,6 +63,6 @@ fun StatisticsForPlayerModelData.toModelDomain(): PlayerStatisticsModelDomain? =
         earnedPoints = this.points?.toInt()
     )
 }.getOrElse {
-    Log.e("MappingError", "StatisticsForPlayerModelData")
+    LogPrinter.printLog("MappingError", "StatisticsForPlayerModelData")
     null
 }

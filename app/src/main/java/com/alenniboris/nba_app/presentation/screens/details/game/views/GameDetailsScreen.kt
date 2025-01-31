@@ -194,7 +194,7 @@ private fun GameDetailsScreenUi(
 
 @Composable
 @Preview
-fun GameDetailsTabSection(
+private fun GameDetailsTabSection(
     isLoading: Boolean = true,
     currentlyViewedTeam: GameTeamType = GameTeamType.Home,
     playersStatisticsModelDomain: List<PlayerStatisticsModelDomain> = emptyList(),
@@ -216,7 +216,7 @@ fun GameDetailsTabSection(
                 modifier = Modifier.fillMaxSize(),
             )
         } else {
-            CurrentViewedStatisticsContainer(
+            CurrentViewedGameStatisticsContainer(
                 playersStatisticsModelDomain = playersStatisticsModelDomain,
                 teamStatisticsModelDomain = teamStatisticsModelDomain,
                 proceedIntentAction = proceedIntentAction
@@ -280,7 +280,7 @@ private fun CurrentViewedTeamSelectionTabRow(
 
 @Composable
 @Preview
-private fun CurrentViewedStatisticsContainer(
+private fun CurrentViewedGameStatisticsContainer(
     playersStatisticsModelDomain: List<PlayerStatisticsModelDomain> = emptyList(),
     teamStatisticsModelDomain: TeamInGameStatisticsModelDomain? = TeamInGameStatisticsModelDomain(),
     proceedIntentAction: (IGameDetailsScreenUpdateIntent) -> Unit = {}

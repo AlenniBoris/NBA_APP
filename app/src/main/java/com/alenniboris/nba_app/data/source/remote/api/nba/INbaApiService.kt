@@ -61,6 +61,12 @@ interface INbaApiService {
 
     @GET(NbaApiValues.TEAM_REQUEST)
     @Headers(NbaApiValues.API_HEADER + BuildConfig.API_KEY)
+    suspend fun getDataForTeamById(
+        @Query(NbaApiValues.ID_PARAMETER) teamId: Int
+    ): TeamResponseModel
+
+    @GET(NbaApiValues.TEAM_REQUEST)
+    @Headers(NbaApiValues.API_HEADER + BuildConfig.API_KEY)
     suspend fun getTeamsByCountry(
         @Query(NbaApiValues.COUNTRY_ID_PARAMETER) countryId: Int
     ): TeamResponseModel

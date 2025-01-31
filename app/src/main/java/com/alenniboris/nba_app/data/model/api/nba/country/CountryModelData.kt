@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.model.api.nba.country
 
-import android.util.Log
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 
 data class CountryModelData(
     val id: String?,
@@ -18,6 +18,6 @@ fun CountryModelData.toModelDomain(): CountryModelDomain? = runCatching {
         flag = this.flag
     )
 }.getOrElse {
-    Log.e("MappingError", "CountryModelData error: \n ${it.stackTraceToString()}")
+    LogPrinter.printLog("MappingError", "CountryModelData error: \n ${it.stackTraceToString()}")
     null
 }

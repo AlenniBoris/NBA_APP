@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.model.api.nba.game
 
-import android.util.Log
 import com.alenniboris.nba_app.domain.model.api.nba.ScoresModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.gson.annotations.SerializedName
 
 data class ScoresModelData(
@@ -29,6 +29,6 @@ fun ScoresModelData.toModelDomain(): ScoresModelDomain? = runCatching {
         totalScore = this.totalScore,
     )
 }.getOrElse {
-    Log.e("MappingError", "ScoresModelData error: \n ${it.stackTraceToString()}")
+    LogPrinter.printLog("MappingError", "ScoresModelData error: \n ${it.stackTraceToString()}")
     null
 }

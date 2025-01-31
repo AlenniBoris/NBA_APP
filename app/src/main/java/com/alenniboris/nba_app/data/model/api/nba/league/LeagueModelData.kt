@@ -1,9 +1,9 @@
 package com.alenniboris.nba_app.data.model.api.nba.league
 
-import android.util.Log
 import com.alenniboris.nba_app.data.model.api.nba.country.CountryModelData
 import com.alenniboris.nba_app.data.model.api.nba.country.toModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.gson.annotations.SerializedName
 
 data class LeagueModelData(
@@ -54,7 +54,7 @@ fun LeagueModelData.toModelDomain(): LeagueModelDomain? = runCatching {
         country = this.country?.toModelDomain()
     )
 }.getOrElse {
-    Log.e("MappingError", "LeagueModelData error: \n ${it.stackTraceToString()}")
+    LogPrinter.printLog("MappingError", "LeagueModelData error: \n ${it.stackTraceToString()}")
     null
 }
 

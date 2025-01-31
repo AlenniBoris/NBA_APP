@@ -17,17 +17,19 @@ import androidx.compose.ui.unit.sp
 import com.alenniboris.nba_app.presentation.uikit.theme.CustomDividerHeight
 import com.alenniboris.nba_app.presentation.uikit.theme.CustomDividerStartPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.CustomDividerWidth
+import com.alenniboris.nba_app.presentation.uikit.theme.DividerWithHeaderTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.rowFilterTextColor
 
 @Composable
 @Preview
 fun AppDividerWithHeader(
+    modifier: Modifier = Modifier,
     headerText: String = "",
     insidesColor: Color = rowFilterTextColor
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(
@@ -41,7 +43,7 @@ fun AppDividerWithHeader(
             text = headerText,
             color = insidesColor,
             style = bodyStyle.copy(
-                fontSize = 20.sp
+                fontSize = DividerWithHeaderTextSize
             )
         )
         Spacer(

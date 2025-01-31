@@ -8,7 +8,6 @@ import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,30 +36,13 @@ class GameDetailsScreenVM(
 
     init {
         if (isReloadingDataNeeded) {
-            viewModelScope.launch {
-                _screenState.update { it.copy(isGameDataReloading = true) }
-
-                when (val gameRes =
-                    nbaApiManager.getGameDataById(id = _screenState.value.game.id)) {
-                    is CustomResultModelDomain.Success -> {
-                        _screenState.update { state ->
-                            state.copy(game = gameRes.result)
-                        }
-                    }
-
-                    is CustomResultModelDomain.Error -> {
-                        _event.emit(
-                            IGameDetailsScreenEvent.ShowToastMessage(
-                                gameRes.exception.toUiMessageString()
-                            )
-                        )
-                    }
-                }
-
-                _screenState.update { it.copy(isGameDataReloading = false) }
-            }
+            reloadDataForGame(
+                game = _screenState.value.game
+            )
         }
-        loadGameStatistics(_screenState.value.game)
+        loadGameStatistics(
+            game = _screenState.value.game
+        )
     }
 
     init {
@@ -83,6 +65,31 @@ class GameDetailsScreenVM(
         }
     }
 
+    private fun reloadDataForGame(game: GameModelDomain) {
+        viewModelScope.launch {
+            _screenState.update { it.copy(isGameDataReloading = true) }
+
+            when (val gameRes =
+                nbaApiManager.getGameDataById(id = game.id)) {
+                is CustomResultModelDomain.Success -> {
+                    _screenState.update { state ->
+                        state.copy(game = gameRes.result)
+                    }
+                }
+
+                is CustomResultModelDomain.Error -> {
+                    _event.emit(
+                        IGameDetailsScreenEvent.ShowToastMessage(
+                            gameRes.exception.toUiMessageString()
+                        )
+                    )
+                }
+            }
+
+            _screenState.update { it.copy(isGameDataReloading = false) }
+        }
+    }
+
     fun proceedUpdateIntent(intent: IGameDetailsScreenUpdateIntent) = when (intent) {
         IGameDetailsScreenUpdateIntent.ProceedIsFollowedAction -> proceedIsFollowedAction()
 
@@ -94,10 +101,8 @@ class GameDetailsScreenVM(
     }
 
     private fun proceedIsFollowedAction() {
-        _screenState.value.game.let {
-            viewModelScope.launch {
-                nbaApiManager.proceedElementIsFollowingUpdate(it)
-            }
+        viewModelScope.launch {
+            nbaApiManager.proceedElementIsFollowingUpdate(_screenState.value.game)
         }
     }
 

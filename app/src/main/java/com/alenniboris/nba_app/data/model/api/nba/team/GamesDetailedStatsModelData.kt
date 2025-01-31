@@ -1,8 +1,8 @@
 package com.alenniboris.nba_app.data.model.api.nba.team
 
-import android.util.Log
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.DetailedStatsModelDomain
-import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.GamesStatsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.GamesDetailedStatsModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.gson.annotations.SerializedName
 
 data class GamesDetailedStatsModelData(
@@ -24,17 +24,17 @@ fun DetailedStatsModelData.toModelDomain(): DetailedStatsModelDomain? = runCatch
         total = this.total?.toInt()
     )
 }.getOrElse {
-    Log.e("MappingError", "DetailedStatsModelData")
+    LogPrinter.printLog("MappingError", "DetailedStatsModelData")
     null
 }
 
-fun GamesDetailedStatsModelData.toModelDomain(): GamesStatsModelDomain? = runCatching {
-    GamesStatsModelDomain(
+fun GamesDetailedStatsModelData.toModelDomain(): GamesDetailedStatsModelDomain? = runCatching {
+    GamesDetailedStatsModelDomain(
         all = this.all?.toModelDomain(),
         away = this.away?.toModelDomain(),
         home = this.home?.toModelDomain()
     )
 }.getOrElse {
-    Log.e("MappingError", "GamesStatsModelData")
+    LogPrinter.printLog("MappingError", "GamesStatsModelData")
     null
 }

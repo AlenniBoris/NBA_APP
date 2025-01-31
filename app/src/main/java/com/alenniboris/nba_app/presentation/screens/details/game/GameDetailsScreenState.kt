@@ -8,6 +8,5 @@ data class GameDetailsScreenState(
     val gameStatistics: GameStatisticsModelDomain = GameStatisticsModelDomain(),
     val isGameDataReloading: Boolean = false,
     val isGameStatisticsLoading: Boolean = false,
-    val isDetailsVisible: Boolean = false,
     val currentlyViewedTeam: GameTeamType = GameTeamType.Home,
 )

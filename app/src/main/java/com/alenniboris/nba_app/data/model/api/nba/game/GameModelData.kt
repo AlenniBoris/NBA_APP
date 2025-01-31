@@ -1,10 +1,10 @@
 package com.alenniboris.nba_app.data.model.api.nba.game
 
-import android.util.Log
 import com.alenniboris.nba_app.data.model.api.nba.team.TeamModelData
 import com.alenniboris.nba_app.data.model.api.nba.team.toModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.utils.GameStatus
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -117,6 +117,6 @@ fun GameModelData.toModelDomain(): GameModelDomain? = runCatching {
         visitorsScores = this.scoresData?.awayTeam?.toModelDomain(),
     )
 }.getOrElse {
-    Log.e("MappingError", "GameModelData error: \n ${it.stackTraceToString()}")
+    LogPrinter.printLog("MappingError", "GameModelData error: \n ${it.stackTraceToString()}")
     null
 }

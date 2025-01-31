@@ -1,9 +1,9 @@
 package com.alenniboris.nba_app.data.model.api.nba.team
 
-import android.util.Log
 import com.alenniboris.nba_app.data.model.api.nba.country.CountryModelData
 import com.alenniboris.nba_app.data.model.api.nba.country.toModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.gson.annotations.SerializedName
 
 data class TeamModelData(
@@ -26,9 +26,9 @@ fun TeamModelData.toModelDomain(): TeamModelDomain? = runCatching {
         name = this.name!!,
         isNational = this.national?.toBoolean(),
         logo = this.logo,
-        country = this.country?.toModelDomain()
+        country = this.country?.toModelDomain()!!
     )
 }.getOrElse {
-    Log.e("MappingError", "TeamModelData error: \n ${it.stackTraceToString()}")
+    LogPrinter.printLog("MappingError", "TeamModelData error: \n ${it.stackTraceToString()}")
     null
 }

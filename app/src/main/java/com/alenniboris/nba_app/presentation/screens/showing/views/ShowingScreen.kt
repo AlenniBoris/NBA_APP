@@ -53,6 +53,7 @@ import com.alenniboris.nba_app.presentation.mappers.toStringMessage
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
 import com.alenniboris.nba_app.presentation.navigation.Route
 import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
+import com.alenniboris.nba_app.presentation.screens.details.team.views.getTeamDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenEvent
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
@@ -132,7 +133,7 @@ fun ShowingScreen(
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToTeamDetailsPage>().collect {
-                navHostController.navigate(Route.TeamDetailsScreenRoute.route)
+                navHostController.navigate(getTeamDetailsScreenRoute(team = it.team))
             }
         }
 

@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.model.api.nba.team
 
-import android.util.Log
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.TeamEarnedPointsModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.gson.annotations.SerializedName
 
 data class TeamEarnedPointsModelData(
@@ -18,6 +18,6 @@ fun TeamEarnedPointsModelData.toModelDomain(): TeamEarnedPointsModelDomain? = ru
         playingAgainst = this.playingAgainst?.toModelDomain()
     )
 }.getOrElse {
-    Log.e("MappingError", "TeamEarnedPointsModelData")
+    LogPrinter.printLog("MappingError", "TeamEarnedPointsModelData")
     null
 }

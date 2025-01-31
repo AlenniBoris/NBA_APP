@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.model.api.nba.player
 
-import android.util.Log
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 
 data class PlayerModelData(
     val id: String?,
@@ -23,6 +23,6 @@ fun PlayerModelData.toModelDomain(): PlayerModelDomain? = runCatching {
         age = this.age?.toInt()
     )
 }.getOrElse {
-    Log.e("MappingError", "LeagueModelData error: \n ${it.stackTraceToString()}")
+    LogPrinter.printLog("MappingError", "LeagueModelData error: \n ${it.stackTraceToString()}")
     null
 }

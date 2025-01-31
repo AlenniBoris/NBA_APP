@@ -42,4 +42,8 @@ interface INbaApiTeamsNetworkRepository {
         season: SeasonModelDomain?
     ): CustomResultModelDomain<TeamStatisticsModelDomain, NbaApiExceptionModelDomain>
 
+    suspend fun getDataForTeamById(
+        id: Int
+    ): CustomResultModelDomain<TeamModelDomain, NbaApiExceptionModelDomain>
+
 }

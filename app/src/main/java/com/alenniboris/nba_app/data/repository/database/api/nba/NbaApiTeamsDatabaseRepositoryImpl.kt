@@ -25,8 +25,15 @@ class NbaApiTeamsDatabaseRepositoryImpl(
     ): CustomResultModelDomain<Unit, NbaApiExceptionModelDomain> =
         withContext(dispatchers.IO) {
             user?.let {
-                nbaApiTeamsDao.addTeamToDatabase(team.toEntityModel(it.userUid))
-                return@withContext CustomResultModelDomain.Success(Unit)
+                val entity = team.toEntityModel(it.userUid)
+                return@withContext if (entity != null) {
+                    nbaApiTeamsDao.addTeamToDatabase(entity)
+                    CustomResultModelDomain.Success(Unit)
+                } else {
+                    CustomResultModelDomain.Error(
+                        NbaApiExceptionModelDomain.SavingElementError
+                    )
+                }
             }
             return@withContext CustomResultModelDomain.Error(
                 NbaApiExceptionModelDomain.SavingElementError
@@ -39,8 +46,15 @@ class NbaApiTeamsDatabaseRepositoryImpl(
     ): CustomResultModelDomain<Unit, NbaApiExceptionModelDomain> =
         withContext(dispatchers.IO) {
             user?.let {
-                nbaApiTeamsDao.deleteTeamFromDatabase(team.toEntityModel(it.userUid))
-                return@withContext CustomResultModelDomain.Success(Unit)
+                val entity = team.toEntityModel(it.userUid)
+                return@withContext if (entity != null) {
+                    nbaApiTeamsDao.deleteTeamFromDatabase(entity)
+                    CustomResultModelDomain.Success(Unit)
+                } else {
+                    CustomResultModelDomain.Error(
+                        NbaApiExceptionModelDomain.SavingElementError
+                    )
+                }
             }
             return@withContext CustomResultModelDomain.Error(
                 NbaApiExceptionModelDomain.SavingElementError

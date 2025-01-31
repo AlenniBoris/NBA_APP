@@ -1,6 +1,5 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import android.util.Log
 import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.team.toModelDomain
 import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
@@ -18,6 +17,7 @@ import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisti
 import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiTeamsNetworkRepository
 import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
 import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import kotlinx.coroutines.withContext
 
 class NbaApiTeamsNetworkRepositoryImpl(
@@ -183,7 +183,7 @@ class NbaApiTeamsNetworkRepositoryImpl(
                         ?.fromJson<TeamStatisticsResponseErrorsModelData>()
                 }.getOrNull()?.let {
                     return@runCatching CustomResultModelDomain.Error(
-                        NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
+                        NbaApiExceptionModelDomain.TryAnotherSeason
                     )
                 }
 
@@ -197,9 +197,27 @@ class NbaApiTeamsNetworkRepositoryImpl(
                 )
 
             }.getOrElse { exception ->
-                Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
+                LogPrinter.printLog("NbaApiRepositoryImpl", exception.stackTraceToString())
                 CustomResultModelDomain.Error(exception.toNbaApiExceptionModelDomain())
             }
+        }
+
+    override suspend fun getDataForTeamById(
+        id: Int
+    ): CustomResultModelDomain<TeamModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            return@withContext NbaApiNetworkRepositoryFunctions.getElementFromApi(
+                apiCall = { apiService.getDataForTeamById(teamId = id) },
+                dispatcher = dispatchers.IO,
+                transform = { list ->
+                    list?.firstNotNullOfOrNull { team ->
+                        team?.toModelDomain()
+                    }
+                },
+                errorsParser = { json ->
+                    json?.fromJson<TeamResponseErrorsModelData>()
+                }
+            )
         }
 
 }

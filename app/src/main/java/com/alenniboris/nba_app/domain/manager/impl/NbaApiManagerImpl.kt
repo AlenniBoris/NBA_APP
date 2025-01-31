@@ -151,7 +151,36 @@ class NbaApiManagerImpl(
         id: Int
     ): CustomResultModelDomain<GameModelDomain, NbaApiExceptionModelDomain> =
         withContext(dispatchers.IO) {
-            return@withContext nbaApiGamesNetworkRepository.getGameDataById(id = id)
+            return@withContext when (val res =
+                nbaApiGamesNetworkRepository.getGameDataById(id = id)) {
+                is CustomResultModelDomain.Success -> {
+                    val followedIds = followedGames.firstOrNull().orEmpty().map { it.gameId }
+                    val game = res.result
+                    CustomResultModelDomain.Success(
+                        game.copy(isFollowed = followedIds.contains(game.id))
+                    )
+                }
+
+                is CustomResultModelDomain.Error -> res
+            }
+        }
+
+    override suspend fun getTeamDataById(
+        id: Int
+    ): CustomResultModelDomain<TeamModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            return@withContext when (val res =
+                nbaApiTeamsNetworkRepository.getDataForTeamById(id = id)) {
+                is CustomResultModelDomain.Success -> {
+                    val followedIds = followedTeams.firstOrNull().orEmpty().map { it.teamId }
+                    val team = res.result
+                    CustomResultModelDomain.Success(
+                        team.copy(isFollowed = followedIds.contains(team.id))
+                    )
+                }
+
+                is CustomResultModelDomain.Error -> res
+            }
         }
 
     override suspend fun makeRequestForListOfElements(

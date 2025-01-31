@@ -1,11 +1,11 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import android.util.Log
 import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.NbaApiResponse
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -45,7 +45,7 @@ object NbaApiNetworkRepositoryFunctions {
                 CustomResultModelDomain.Success<List<E>, NbaApiExceptionModelDomain>(resultList)
 
             }.getOrElse { exception ->
-                Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
+                LogPrinter.printLog("NbaApiRepositoryImpl", exception.stackTraceToString())
                 CustomResultModelDomain.Error(exception.toNbaApiExceptionModelDomain())
             }
         }
@@ -84,7 +84,7 @@ object NbaApiNetworkRepositoryFunctions {
                 CustomResultModelDomain.Success<E, NbaApiExceptionModelDomain>(element)
 
             }.getOrElse { exception ->
-                Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
+                LogPrinter.printLog("NbaApiRepositoryImpl", exception.stackTraceToString())
                 CustomResultModelDomain.Error(exception.toNbaApiExceptionModelDomain())
             }
         }

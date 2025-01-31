@@ -25,4 +25,6 @@ sealed class NbaApiExceptionModelDomain : Throwable() {
     data object ErrorGettingFollowedPlayers : NbaApiExceptionModelDomain()
 
     data object NoInternetException : NbaApiExceptionModelDomain()
+
+    data object TryAnotherSeason : NbaApiExceptionModelDomain()
 }

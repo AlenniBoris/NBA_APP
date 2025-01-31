@@ -8,8 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
 import com.alenniboris.nba_app.presentation.screens.details.game.views.GameDetailsScreen
+import com.alenniboris.nba_app.presentation.screens.details.team.views.TeamDetailsScreen
 import com.alenniboris.nba_app.presentation.screens.enter.views.EnterScreen
 import com.alenniboris.nba_app.presentation.screens.followed.views.FollowedScreen
 import com.alenniboris.nba_app.presentation.screens.showing.views.ShowingScreen
@@ -58,6 +60,26 @@ fun NavigationGraph(
 
             GameDetailsScreen(
                 game = game,
+                isReloadingDataNeeded = isReloadingNeeded,
+                navHostController = navController,
+            )
+        }
+
+        composable(
+            route = Route.TeamDetailsScreenRoute.route,
+            arguments = listOf(
+                navArgument("team") { type = NavType.StringType },
+                navArgument("isReloadingNeeded") { type = NavType.BoolType }
+            )
+        ) { backStackEntry ->
+
+            val teamStr = backStackEntry.arguments?.getString("team")!!
+            val team = Uri.decode(teamStr).fromJson<TeamModelDomain>()
+            val isReloadingNeeded =
+                backStackEntry.arguments?.getBoolean("isReloadingNeeded")!!
+
+            TeamDetailsScreen(
+                team = team,
                 isReloadingDataNeeded = isReloadingNeeded,
                 navHostController = navController,
             )

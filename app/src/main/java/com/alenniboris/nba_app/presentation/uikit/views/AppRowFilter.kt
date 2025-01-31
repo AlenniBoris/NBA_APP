@@ -37,6 +37,7 @@ import com.alenniboris.nba_app.presentation.uikit.theme.rowSelectedItemTextColor
 @Preview
 fun AppRowFilter(
     modifier: Modifier = Modifier,
+    headerColor: Color = rowFilterTextColor,
     itemsLazyListState: LazyListState = rememberLazyListState(),
     headerText: String = "Header",
     emptyText: String = "Choose smth",
@@ -55,7 +56,11 @@ fun AppRowFilter(
     Column(
         modifier = modifier
     ) {
-        AppDividerWithHeader(headerText = headerText)
+        AppDividerWithHeader(
+            modifier = Modifier.fillMaxWidth(),
+            headerText = headerText,
+            insidesColor = headerColor
+        )
 
         if (isLoading) {
             AppProgressBar(

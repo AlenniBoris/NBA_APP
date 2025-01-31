@@ -54,6 +54,7 @@ val FilterSheetFilterColumnMargin =
 val CustomDividerWidth = 10.dp
 val CustomDividerHeight = 1.dp
 val CustomDividerStartPadding = PaddingValues(start = 5.dp)
+val DividerWithHeaderTextSize = 20.sp
 
 //Custom row filter
 val RowFilterTopPadding = PaddingValues(top = 10.dp)
@@ -77,7 +78,7 @@ val GameColumnItemTextSectionVerticalMargin = PaddingValues(top = 5.dp)
 val GameColumnItemTextSectionDateTextSize = 15.sp
 val GameColumnItemTextSectionTimeTextSize = 10.sp
 val GameColumnItemTextSectionMainTextSize = 25.sp
-val GameColumnItemTextSectionVerticalRowPadding = PaddingValues(vertical = 5.dp)
+val GameColumnItemTextSectionVerticalRowPadding = PaddingValues(vertical = 10.dp)
 val GameColumnItemTextSectionHorizontalRowPadding = PaddingValues(horizontal = 5.dp)
 val GameColumnItemTextSectionStartTextPadding = PaddingValues(start = 5.dp)
 val GameColumnItemTextSectionBoxSize = 24.dp

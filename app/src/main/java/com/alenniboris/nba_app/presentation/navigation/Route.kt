@@ -17,7 +17,7 @@ sealed class Route(
     )
 
     data object TeamDetailsScreenRoute : Route(
-        route = "team_details_screen/{team}",
+        route = "team_details_screen/{team}&{isReloadingNeeded}",
         baseRoute = "team_details_screen/"
     )
 

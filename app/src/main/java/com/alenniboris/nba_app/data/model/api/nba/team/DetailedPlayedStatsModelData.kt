@@ -1,10 +1,8 @@
 package com.alenniboris.nba_app.data.model.api.nba.team
 
-import android.util.Log
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.DetailedPlayedStatsModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.gson.annotations.SerializedName
-
-
 
 
 data class DetailedPlayedStatsModelData(
@@ -20,6 +18,6 @@ fun DetailedPlayedStatsModelData.toModelDomain(): DetailedPlayedStatsModelDomain
         total = this.total?.toInt()
     )
 }.getOrElse {
-    Log.e("MappingError", "DetailedPlayedStatsModelData")
+    LogPrinter.printLog("MappingError", "DetailedPlayedStatsModelData")
     null
 }

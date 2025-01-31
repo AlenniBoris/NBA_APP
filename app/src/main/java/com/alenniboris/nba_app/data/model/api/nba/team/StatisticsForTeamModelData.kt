@@ -1,12 +1,12 @@
 package com.alenniboris.nba_app.data.model.api.nba.team
 
 
-import android.util.Log
 import com.alenniboris.nba_app.data.model.api.nba.country.CountryModelData
 import com.alenniboris.nba_app.data.model.api.nba.country.toModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.league.LeagueModelData
 import com.alenniboris.nba_app.data.model.api.nba.league.toModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 
 data class StatisticsForTeamModelData(
     val league: LeagueModelData?,
@@ -25,6 +25,6 @@ fun StatisticsForTeamModelData.toModelDomain(): TeamStatisticsModelDomain? = run
         points = this.points?.toModelDomain()
     )
 }.getOrElse {
-    Log.e("MappingError", "StatisticsForTeamModelData")
+    LogPrinter.printLog("MappingError", "StatisticsForTeamModelData")
     null
 }

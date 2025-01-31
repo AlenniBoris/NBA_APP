@@ -13,7 +13,6 @@ import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestParams
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.GameStatisticsModelDomain
-import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayersInGameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameStatisticsModelDomain
 import kotlinx.coroutines.flow.SharedFlow
@@ -35,6 +34,10 @@ interface INbaApiManager {
     suspend fun getGameDataById(
         id: Int
     ): CustomResultModelDomain<GameModelDomain, NbaApiExceptionModelDomain>
+
+    suspend fun getTeamDataById(
+        id: Int
+    ): CustomResultModelDomain<TeamModelDomain, NbaApiExceptionModelDomain>
 
     suspend fun getLeaguesByCountry(
         country: CountryModelDomain

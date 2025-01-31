@@ -1,8 +1,8 @@
 package com.alenniboris.nba_app.domain.model.statistics.api.nba.extra
 
 data class GamesSimpleStatsModelDomain(
-    val total: SimpleStatsModelDomain?,
-    val average: SimpleStatsModelDomain?
+    val total: SimpleStatsModelDomain? = null,
+    val average: SimpleStatsModelDomain? = null
 )
 
 data class SimpleStatsModelDomain(

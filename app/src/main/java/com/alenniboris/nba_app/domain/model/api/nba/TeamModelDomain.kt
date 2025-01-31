@@ -8,5 +8,5 @@ data class TeamModelDomain(
     val name: String = "",
     val isNational: Boolean? = null,
     val logo: String? = null,
-    val country: CountryModelDomain? = null
+    val country: CountryModelDomain = CountryModelDomain()
 ) : IStateModel

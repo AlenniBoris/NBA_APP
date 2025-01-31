@@ -1,6 +1,5 @@
 package com.alenniboris.nba_app.presentation.uikit.views
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -97,7 +96,6 @@ fun AppDateFilter(
                 selectedDate?.let {
                     onDateSelectedAction(Date(selectedDate))
                 }
-                Log.d("Approved", " Begin  ${selectedDate.toString()}")
             },
             onDismiss = {
                 showDatePicker = false

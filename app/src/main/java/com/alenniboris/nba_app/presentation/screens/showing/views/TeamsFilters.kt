@@ -43,7 +43,10 @@ fun TeamsFilters(
 
     Column {
 
-        AppDividerWithHeader(stringResource(R.string.search_text))
+        AppDividerWithHeader(
+            modifier = Modifier.fillMaxWidth(),
+            headerText = stringResource(R.string.search_text)
+        )
 
         AppTextField(
             modifier = Modifier

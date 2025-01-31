@@ -53,7 +53,7 @@
     <string name="date_chooser_btn_text">Game date</string>
     <string name="date_chooser_approve_text">Approve</string>
     <string name="date_chooser_cancel_text">Cancel</string>
-    <string name="country_filter">Countries</string>
+    <string name="country_filter">Country</string>
     <string name="nan_text">NaN</string>
     <string name="league_national_text">League is national</string>
     <string name="league_not_national_text">League is not national</string>
@@ -82,6 +82,17 @@
     <string name="rebounds_text">Rebounds</string>
     <string name="defence_text">Defence</string>
     <string name="offence_text">Offence</string>
+    <string name="draws_text">Draws</string>
+    <string name="wins_text">Wins</string>
+    <string name="loses_text">Loses</string>
+    <string name="played_games_text">Played</string>
+    <string name="average_text">Average</string>
+    <string name="home_text">Home</string>
+    <string name="away_text">Away</string>
+    <string name="all_text">All</string>
+    <string name="team_games_results_text">Games results</string>
+    <string name="points_for_text">Points for</string>
+    <string name="points_against_text">Points against</string>
 
     <string name="games_category">Games</string>
     <string name="teams_category">Teams</string>
@@ -120,6 +131,7 @@
     <string name="request_team_season_smth_is_empty">Your haven\'t chosen team or season. check your data</string>
     <string name="getting_followed_games_exception">Sorry, we can`t load your followed games. Reopen the app</string>
     <string name="getting_followed_teams_exception">Sorry, we can`t load your followed teams. Reopen the app</string>
+    <string name="another_season_statistics_exception">Sorry, try another season or league</string>
     <string name="getting_followed_players_exception">Sorry, we can`t load your followed players. Reopen the app</string>
 
 </resources>

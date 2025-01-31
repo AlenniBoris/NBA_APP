@@ -27,4 +27,6 @@ fun NbaApiExceptionModelDomain.toUiMessageString(): Int = when (this) {
     NbaApiExceptionModelDomain.ErrorGettingFollowedTeams -> R.string.getting_followed_teams_exception
 
     NbaApiExceptionModelDomain.NoInternetException -> R.string.web_exception
+
+    NbaApiExceptionModelDomain.TryAnotherSeason -> R.string.another_season_statistics_exception
 }

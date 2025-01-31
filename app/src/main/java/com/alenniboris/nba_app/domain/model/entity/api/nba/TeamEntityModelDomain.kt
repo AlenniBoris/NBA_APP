@@ -8,8 +8,9 @@ data class TeamEntityModelDomain(
     val userId: String,
     val teamName: String,
     val isNational: Boolean?,
-    val countryName: String?,
-    val id: String
+    val countryName: String,
+    val id: String,
+    val countryId: Int
 ) : IEntityModelDomain
 
 fun TeamEntityModelDomain.toTeamModelDomain(): TeamModelDomain =
@@ -18,10 +19,10 @@ fun TeamEntityModelDomain.toTeamModelDomain(): TeamModelDomain =
         isFollowed = true,
         name = this.teamName,
         isNational = this.isNational,
-        country = this.countryName?.let {
-            CountryModelDomain(
-                name = it
-            )
-        },
+        country =
+        CountryModelDomain(
+            id = this.countryId,
+            name = this.countryName
+        ),
         logo = null
     )

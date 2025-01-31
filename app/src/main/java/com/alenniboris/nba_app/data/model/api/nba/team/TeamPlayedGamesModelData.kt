@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.model.api.nba.team
 
-import android.util.Log
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.TeamPlayedGamesModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 
 data class TeamPlayedGamesModelData(
     val draws: GamesDetailedStatsModelData?,
@@ -19,6 +19,6 @@ fun TeamPlayedGamesModelData.toModelDomain(): TeamPlayedGamesModelDomain? = runC
         wins = this.wins?.toModelDomain()
     )
 }.getOrElse {
-    Log.e("MappingError", "TeamPlayedGamesModelData")
+    LogPrinter.printLog("MappingError", "TeamPlayedGamesModelData")
     null
 }

@@ -53,7 +53,7 @@ class FollowedScreenVM(
                 .collect { elements ->
                     _screenState.update {
                         it.copy(
-                            followedTeams = elements.map { it.toTeamModelDomain() }
+                            followedTeams = elements.mapNotNull { it.toTeamModelDomain() }
                         )
                     }
                 }

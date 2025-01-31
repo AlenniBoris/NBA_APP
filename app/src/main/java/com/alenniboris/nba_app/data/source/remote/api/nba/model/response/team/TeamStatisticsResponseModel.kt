@@ -13,8 +13,16 @@ data class TeamStatisticsResponseModel(
     @SerializedName("response")
     val response: StatisticsForTeamModelData?,
     @SerializedName("results")
-    val resultsCount: String?
+    val resultsCount: String?,
+    @SerializedName("paging")
+    val paging: RespPaging
 ) {
+
+    data class RespPaging(
+        val current: String?,
+        val total: String?
+    )
+
     val isSomePropertyNotReceived: Boolean
         get() = getHeader == null || queryParameters == null || responseErrors == null ||
                 resultsCount == null || response == null
@@ -31,5 +39,6 @@ data class TeamStatisticsResponseErrorsModelData(
     val league: String?,
     val season: String?,
     val team: String?,
+    @SerializedName("plan")
     val plan: String?
 )

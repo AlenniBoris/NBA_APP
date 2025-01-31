@@ -51,6 +51,7 @@ fun PlayersFilters(
     Column {
 
         AppDividerWithHeader(
+            modifier = Modifier.fillMaxWidth(),
             headerText = stringResource(R.string.search_text)
         )
 

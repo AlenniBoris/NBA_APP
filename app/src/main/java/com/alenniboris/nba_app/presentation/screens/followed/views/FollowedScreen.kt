@@ -42,6 +42,7 @@ import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.mappers.toStringMessage
 import com.alenniboris.nba_app.presentation.navigation.Route
 import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
+import com.alenniboris.nba_app.presentation.screens.details.team.views.getTeamDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedState
 import com.alenniboris.nba_app.presentation.screens.followed.IFollowedScreenEvent
@@ -98,7 +99,12 @@ fun FollowedScreen(
 
         launch {
             event.filterIsInstance<IFollowedScreenEvent.NavigateToTeamDetailsPage>().collect {
-                navHostController.navigate(Route.TeamDetailsScreenRoute.route)
+                navHostController.navigate(
+                    getTeamDetailsScreenRoute(
+                        team = it.team,
+                        isReloadingDataNeeded = true
+                    )
+                )
             }
         }
 
@@ -191,6 +197,7 @@ private fun PagerSection(
         modifier = modifier
     ) {
         AppDividerWithHeader(
+            modifier = Modifier.fillMaxWidth(),
             headerText = categoryText,
             insidesColor = appTopBarElementsColor
         )

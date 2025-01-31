@@ -1,6 +1,6 @@
 package com.alenniboris.nba_app.domain.model.statistics.api.nba.extra
 
-data class GamesStatsModelDomain(
+data class GamesDetailedStatsModelDomain(
     val all: DetailedStatsModelDomain?,
     val away: DetailedStatsModelDomain?,
     val home: DetailedStatsModelDomain?

@@ -1,12 +1,12 @@
 package com.alenniboris.nba_app.data.repository.authentication
 
-import android.util.Log
 import com.alenniboris.nba_app.data.mappers.toAuthenticationExceptionModelDomain
 import com.alenniboris.nba_app.data.mappers.toUserDomainModel
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.exception.AuthenticationExceptionModelDomain
 import com.alenniboris.nba_app.domain.repository.authentication.IAuthenticationRepository
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +40,7 @@ class AuthenticationRepositoryImpl(
 
                 CustomResultModelDomain.Success<Unit, AuthenticationExceptionModelDomain>(Unit)
             }.getOrElse { exception ->
-                Log.e("AuthenticationRepositoryImpl", exception.stackTraceToString())
+                LogPrinter.printLog("AuthenticationRepositoryImpl", exception.stackTraceToString())
                 CustomResultModelDomain.Error(
                     exception.toAuthenticationExceptionModelDomain()
                 )
@@ -71,7 +71,7 @@ class AuthenticationRepositoryImpl(
                 auth.createUserWithEmailAndPassword(email, password).await()
                 CustomResultModelDomain.Success<Unit, AuthenticationExceptionModelDomain>(Unit)
             }.getOrElse { exception ->
-                Log.e("AuthenticationRepositoryImpl", exception.stackTraceToString())
+                LogPrinter.printLog("AuthenticationRepositoryImpl", exception.stackTraceToString())
                 CustomResultModelDomain.Error(
                     exception.toAuthenticationExceptionModelDomain()
                 )
@@ -86,7 +86,7 @@ class AuthenticationRepositoryImpl(
                 _user.update { auth.currentUser?.toUserDomainModel() }
                 CustomResultModelDomain.Success<Unit, AuthenticationExceptionModelDomain>(Unit)
             }.getOrElse { exception ->
-                Log.e("AuthenticationRepositoryImpl", exception.stackTraceToString())
+                LogPrinter.printLog("AuthenticationRepositoryImpl", exception.stackTraceToString())
                 CustomResultModelDomain.Error(
                     exception.toAuthenticationExceptionModelDomain()
                 )

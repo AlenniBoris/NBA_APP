@@ -1,6 +1,5 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import android.util.Log
 import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.game.toModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.player.toModelDomain
@@ -20,6 +19,7 @@ import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameS
 import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiGamesNetworkRepository
 import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
 import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -122,8 +122,7 @@ class NbaApiGamesNetworkRepositoryImpl(
                 )
 
             }.getOrElse { exception ->
-                Log.e("!!!!", "129")
-                Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
+                LogPrinter.printLog("NbaApiRepositoryImpl", exception.stackTraceToString())
                 return@withContext CustomResultModelDomain.Error(exception.toNbaApiExceptionModelDomain())
             }
         }
@@ -175,7 +174,7 @@ class NbaApiGamesNetworkRepositoryImpl(
                 )
 
             }.getOrElse { exception ->
-                Log.e("NbaApiRepositoryImpl", exception.stackTraceToString())
+                LogPrinter.printLog("NbaApiRepositoryImpl", exception.stackTraceToString())
                 return@withContext CustomResultModelDomain.Error(exception.toNbaApiExceptionModelDomain())
             }
 

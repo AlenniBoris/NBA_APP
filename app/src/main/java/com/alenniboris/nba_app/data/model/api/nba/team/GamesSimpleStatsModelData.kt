@@ -1,8 +1,8 @@
 package com.alenniboris.nba_app.data.model.api.nba.team
 
-import android.util.Log
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.GamesSimpleStatsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.SimpleStatsModelDomain
+import com.alenniboris.nba_app.domain.utils.LogPrinter
 
 data class GamesSimpleStatsModelData(
     val total: SimpleStatsModelData?,
@@ -22,7 +22,7 @@ fun SimpleStatsModelData.toModelDomain(): SimpleStatsModelDomain? = runCatching 
         all = this.all?.toInt(),
     )
 }.getOrElse {
-    Log.e("MappingError", "SimpleStatsModelData")
+    LogPrinter.printLog("MappingError", "SimpleStatsModelData")
     null
 }
 
@@ -32,6 +32,6 @@ fun GamesSimpleStatsModelData.toModelDomain(): GamesSimpleStatsModelDomain? = ru
         average = this.average?.toModelDomain()
     )
 }.getOrElse {
-    Log.e("MappingError", "GamesSimpleStatsModelData")
+    LogPrinter.printLog("MappingError", "GamesSimpleStatsModelData")
     null
 }

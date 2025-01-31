@@ -81,7 +81,7 @@ fun TeamStatisticsInGameUi(
         StatisticAtActivityComplicatedScoreboard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 15.dp),
+                .padding(statisticsElementVerticalPadding),
             typeOfActivityText = stringResource(R.string.field_goals_text),
             firstActivityText = stringResource(R.string.attempts_text),
             firstActivityCount = teamStatistics.fieldGoals?.attempts,

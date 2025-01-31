@@ -7,9 +7,9 @@ import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.TeamEarnedP
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.TeamPlayedGamesModelDomain
 
 data class TeamStatisticsModelDomain(
-    val league: LeagueModelDomain?,
-    val country: CountryModelDomain?,
-    val team: TeamModelDomain?,
-    val games: TeamPlayedGamesModelDomain?,
-    val points: TeamEarnedPointsModelDomain?
+    val league: LeagueModelDomain? = null,
+    val country: CountryModelDomain? = null,
+    val team: TeamModelDomain? = null,
+    val games: TeamPlayedGamesModelDomain? = null,
+    val points: TeamEarnedPointsModelDomain? = null
 ) : IStatisticsModel
