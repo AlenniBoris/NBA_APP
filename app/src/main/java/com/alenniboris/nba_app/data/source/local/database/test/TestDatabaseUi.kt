@@ -2,7 +2,6 @@ package com.alenniboris.nba_app.data.source.local.database.test
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,7 +24,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 @Preview
-fun TestUi() {
+fun TestDatabaseUi() {
 
     val testVM: TestVM = koinViewModel<TestVM>()
 
