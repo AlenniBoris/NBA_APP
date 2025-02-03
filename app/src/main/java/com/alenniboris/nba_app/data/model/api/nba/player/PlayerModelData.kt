@@ -17,9 +17,9 @@ fun PlayerModelData.toModelDomain(): PlayerModelDomain? = runCatching {
         id = this.id!!.toInt(),
         isFollowed = false,
         name = this.name!!,
-        number = this.number,
-        country = this.country,
-        position = this.position,
+        number = this.number!!,
+        country = this.country!!,
+        position = this.position!!,
         age = this.age?.toInt()
     )
 }.getOrElse {

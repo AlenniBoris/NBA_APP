@@ -5,25 +5,25 @@ sealed class Route(
     val baseRoute: String = ""
 ) {
 
-    data object EnterScreenRoute : Route("enter_screen")
+    data object EnterScreenRoute : Route(NavigationValues.EnterScreenRoute)
 
-    data object ShowingScreenRoute : Route("showing_screen")
+    data object ShowingScreenRoute : Route(NavigationValues.ShowingScreenRoute)
 
-    data object FollowedScreenRoute : Route("followed_screen")
+    data object FollowedScreenRoute : Route(NavigationValues.FollowedScreenRoute)
 
     data object GameDetailsScreenRoute : Route(
-        route = "game_details_screen/{game}&{isReloadingNeeded}",
-        baseRoute = "game_details_screen/"
+        route = NavigationValues.GameDetailsScreenFullRoute,
+        baseRoute = NavigationValues.GameDetailsScreenBaseRoute
     )
 
     data object TeamDetailsScreenRoute : Route(
-        route = "team_details_screen/{team}&{isReloadingNeeded}",
-        baseRoute = "team_details_screen/"
+        route = NavigationValues.TeamDetailsScreenFullRoute,
+        baseRoute = NavigationValues.TeamDetailsScreenBaseRoute
     )
 
     data object PlayerDetailsScreenRoute : Route(
-        route = "player_details_screen/{player}",
-        baseRoute = "player_details_screen/"
+        route = NavigationValues.PlayerDetailsScreenFullRoute,
+        baseRoute = NavigationValues.PlayerDetailsScreenBaseRoute
     )
 
 }

@@ -21,13 +21,16 @@ import com.alenniboris.nba_app.data.source.local.model.api.nba.TeamEntityModelDa
         PlayerEntityModelData::class,
         TeamEntityModelData::class
     ],
-    version = 5,
+    version = 8,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = NbaApiDatabase.MigrationToVersion2::class),
-        AutoMigration(from = 2, to = 3, spec = NbaApiDatabase.MigrationToVersion3::class),
-        AutoMigration(from = 3, to = 4, spec = NbaApiDatabase.MigrationToVersion4::class),
-        AutoMigration(from = 4, to = 5, spec = NbaApiDatabase.MigrationToVersion5::class)
+        AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4),
+        AutoMigration(from = 4, to = 5),
+        AutoMigration(from = 5, to = 6),
+        AutoMigration(from = 6, to = 7),
+        AutoMigration(from = 7, to = 8),
     ]
 )
 abstract class NbaApiDatabase : RoomDatabase() {
@@ -40,12 +43,6 @@ abstract class NbaApiDatabase : RoomDatabase() {
         DeleteColumn(tableName = "table_teams", columnName = "team_logo")
     )
     class MigrationToVersion2 : AutoMigrationSpec
-
-    class MigrationToVersion3 : AutoMigrationSpec
-
-    class MigrationToVersion4 : AutoMigrationSpec
-
-    class MigrationToVersion5 : AutoMigrationSpec
 
     companion object {
         fun get(

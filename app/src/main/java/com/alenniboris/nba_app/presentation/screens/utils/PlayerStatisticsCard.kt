@@ -1,4 +1,4 @@
-package com.alenniboris.nba_app.presentation.screens.details.game.views
+package com.alenniboris.nba_app.presentation.screens.utils
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -7,9 +7,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,10 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayerStatisticsModelDomain
-import com.alenniboris.nba_app.presentation.screens.utils.StatisticAtActivityComplicatedScoreboard
-import com.alenniboris.nba_app.presentation.screens.utils.StatisticAtActivitySimpleScoreboard
+import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldShape
 import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.rowItemColor
 import com.alenniboris.nba_app.presentation.uikit.theme.rowItemTextColor
@@ -39,23 +40,11 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 
 @Composable
 @Preview
-fun PlayersStatisticsInGameUi(
-    playersStatisticsModelDomain: List<PlayerStatisticsModelDomain> = emptyList(),
-) {
-    Column(modifier = Modifier.fillMaxHeight()) {
-        playersStatisticsModelDomain.forEach { playerStatistics ->
-            PlayerStatisticsCard(
-                playerStatistics = playerStatistics
-            )
-        }
-    }
-}
-
-
-@Composable
-@Preview
 fun PlayerStatisticsCard(
-    playerStatistics: PlayerStatisticsModelDomain = PlayerStatisticsModelDomain()
+    playerStatistics: PlayerStatisticsModelDomain = PlayerStatisticsModelDomain(),
+    isExploreBtnNeeded: Boolean = false,
+    exploreBtnText: String = "",
+    onExploreBtnClicked: () -> Unit = {},
 ) {
     var isStatsVisible by remember {
         mutableStateOf(false)
@@ -109,6 +98,25 @@ fun PlayerStatisticsCard(
                 modifier = Modifier.fillMaxWidth()
 
             ) {
+
+                if (isExploreBtnNeeded) {
+                    Button(
+                        modifier = Modifier
+                            .padding(start = 15.dp),
+                        onClick = onExploreBtnClicked,
+                        colors = ButtonColors(
+                            containerColor = rowItemColor,
+                            contentColor = rowItemTextColor,
+                            disabledContainerColor = rowItemColor,
+                            disabledContentColor = rowItemTextColor
+                        ),
+                        shape = ESCustomTextFieldShape
+                    ) {
+                        Text(
+                            text = exploreBtnText
+                        )
+                    }
+                }
 
                 val elementsModifier = Modifier
                     .padding(statisticsElementTopPadding)
@@ -191,4 +199,3 @@ fun PlayerStatisticsCard(
     }
 
 }
-

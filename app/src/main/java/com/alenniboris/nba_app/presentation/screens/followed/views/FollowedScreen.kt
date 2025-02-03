@@ -40,8 +40,8 @@ import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.mappers.toStringMessage
-import com.alenniboris.nba_app.presentation.navigation.Route
 import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
+import com.alenniboris.nba_app.presentation.screens.details.player.views.getPlayerDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.details.team.views.getTeamDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedState
@@ -90,8 +90,7 @@ fun FollowedScreen(
             event.filterIsInstance<IFollowedScreenEvent.NavigateToGameDetailsPage>().collect {
                 navHostController.navigate(
                     getGameDetailsScreenRoute(
-                        game = it.game,
-                        isReloadingDataNeeded = true
+                        gameId = it.game.id
                     )
                 )
             }
@@ -101,8 +100,7 @@ fun FollowedScreen(
             event.filterIsInstance<IFollowedScreenEvent.NavigateToTeamDetailsPage>().collect {
                 navHostController.navigate(
                     getTeamDetailsScreenRoute(
-                        team = it.team,
-                        isReloadingDataNeeded = true
+                        teamId = it.team.id
                     )
                 )
             }
@@ -110,7 +108,11 @@ fun FollowedScreen(
 
         launch {
             event.filterIsInstance<IFollowedScreenEvent.NavigateToPlayerDetailsPage>().collect {
-                navHostController.navigate(Route.PlayerDetailsScreenRoute.route)
+                navHostController.navigate(
+                    getPlayerDetailsScreenRoute(
+                        playerId = it.player.id
+                    )
+                )
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.alenniboris.nba_app.presentation.screens.utils
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,7 +50,8 @@ import java.util.Locale
 fun GameElementContentContainer(
     modifier: Modifier = Modifier,
     textColor: Color = categoryItemTextColor,
-    element: GameModelDomain = GameModelDomain()
+    element: GameModelDomain = GameModelDomain(),
+    onTeamSectionClicked: (Int) -> Unit = {},
 ) {
 
     Row(
@@ -60,66 +61,68 @@ fun GameElementContentContainer(
     ) {
         Column(
             modifier = Modifier
-            .fillMaxHeight()
-            .weight(1f),
-        verticalArrangement = Arrangement.SpaceBetween
+                .fillMaxHeight()
+                .weight(1f),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-        Text(
-            text = stringResource(R.string.home_team_text),
-        color = textColor
-        )
-        AppItemPictureSection(
-            modifier = Modifier
-                .fillMaxHeight(),
-        textColor = textColor,
-        name = element.homeTeam.name,
-        logoUrl = element.homeTeam.logo
-        )
-    }
+            Text(
+                text = stringResource(R.string.home_team_text),
+                color = textColor
+            )
+            AppItemPictureSection(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clickable { onTeamSectionClicked(element.homeTeam.id) },
+                textColor = textColor,
+                name = element.homeTeam.name,
+                logoUrl = element.homeTeam.logo
+            )
+        }
 
 
         GameItemTextSection(
             modifier = Modifier.width(IntrinsicSize.Min),
             textColor = textColor,
-        dateOfTheGame = remember(element) {
-            element.dateOfTheGame.let {
-                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    .format(it)
-            }
-        },
-        beginningTimeOfTheGame = remember(element) {
-            element.dateOfTheGame.let {
-                SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                    .format(it)
-            }
-        },
-        homeTeamScore = element.homeScores?.totalScore
-            ?: stringResource(R.string.nan_text),
-        visitorsTeamScore = element.visitorsScores?.totalScore
-            ?: stringResource(R.string.nan_text),
-        gameStatus = element.gameStatus
+            dateOfTheGame = remember(element) {
+                element.dateOfTheGame.let {
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        .format(it)
+                }
+            },
+            beginningTimeOfTheGame = remember(element) {
+                element.dateOfTheGame.let {
+                    SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                        .format(it)
+                }
+            },
+            homeTeamScore = element.homeScores?.totalScore
+                ?: stringResource(R.string.nan_text),
+            visitorsTeamScore = element.visitorsScores?.totalScore
+                ?: stringResource(R.string.nan_text),
+            gameStatus = element.gameStatus
         )
 
         Column(
             modifier = Modifier
-            .fillMaxHeight()
-            .weight(1f),
-        verticalArrangement = Arrangement.SpaceBetween
+                .fillMaxHeight()
+                .weight(1f),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-        Text(
-            text = stringResource(R.string.visitors_team_text),
-        color = textColor,
-        modifier = Modifier.align(Alignment.End)
-        )
-        AppItemPictureSection(
-            modifier = Modifier
-                .fillMaxHeight(),
-        textColor = textColor,
-        name = element.visitorsTeam.name,
-        logoUrl = element.visitorsTeam.logo,
-        textAlign = Alignment.End,
-        pictureAlignment = Alignment.End
-        )
+            Text(
+                text = stringResource(R.string.visitors_team_text),
+                color = textColor,
+                modifier = Modifier.align(Alignment.End)
+            )
+            AppItemPictureSection(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clickable { onTeamSectionClicked(element.visitorsTeam.id) },
+                textColor = textColor,
+                name = element.visitorsTeam.name,
+                logoUrl = element.visitorsTeam.logo,
+                textAlign = Alignment.End,
+                pictureAlignment = Alignment.End
+            )
 
         }
 
@@ -204,7 +207,6 @@ private fun GameItemTextSection(
                         color = gameStatus.toColorValue(),
                         shape = CircleShape
                     )
-
                     .width(GameColumnItemTextSectionBoxSize)
                     .height(GameColumnItemTextSectionBoxSize)
             )

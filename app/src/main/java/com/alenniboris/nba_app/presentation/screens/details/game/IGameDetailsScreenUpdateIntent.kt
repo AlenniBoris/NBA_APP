@@ -9,4 +9,8 @@ sealed interface IGameDetailsScreenUpdateIntent {
 
     data object NavigateToPreviousScreen : IGameDetailsScreenUpdateIntent
 
+    data class NavigateToPlayerDetailsScreen(val playerId: Int) : IGameDetailsScreenUpdateIntent
+
+    data class NavigateToTeamDetailsScreen(val teamId: Int) : IGameDetailsScreenUpdateIntent
+
 }

@@ -5,6 +5,7 @@ import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayerStatisticsModelDomain
 
 interface INbaApiPlayersNetworkRepository {
 
@@ -22,5 +23,14 @@ interface INbaApiPlayersNetworkRepository {
         season: SeasonModelDomain?,
         team: TeamModelDomain?
     ): CustomResultModelDomain<List<PlayerModelDomain>, NbaApiExceptionModelDomain>
+
+    suspend fun requestForPlayersStatisticsInSeason(
+        season: SeasonModelDomain,
+        player: PlayerModelDomain
+    ): CustomResultModelDomain<List<PlayerStatisticsModelDomain>, NbaApiExceptionModelDomain>
+
+    suspend fun getPlayerDataById(
+        id: Int
+    ): CustomResultModelDomain<PlayerModelDomain, NbaApiExceptionModelDomain>
 
 }

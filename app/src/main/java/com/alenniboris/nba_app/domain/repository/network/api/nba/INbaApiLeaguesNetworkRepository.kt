@@ -8,7 +8,7 @@ import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 interface INbaApiLeaguesNetworkRepository {
 
     suspend fun getLeaguesByCountry(
-        country: CountryModelDomain
+        country: CountryModelDomain?
     ): CustomResultModelDomain<List<LeagueModelDomain>, NbaApiExceptionModelDomain>
 
 }

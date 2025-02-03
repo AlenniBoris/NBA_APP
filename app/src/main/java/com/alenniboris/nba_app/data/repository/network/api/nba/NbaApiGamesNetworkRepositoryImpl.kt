@@ -1,5 +1,6 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
+import android.util.Log
 import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.game.toModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.player.toModelDomain
@@ -82,7 +83,7 @@ class NbaApiGamesNetworkRepositoryImpl(
     ): CustomResultModelDomain<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain> =
         withContext(dispatchers.IO) {
             runCatching {
-                val response = apiService.getGameStatisticsForTeamsByGameId(game.id.toString())
+                val response = apiService.getGameStatisticsForTeamsByGameId(game.id)
 
                 if (response.isSomePropertyNotReceived) {
                     return@runCatching CustomResultModelDomain.Error(
@@ -116,7 +117,6 @@ class NbaApiGamesNetworkRepositoryImpl(
                     ?: return@runCatching CustomResultModelDomain.Error<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain>(
                         NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
                     )
-
                 return@withContext CustomResultModelDomain.Success<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain>(
                     res
                 )
@@ -134,7 +134,7 @@ class NbaApiGamesNetworkRepositoryImpl(
         withContext(dispatchers.IO) {
 
             runCatching {
-                val response = apiService.getGameStatisticsForPlayersByGameId(game.id.toString())
+                val response = apiService.getGameStatisticsForPlayersByGameId(game.id)
 
                 if (response.isSomePropertyNotReceived) {
                     return@runCatching CustomResultModelDomain.Error(
@@ -168,7 +168,6 @@ class NbaApiGamesNetworkRepositoryImpl(
                     ?: return@runCatching CustomResultModelDomain.Error<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain>(
                         NbaApiExceptionModelDomain.SomeUnknownExceptionOccurred
                     )
-
                 return@withContext CustomResultModelDomain.Success<PlayersInGameStatisticsModelDomain, NbaApiExceptionModelDomain>(
                     res
                 )

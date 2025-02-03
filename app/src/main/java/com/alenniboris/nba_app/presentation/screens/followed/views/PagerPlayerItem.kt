@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
-import com.alenniboris.nba_app.presentation.screens.followed.IFollowedScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.uikit.theme.PlayerItemCountryTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.PlayerItemNameTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.PlayerItemNumberTextSize
@@ -71,14 +70,14 @@ fun PagerPlayerItem(
                     color = categoryItemTextColor
                 )
                 Text(
-                    text = element.position ?: stringResource(R.string.nan_text),
+                    text = element.position,
                     style = bodyStyle.copy(
                         fontSize = PlayerItemPositionTextSize
                     ),
                     color = categoryItemTextColor
                 )
                 Text(
-                    text = element.country ?: stringResource(R.string.nan_text),
+                    text = element.country,
                     style = bodyStyle.copy(
                         fontSize = PlayerItemCountryTextSize
                     ),
@@ -88,7 +87,7 @@ fun PagerPlayerItem(
             Box {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
-                    text = element.number ?: stringResource(R.string.nan_text),
+                    text = element.number,
                     style = bodyStyle.copy(
                         fontSize = PlayerItemNumberTextSize
                     ),

@@ -38,6 +38,8 @@ object NbaApiValues {
 
     const val TEAM_PARAMETER = "team"
 
+    const val PLAYER_PARAMETER = "player"
+
     const val API_HEADER = "x-rapidapi-key:"
 
 }

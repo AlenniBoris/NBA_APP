@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import kotlinx.coroutines.Job
@@ -18,13 +20,12 @@ import kotlinx.coroutines.launch
 
 class GameDetailsScreenVM(
     private val nbaApiManager: INbaApiManager,
-    private val game: GameModelDomain,
-    private val isReloadingDataNeeded: Boolean
+    private val gameId: Int
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow(
         GameDetailsScreenState(
-            game = game
+            game = GameModelDomain(id = gameId)
         )
     )
     val screenState = _screenState.asStateFlow()
@@ -35,14 +36,8 @@ class GameDetailsScreenVM(
     val a: Job? = null
 
     init {
-        if (isReloadingDataNeeded) {
-            reloadDataForGame(
-                game = _screenState.value.game
-            )
-        }
-        loadGameStatistics(
-            game = _screenState.value.game
-        )
+        reloadDataForGame()
+        loadGameStatistics()
     }
 
     init {
@@ -65,12 +60,12 @@ class GameDetailsScreenVM(
         }
     }
 
-    private fun reloadDataForGame(game: GameModelDomain) {
+    private fun reloadDataForGame() {
         viewModelScope.launch {
             _screenState.update { it.copy(isGameDataReloading = true) }
 
             when (val gameRes =
-                nbaApiManager.getGameDataById(id = game.id)) {
+                nbaApiManager.getGameDataById(id = _screenState.value.game.id)) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update { state ->
                         state.copy(game = gameRes.result)
@@ -98,6 +93,28 @@ class GameDetailsScreenVM(
         )
 
         is IGameDetailsScreenUpdateIntent.NavigateToPreviousScreen -> navigateToPreviousScreen()
+
+        is IGameDetailsScreenUpdateIntent.NavigateToPlayerDetailsScreen ->
+            navigateToPlayerDetailsScreen(intent.playerId)
+
+        is IGameDetailsScreenUpdateIntent.NavigateToTeamDetailsScreen ->
+            navigateToTeamDetailsScreen(intent.teamId)
+    }
+
+    private fun navigateToPlayerDetailsScreen(playerId: Int) {
+        _event.emit(
+            IGameDetailsScreenEvent.NavigateToPlayerDetailsScreen(
+                PlayerModelDomain(id = playerId)
+            )
+        )
+    }
+
+    private fun navigateToTeamDetailsScreen(teamId: Int) {
+        _event.emit(
+            IGameDetailsScreenEvent.NavigateToTeamDetailsScreen(
+                TeamModelDomain(id = teamId)
+            )
+        )
     }
 
     private fun proceedIsFollowedAction() {
@@ -106,13 +123,12 @@ class GameDetailsScreenVM(
         }
     }
 
-    private fun loadGameStatistics(
-        game: GameModelDomain
-    ) {
+    private fun loadGameStatistics() {
         viewModelScope.launch {
             _screenState.update { it.copy(isGameStatisticsLoading = true) }
 
-            when (val statsRes = nbaApiManager.requestForGameStatistics(game = game)) {
+            when (val statsRes =
+                nbaApiManager.requestForGameStatistics(game = _screenState.value.game)) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update {
                         it.copy(

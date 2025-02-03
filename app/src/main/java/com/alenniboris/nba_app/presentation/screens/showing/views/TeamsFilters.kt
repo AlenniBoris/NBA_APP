@@ -94,9 +94,9 @@ fun TeamsFilters(
                 .padding(CustomRowFilterTopPadding)
                 .fillMaxWidth(),
             headerText = stringResource(R.string.country_filter),
-            elements = countries.map {
+            elements = countries.filter { it.name != null }.map {
                 ActionImplementedUiModel(
-                    name = it.name,
+                    name = it.name ?: stringResource(R.string.unknown_country_text),
                     onClick = {
                         proceedIntentAction(
                             IShowingScreenUpdateIntent.UpdateSelectedCountry(it)

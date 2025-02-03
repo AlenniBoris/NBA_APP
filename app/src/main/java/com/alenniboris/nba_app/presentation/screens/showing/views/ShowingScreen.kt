@@ -53,6 +53,7 @@ import com.alenniboris.nba_app.presentation.mappers.toStringMessage
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
 import com.alenniboris.nba_app.presentation.navigation.Route
 import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
+import com.alenniboris.nba_app.presentation.screens.details.player.views.getPlayerDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.details.team.views.getTeamDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenEvent
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
@@ -127,19 +128,19 @@ fun ShowingScreen(
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToGameDetailsPage>().collect {
-                navHostController.navigate(getGameDetailsScreenRoute(game = it.game))
+                navHostController.navigate(getGameDetailsScreenRoute(gameId = it.game.id))
             }
         }
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToTeamDetailsPage>().collect {
-                navHostController.navigate(getTeamDetailsScreenRoute(team = it.team))
+                navHostController.navigate(getTeamDetailsScreenRoute(teamId = it.team.id))
             }
         }
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToPlayerDetailsPage>().collect {
-                navHostController.navigate(Route.PlayerDetailsScreenRoute.route)
+                navHostController.navigate(getPlayerDetailsScreenRoute(playerId = it.player.id))
             }
         }
     }
@@ -358,7 +359,6 @@ fun RequestTypeChooserDialog(
 fun ShowElementsUi(
     category: NbaApiCategory = NbaApiCategory.Games,
     elements: List<IStateModel> = emptyList(),
-    followedElementsIds: List<Int> = emptyList(),
     proceedIntentAction: (IShowingScreenUpdateIntent) -> Unit = {}
 ) {
 

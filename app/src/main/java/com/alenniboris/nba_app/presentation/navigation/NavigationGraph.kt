@@ -1,16 +1,13 @@
 package com.alenniboris.nba_app.presentation.navigation
 
-import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
-import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
-import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
 import com.alenniboris.nba_app.presentation.screens.details.game.views.GameDetailsScreen
+import com.alenniboris.nba_app.presentation.screens.details.player.views.PlayerDetailsScreen
 import com.alenniboris.nba_app.presentation.screens.details.team.views.TeamDetailsScreen
 import com.alenniboris.nba_app.presentation.screens.enter.views.EnterScreen
 import com.alenniboris.nba_app.presentation.screens.followed.views.FollowedScreen
@@ -48,19 +45,29 @@ fun NavigationGraph(
         composable(
             route = Route.GameDetailsScreenRoute.route,
             arguments = listOf(
-                navArgument("game") { type = NavType.StringType },
-                navArgument("isReloadingNeeded") { type = NavType.BoolType }
+                navArgument(NavigationValues.GameIdParameter) { type = NavType.IntType },
             )
         ) { backStackEntry ->
 
-            val gameStr = backStackEntry.arguments?.getString("game")!!
-            val game = Uri.decode(gameStr).fromJson<GameModelDomain>()
-            val isReloadingNeeded =
-                backStackEntry.arguments?.getBoolean("isReloadingNeeded")!!
+            val gameId = backStackEntry.arguments?.getInt(NavigationValues.GameIdParameter)!!
 
             GameDetailsScreen(
-                game = game,
-                isReloadingDataNeeded = isReloadingNeeded,
+                gameId = gameId,
+                navHostController = navController,
+            )
+        }
+
+        composable(
+            route = Route.PlayerDetailsScreenRoute.route,
+            arguments = listOf(
+                navArgument(NavigationValues.PlayerIdParameter) { type = NavType.IntType },
+            )
+        ) { backStackEntry ->
+
+            val playerId = backStackEntry.arguments?.getInt(NavigationValues.PlayerIdParameter)!!
+
+            PlayerDetailsScreen(
+                playerId = playerId,
                 navHostController = navController,
             )
         }
@@ -68,19 +75,14 @@ fun NavigationGraph(
         composable(
             route = Route.TeamDetailsScreenRoute.route,
             arguments = listOf(
-                navArgument("team") { type = NavType.StringType },
-                navArgument("isReloadingNeeded") { type = NavType.BoolType }
+                navArgument(NavigationValues.TeamIdParameter) { type = NavType.IntType },
             )
         ) { backStackEntry ->
 
-            val teamStr = backStackEntry.arguments?.getString("team")!!
-            val team = Uri.decode(teamStr).fromJson<TeamModelDomain>()
-            val isReloadingNeeded =
-                backStackEntry.arguments?.getBoolean("isReloadingNeeded")!!
+            val teamId = backStackEntry.arguments?.getInt(NavigationValues.TeamIdParameter)!!
 
             TeamDetailsScreen(
-                team = team,
-                isReloadingDataNeeded = isReloadingNeeded,
+                teamId = teamId,
                 navHostController = navController,
             )
         }

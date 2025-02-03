@@ -4,6 +4,7 @@ import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.GoalsStatis
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.ReboundsModelDomain
 
 data class PlayerStatisticsModelDomain(
+    val gameId: Int = 0,
     val playerId: Int = 0,
     val playerName: String = "",
     val teamId: Int = 0,

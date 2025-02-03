@@ -4,8 +4,8 @@ data class PlayerModelDomain(
     override val id: Int = 0,
     override val isFollowed: Boolean = false,
     val name: String = "",
-    val number: String? = null,
-    val country: String? = null,
-    val position: String? = null,
+    val number: String = "",
+    val country: String = "",
+    val position: String = "",
     val age: Int? = null
 ) : IStateModel

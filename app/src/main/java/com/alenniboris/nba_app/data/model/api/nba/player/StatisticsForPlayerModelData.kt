@@ -51,6 +51,7 @@ data class StatisticsForPlayerModelData(
 
 fun StatisticsForPlayerModelData.toModelDomain(): PlayerStatisticsModelDomain? = runCatching {
     PlayerStatisticsModelDomain(
+        gameId = this.game?.id?.toInt()!!,
         playerId = this.player?.id?.toInt()!!,
         playerName = this.player.name!!,
         teamId = this.team?.id?.toInt()!!,

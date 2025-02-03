@@ -1,6 +1,5 @@
 package com.alenniboris.nba_app.presentation.screens.details.team.views
 
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -38,7 +37,6 @@ import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.GamesDetailedStatsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.GamesSimpleStatsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
-import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
 import com.alenniboris.nba_app.presentation.navigation.Route
 import com.alenniboris.nba_app.presentation.screens.details.team.ITeamDetailsScreenEvent
@@ -81,25 +79,18 @@ import org.koin.core.parameter.parametersOf
 
 
 fun getTeamDetailsScreenRoute(
-    team: TeamModelDomain,
-    isReloadingDataNeeded: Boolean = false
+    teamId: Int
 ): String {
-    return Route.TeamDetailsScreenRoute.baseRoute + Uri.encode(team.toJson()) + "&" + isReloadingDataNeeded
+    return Route.TeamDetailsScreenRoute.baseRoute + teamId
 }
 
 @Composable
 fun TeamDetailsScreen(
-    team: TeamModelDomain,
-    isReloadingDataNeeded: Boolean = false,
+    teamId: Int,
     navHostController: NavHostController
 ) {
 
-    val teamDetailsScreenVM = koinViewModel<TeamDetailsScreenVM> {
-        parametersOf(
-            team,
-            isReloadingDataNeeded
-        )
-    }
+    val teamDetailsScreenVM = koinViewModel<TeamDetailsScreenVM> { parametersOf(teamId) }
     val proceedIntentAction by remember { mutableStateOf(teamDetailsScreenVM::proceedIntentAction) }
     val state by teamDetailsScreenVM.screenState.collectAsStateWithLifecycle()
     val event by remember { mutableStateOf(teamDetailsScreenVM.event) }
@@ -640,7 +631,7 @@ private fun TeamDetailsInfoSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = element.country.name,
+                text = element.country?.name ?: stringResource(R.string.unknown_country_text),
                 style = bodyStyle.copy(
                     fontSize = GameColumnItemTextSectionMainTextSize
                 ),
@@ -650,7 +641,7 @@ private fun TeamDetailsInfoSection(
             AsyncImage(
                 modifier = Modifier
                     .size(TeamColumnItemFlagSize),
-                model = element.country.flag,
+                model = element.country?.flag,
                 placeholder = painterResource(Placeholder),
                 contentDescription = stringResource(R.string.team_picture_description)
             )

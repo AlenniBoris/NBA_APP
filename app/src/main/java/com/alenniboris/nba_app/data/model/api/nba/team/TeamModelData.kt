@@ -26,7 +26,7 @@ fun TeamModelData.toModelDomain(): TeamModelDomain? = runCatching {
         name = this.name!!,
         isNational = this.national?.toBoolean(),
         logo = this.logo,
-        country = this.country?.toModelDomain()!!
+        country = this.country?.toModelDomain()
     )
 }.getOrElse {
     LogPrinter.printLog("MappingError", "TeamModelData error: \n ${it.stackTraceToString()}")

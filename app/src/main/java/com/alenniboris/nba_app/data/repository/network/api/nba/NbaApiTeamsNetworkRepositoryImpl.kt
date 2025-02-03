@@ -34,7 +34,7 @@ class NbaApiTeamsNetworkRepositoryImpl(
             transform = { responseList ->
                 responseList?.mapNotNull { team ->
                     team?.toModelDomain()?.copy(isFollowed = false)
-                }
+                }?.filter { it.country != null }
             },
             errorsParser = { json ->
                 json?.fromJson<TeamResponseErrorsModelData>()
@@ -147,7 +147,7 @@ class NbaApiTeamsNetworkRepositoryImpl(
                 searchQuery = searchQuery,
                 season = season.name,
                 leagueId = league.id,
-                country = country.name
+                countryId = country.id
             )
         }
     }

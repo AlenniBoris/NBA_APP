@@ -7,6 +7,7 @@ import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.TeamReloadingResult
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
@@ -19,6 +20,7 @@ import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiTeamTypeElement
 import com.alenniboris.nba_app.domain.model.params.api.nba.PlayerRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.TeamRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.GameStatisticsModelDomain
+import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayerStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.repository.authentication.IAuthenticationRepository
@@ -165,21 +167,44 @@ class NbaApiManagerImpl(
             }
         }
 
-    override suspend fun getTeamDataById(
-        id: Int
-    ): CustomResultModelDomain<TeamModelDomain, NbaApiExceptionModelDomain> =
+    override suspend fun reloadDataForTeamAndLoadLeagues(
+        team: TeamModelDomain
+    ): CustomResultModelDomain<TeamReloadingResult, NbaApiExceptionModelDomain> =
         withContext(dispatchers.IO) {
-            return@withContext when (val res =
-                nbaApiTeamsNetworkRepository.getDataForTeamById(id = id)) {
+
+            val teamDataRes = nbaApiTeamsNetworkRepository.getDataForTeamById(id = team.id)
+            val followedIds = followedTeams.firstOrNull().orEmpty().map { it.teamId }
+
+            when (teamDataRes) {
                 is CustomResultModelDomain.Success -> {
-                    val followedIds = followedTeams.firstOrNull().orEmpty().map { it.teamId }
-                    val team = res.result
-                    CustomResultModelDomain.Success(
-                        team.copy(isFollowed = followedIds.contains(team.id))
+                    val leaguesDataRes = nbaApiLeaguesNetworkRepository.getLeaguesByCountry(
+                        country = teamDataRes.result.country
                     )
+                    when (leaguesDataRes) {
+                        is CustomResultModelDomain.Success -> {
+                            return@withContext CustomResultModelDomain.Success(
+                                TeamReloadingResult(
+                                    teamData = teamDataRes.result.copy(
+                                        isFollowed = followedIds.contains(
+                                            teamDataRes.result.id
+                                        )
+                                    ),
+                                    leaguesData = leaguesDataRes.result
+                                )
+                            )
+                        }
+
+                        is CustomResultModelDomain.Error -> return@withContext CustomResultModelDomain.Error<TeamReloadingResult, NbaApiExceptionModelDomain>(
+                            leaguesDataRes.exception
+                        )
+                    }
                 }
 
-                is CustomResultModelDomain.Error -> res
+                is CustomResultModelDomain.Error -> {
+                    return@withContext CustomResultModelDomain.Error<TeamReloadingResult, NbaApiExceptionModelDomain>(
+                        teamDataRes.exception
+                    )
+                }
             }
         }
 
@@ -428,4 +453,39 @@ class NbaApiManagerImpl(
                 league = league
             )
         }
+
+    override suspend fun requestForPlayersStatisticsInSeason(
+        season: SeasonModelDomain,
+        player: PlayerModelDomain
+    ): CustomResultModelDomain<List<PlayerStatisticsModelDomain>, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            return@withContext nbaApiPlayersNetworkRepository.requestForPlayersStatisticsInSeason(
+                season = season,
+                player = player
+            )
+        }
+
+    override suspend fun getPlayerDataById(
+        id: Int
+    ): CustomResultModelDomain<PlayerModelDomain, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            val followedIds = followedPlayers.firstOrNull().orEmpty().map { it.playerId }
+            return@withContext when (val res =
+                nbaApiPlayersNetworkRepository.getPlayerDataById(id = id)) {
+                is CustomResultModelDomain.Success -> {
+                    CustomResultModelDomain.Success(
+                        res.result.copy(
+                            isFollowed = followedIds.contains(
+                                res.result.id
+                            )
+                        )
+                    )
+                }
+
+                is CustomResultModelDomain.Error -> {
+                    CustomResultModelDomain.Error(res.exception)
+                }
+            }
+        }
+
 }

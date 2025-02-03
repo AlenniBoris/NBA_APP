@@ -2,10 +2,9 @@ package com.alenniboris.nba_app.di
 
 import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
-import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
-import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.presentation.activity.MainActivityVM
 import com.alenniboris.nba_app.presentation.screens.details.game.GameDetailsScreenVM
+import com.alenniboris.nba_app.presentation.screens.details.player.PlayerDetailsScreenVM
 import com.alenniboris.nba_app.presentation.screens.details.team.TeamDetailsScreenVM
 import com.alenniboris.nba_app.presentation.screens.enter.EnterScreenVM
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM
@@ -39,18 +38,23 @@ val ViewModels = module {
         )
     }
 
-    viewModel<GameDetailsScreenVM> { (game: GameModelDomain, isReloadingDataNeeded: Boolean) ->
+    viewModel<GameDetailsScreenVM> { (gameId: Int) ->
         GameDetailsScreenVM(
             nbaApiManager = get<INbaApiManager>(),
-            game = game,
-            isReloadingDataNeeded = isReloadingDataNeeded
+            gameId = gameId
         )
     }
 
-    viewModel<TeamDetailsScreenVM> { (team: TeamModelDomain, isReloadingDataNeeded: Boolean) ->
+    viewModel<PlayerDetailsScreenVM> { (playerId: Int) ->
+        PlayerDetailsScreenVM(
+            nbaApiManager = get<INbaApiManager>(),
+            playerId = playerId
+        )
+    }
+
+    viewModel<TeamDetailsScreenVM> { (teamId: Int) ->
         TeamDetailsScreenVM(
-            team = team,
-            isReloadingDataNeeded = isReloadingDataNeeded,
+            teamId = teamId,
             nbaApiManager = get<INbaApiManager>()
         )
     }

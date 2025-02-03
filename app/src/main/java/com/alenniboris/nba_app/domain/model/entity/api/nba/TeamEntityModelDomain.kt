@@ -8,7 +8,7 @@ data class TeamEntityModelDomain(
     val userId: String,
     val teamName: String,
     val isNational: Boolean?,
-    val countryName: String,
+    val countryName: String?,
     val id: String,
     val countryId: Int
 ) : IEntityModelDomain

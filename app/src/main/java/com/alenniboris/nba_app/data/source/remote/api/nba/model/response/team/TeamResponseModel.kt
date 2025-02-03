@@ -24,8 +24,9 @@ data class TeamResponseModel(
 data class TeamQueryParameters(
     val id: Int,
     val search: String,
-    @SerializedName("country")
+    @SerializedName("country_id")
     val countryId: Int,
+    val country: String,
     @SerializedName("league")
     val leagueId: Int,
     val season: String
@@ -37,7 +38,7 @@ data class TeamResponseErrorsModelData(
     @SerializedName("search")
     val search: String,
     @SerializedName("country")
-    val country: Int,
+    val country: String,
     @SerializedName("league")
     val league: Int,
     @SerializedName("season")

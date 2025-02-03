@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
-import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
@@ -20,14 +19,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TeamDetailsScreenVM(
-    private val team: TeamModelDomain,
-    private val isReloadingDataNeeded: Boolean,
+    private val teamId: Int,
     private val nbaApiManager: INbaApiManager
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow(
         TeamDetailsScreenState(
-            team = team
+            team = TeamModelDomain(id = teamId)
         )
     )
     val screenState = _screenState.asStateFlow()
@@ -35,8 +33,13 @@ class TeamDetailsScreenVM(
     private val _event = SingleFlowEvent<ITeamDetailsScreenEvent>(viewModelScope)
     val event = _event.flow
 
-    private var _leaguesJob: Job? = null
     private var _seasonsJob: Job? = null
+
+    init {
+        reloadDataForTeamAndLoadLeagues()
+        loadSeasons()
+        loadTeamStatisticsBySelectedLeagueAndSeason()
+    }
 
     init {
         viewModelScope.launch {
@@ -52,50 +55,6 @@ class TeamDetailsScreenVM(
                     }
                 }
         }
-    }
-
-    init {
-        if (isReloadingDataNeeded) {
-            reloadDataForTeam(
-                team = _screenState.value.team
-            )
-        }
-        loadLeagues(country = _screenState.value.team.country)
-        loadSeasons()
-        loadTeamStatisticsBySelectedLeagueAndSeason()
-    }
-
-    private fun loadLeagues(
-        country: CountryModelDomain?
-    ) {
-        country?.let {
-            _leaguesJob?.cancel()
-            _leaguesJob = viewModelScope.launch {
-                _screenState.update { it.copy(isLeaguesLoading = true) }
-
-                when (val res = nbaApiManager.getLeaguesByCountry(country)) {
-                    is CustomResultModelDomain.Success -> {
-                        _screenState.update {
-                            it.copy(
-                                selectedLeague = res.result.firstOrNull(),
-                                listOfLeagues = res.result
-                            )
-                        }
-                    }
-
-                    is CustomResultModelDomain.Error -> {
-                        _event.emit(
-                            ITeamDetailsScreenEvent.ShowToastMessage(
-                                res.exception.toUiMessageString()
-                            )
-                        )
-                    }
-                }
-
-                _screenState.update { it.copy(isLeaguesLoading = false) }
-            }
-        }
-
     }
 
     private fun loadSeasons() {
@@ -126,14 +85,18 @@ class TeamDetailsScreenVM(
         }
     }
 
-    private fun reloadDataForTeam(team: TeamModelDomain) {
+    private fun reloadDataForTeamAndLoadLeagues() {
         viewModelScope.launch {
             _screenState.update { it.copy(isTeamDataReloading = true) }
 
-            when (val res = nbaApiManager.getTeamDataById(id = team.id)) {
+            when (val res =
+                nbaApiManager.reloadDataForTeamAndLoadLeagues(team = _screenState.value.team)) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update {
-                        it.copy(team = res.result)
+                        it.copy(
+                            team = res.result.teamData,
+                            listOfLeagues = res.result.leaguesData
+                        )
                     }
                 }
 

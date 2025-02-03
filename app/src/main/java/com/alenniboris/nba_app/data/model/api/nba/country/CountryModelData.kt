@@ -13,7 +13,7 @@ data class CountryModelData(
 fun CountryModelData.toModelDomain(): CountryModelDomain? = runCatching {
     CountryModelDomain(
         id = this.id?.toInt()!!,
-        name = this.name!!,
+        name = this.name,
         code = this.code,
         flag = this.flag
     )

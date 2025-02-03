@@ -15,11 +15,11 @@ data class PlayerEntityModelData(
     @ColumnInfo("player_name")
     val playerName: String,
     @ColumnInfo("country_name")
-    val countryName: String?,
+    val countryName: String,
     @ColumnInfo("player_position")
-    val playerPosition: String?,
+    val playerPosition: String,
     @ColumnInfo("player_number")
-    val playerNumber: String?,
+    val playerNumber: String,
     @PrimaryKey(autoGenerate = false)
     val id: String = playerId.toString() + userId
 )

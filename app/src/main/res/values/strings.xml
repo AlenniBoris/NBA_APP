@@ -93,6 +93,9 @@
     <string name="team_games_results_text">Games results</string>
     <string name="points_for_text">Points for</string>
     <string name="points_against_text">Points against</string>
+    <string name="game_explore_btn_text">Explore game</string>
+    <string name="player_explore_btn_text">Explore player</string>
+    <string name="unknown_country_text">Country unknown</string>
 
     <string name="games_category">Games</string>
     <string name="teams_category">Teams</string>

@@ -36,13 +36,13 @@ interface INbaApiService {
     @GET(NbaApiValues.GAME_STATISTICS_TEAMS_REQUEST)
     @Headers(NbaApiValues.API_HEADER + BuildConfig.API_KEY)
     suspend fun getGameStatisticsForTeamsByGameId(
-        @Query(NbaApiValues.ID_PARAMETER) gameId: String
+        @Query(NbaApiValues.ID_PARAMETER) gameId: Int
     ): GameStatisticsForTeamsResponseModel
 
     @GET(NbaApiValues.GAME_STATISTICS_PLAYERS_REQUEST)
     @Headers(NbaApiValues.API_HEADER + BuildConfig.API_KEY)
     suspend fun getGameStatisticsForPlayersByGameId(
-        @Query(NbaApiValues.ID_PARAMETER) gameId: String
+        @Query(NbaApiValues.ID_PARAMETER) gameId: Int
     ): GameStatisticsForPlayersResponseModel
 
     @GET(NbaApiValues.GAME_REQUEST)
@@ -98,7 +98,7 @@ interface INbaApiService {
         @Query(NbaApiValues.SEARCH_PARAMETER) searchQuery: String,
         @Query(NbaApiValues.SEASON_PARAMETER) season: String,
         @Query(NbaApiValues.LEAGUE_PARAMETER) leagueId: Int,
-        @Query(NbaApiValues.COUNTRY_PARAMETER) country: String
+        @Query(NbaApiValues.COUNTRY_PARAMETER) countryId: Int
     ): TeamResponseModel
 
     @GET(NbaApiValues.PLAYER_REQUEST)
@@ -121,6 +121,19 @@ interface INbaApiService {
         @Query(NbaApiValues.SEASON_PARAMETER) season: String,
         @Query(NbaApiValues.TEAM_PARAMETER) teamId: Int
     ): PlayerResponseModel
+
+    @GET(NbaApiValues.PLAYER_REQUEST)
+    @Headers(NbaApiValues.API_HEADER + BuildConfig.API_KEY)
+    suspend fun getDataForPlayerById(
+        @Query(NbaApiValues.ID_PARAMETER) playerId: Int
+    ): PlayerResponseModel
+
+    @GET(NbaApiValues.GAME_STATISTICS_PLAYERS_REQUEST)
+    @Headers(NbaApiValues.API_HEADER + BuildConfig.API_KEY)
+    suspend fun getStatisticsForPlayerInSeason(
+        @Query(NbaApiValues.SEASON_PARAMETER) season: String,
+        @Query(NbaApiValues.PLAYER_PARAMETER) playerId: Int
+    ): GameStatisticsForPlayersResponseModel
 
     @GET(NbaApiValues.SEASON_REQUEST)
     @ResponseCache(60, TimeUnit.MINUTES)
