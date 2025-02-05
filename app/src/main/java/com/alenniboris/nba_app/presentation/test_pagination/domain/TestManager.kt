@@ -1,4 +1,4 @@
-package com.alenniboris.nba_app.presentation.test.domain
+package com.alenniboris.nba_app.presentation.test_pagination.domain
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

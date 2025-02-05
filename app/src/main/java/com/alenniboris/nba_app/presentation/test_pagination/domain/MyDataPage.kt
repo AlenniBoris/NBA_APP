@@ -1,4 +1,4 @@
-package com.alenniboris.nba_app.presentation.test.domain
+package com.alenniboris.nba_app.presentation.test_pagination.domain
 
 data class MyDataPage(
     val data: List<String>,

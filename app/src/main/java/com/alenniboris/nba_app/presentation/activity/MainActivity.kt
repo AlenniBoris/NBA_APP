@@ -1,11 +1,13 @@
 package com.alenniboris.nba_app.presentation.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,7 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.alenniboris.nba_app.presentation.navigation.NavigationGraph
-import com.alenniboris.nba_app.presentation.test.presentation.TestPaginationUi
+import com.alenniboris.nba_app.presentation.test_permissions.TestPermissionScreen
 import com.alenniboris.nba_app.presentation.uikit.theme.NBA_APPTheme
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -42,10 +44,11 @@ import java.util.UUID
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        main()
+//        main()
 
         enableEdgeToEdge()
         setContent {
@@ -54,10 +57,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    TestDatabaseUi()
-                    TestPaginationUi()
-//                    MainActivityShow()
-//                    MainActivityShow()
+                    Scaffold {
+                        Box(Modifier.padding(it)) {
+        //                    TestDatabaseUi()
+        //                    TestPaginationUi()
+        //                    MainActivityShow()
+        //                    MainActivityShow()
+                            TestPermissionScreen()
+                        }
+                    }
                 }
             }
         }
