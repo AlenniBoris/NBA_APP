@@ -1,5 +1,6 @@
 package com.alenniboris.nba_app.presentation.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -28,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alenniboris.nba_app.presentation.screens.NavGraphs
 import com.alenniboris.nba_app.presentation.screens.destinations.EnterScreenDestination
 import com.alenniboris.nba_app.presentation.screens.destinations.ShowingScreenDestination
-import com.alenniboris.nba_app.presentation.test.presentation.TestPaginationUi
+import com.alenniboris.nba_app.presentation.test_permissions.TestPermissionScreen
 import com.alenniboris.nba_app.presentation.uikit.theme.NbaAppTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
@@ -50,10 +51,11 @@ import java.util.UUID
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        main()
+//        main()
 
         enableEdgeToEdge()
         setContent {
@@ -62,10 +64,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    TestDatabaseUi()
-                    TestPaginationUi()
-//                    MainActivityShow()
-//                    MainActivityShow()
+                    Scaffold {
+                        Box(Modifier.padding(it)) {
+        //                    TestDatabaseUi()
+        //                    TestPaginationUi()
+        //                    MainActivityShow()
+        //                    MainActivityShow()
+                            TestPermissionScreen()
+                        }
+                    }
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.alenniboris.nba_app.presentation.test.presentation
+package com.alenniboris.nba_app.presentation.test_pagination.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -33,9 +33,9 @@ import org.koin.androidx.compose.koinViewModel
 @Preview
 fun TestPaginationUi() {
 
-    val testVM = koinViewModel<TestVM>()
-    val state by testVM.state.collectAsStateWithLifecycle()
-    val event by remember { mutableStateOf(testVM.event) }
+    val testPaginationVM = koinViewModel<TestPaginationVM>()
+    val state by testPaginationVM.state.collectAsStateWithLifecycle()
+    val event by remember { mutableStateOf(testPaginationVM.event) }
     val context = LocalContext.current
     var toastMessage by remember {
         mutableStateOf(
@@ -43,12 +43,12 @@ fun TestPaginationUi() {
         )
     }
     val proceedIntentAction by remember {
-        mutableStateOf(testVM::proceedIntent)
+        mutableStateOf(testPaginationVM::proceedIntent)
     }
 
     LaunchedEffect(Unit) {
         launch {
-            event.filterIsInstance<ITestEvent.ShowMessage>().collect { value ->
+            event.filterIsInstance<ITestPaginationEvent.ShowMessage>().collect { value ->
                 toastMessage.cancel()
                 toastMessage = Toast.makeText(context, value.message, Toast.LENGTH_SHORT)
                 toastMessage.show()
@@ -71,7 +71,7 @@ fun TestPaginationUi() {
                         (lastVisibleIndex >= state.elements.size - state.pageSize) &&
                         state.isLoadingMorePossible
                     ) {
-                        proceedIntentAction(ITestIntent.LoadMoreData)
+                        proceedIntentAction(ITestPaginationIntent.LoadMoreData)
                     }
                 }
             }
