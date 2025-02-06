@@ -5,7 +5,7 @@ import com.alenniboris.nba_app.presentation.test_pagination.presentation.TestPag
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val testModule = module {
+val testPaginationModule = module {
 
     single<TestManager> { TestManager() }
 
