@@ -81,21 +81,21 @@ class MainActivity : ComponentActivity() {
 //            }
 //        }
     }
-
-    data class News(
-        val id: String,
-        val text: String
-    )
-
-    suspend fun getNewsByID(id: String): News = withContext(Dispatchers.IO) {
-        delay(timeMillis = 1000)
-        return@withContext News(id = id, text = UUID.randomUUID().toString())
-    }
-
-    suspend fun getAllNewsIDs(): List<String> = withContext(Dispatchers.IO) {
-        delay(2000)
-        return@withContext (0 until 1000).map { it.toString() }
-    }
+//
+//    data class News(
+//        val id: String,
+//        val text: String
+//    )
+//
+//    suspend fun getNewsByID(id: String): News = withContext(Dispatchers.IO) {
+//        delay(timeMillis = 1000)
+//        return@withContext News(id = id, text = UUID.randomUUID().toString())
+//    }
+//
+//    suspend fun getAllNewsIDs(): List<String> = withContext(Dispatchers.IO) {
+//        delay(2000)
+//        return@withContext (0 until 1000).map { it.toString() }
+//    }
 
 
 //    suspend fun fetchAllNews() = withContext(Dispatchers.IO) {
@@ -128,17 +128,17 @@ class MainActivity : ComponentActivity() {
 //    }
 
     // втупую, но параллельно ( долго, но быстро)
-    suspend fun fetchAllNews(): List<News> = withContext(Dispatchers.IO) {
-        val allIds = getAllNewsIDs()
-        val semaphore = Semaphore(500)
-        allIds.map {
-            async(Dispatchers.IO) {
-                semaphore.withPermit {
-                    getNewsByID(it)
-                }
-            }
-        }.awaitAll()
-    }
+//    suspend fun fetchAllNews(): List<News> = withContext(Dispatchers.IO) {
+//        val allIds = getAllNewsIDs()
+//        val semaphore = Semaphore(500)
+//        allIds.map {
+//            async(Dispatchers.IO) {
+//                semaphore.withPermit {
+//                    getNewsByID(it)
+//                }
+//            }
+//        }.awaitAll()
+//    }
 
 //     на флоу
 //    suspend fun fetchAllNews(): List<News> = withContext(Dispatchers.IO) {
@@ -256,21 +256,21 @@ class MainActivity : ComponentActivity() {
 //                }
 //            }
 //        }
-        val job = MainScope().launch(Dispatchers.IO) {
-            (0..10).forEach {
-                supervisorScope {
-                    launch(exceptionHandler) {
-                        test(it)
-                    }
-                }
-            }
-        }
-
-        MainScope().launch(Dispatchers.IO) {
-            delay(5_000)
-            job.cancel()
-            Log.e("!!!", "stop")
-        }
+//        val job = MainScope().launch(Dispatchers.IO) {
+//            (0..10).forEach {
+//                supervisorScope {
+//                    launch(exceptionHandler) {
+//                        test(it)
+//                    }
+//                }
+//            }
+//        }
+//
+//        MainScope().launch(Dispatchers.IO) {
+//            delay(5_000)
+//            job.cancel()
+//            Log.e("!!!", "stop")
+//        }
 
 
 //        MainScope().launch(Dispatchers.IO) {
@@ -458,18 +458,18 @@ class MainActivity : ComponentActivity() {
 //    }
 
 
-    suspend fun test(a: Int): Unit = withContext(Dispatchers.IO) {
-        delay(a * 1000L)
-        if (Random.nextBoolean()) throw Exception("error - ${a}")
-        Log.e("!!!", "${a}")
-    }
-
-
-    fun main() {
-
-        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-            Log.e("!!!", "Exception: ${throwable.message}")
-        }
+//    suspend fun test(a: Int): Unit = withContext(Dispatchers.IO) {
+//        delay(a * 1000L)
+//        if (Random.nextBoolean()) throw Exception("error - ${a}")
+//        Log.e("!!!", "${a}")
+//    }
+//
+//
+//    fun main() {
+//
+//        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+//            Log.e("!!!", "Exception: ${throwable.message}")
+//        }
 
 //        val job = MainScope().launch(Dispatchers.IO + exceptionHandler) {
 //            (0..10).forEach {
@@ -480,21 +480,21 @@ class MainActivity : ComponentActivity() {
 //                }
 //            }
 //        }
-        val job = MainScope().launch(Dispatchers.IO) {
-            (0..10).forEach {
-                supervisorScope {
-                    launch(exceptionHandler) {
-                        test(it)
-                    }
-                }
-            }
-        }
-
-        MainScope().launch(Dispatchers.IO) {
-            delay(5_000)
-            job.cancel()
-            Log.e("!!!", "stop")
-        }
+//        val job = MainScope().launch(Dispatchers.IO) {
+//            (0..10).forEach {
+//                supervisorScope {
+//                    launch(exceptionHandler) {
+//                        test(it)
+//                    }
+//                }
+//            }
+//        }
+//
+//        MainScope().launch(Dispatchers.IO) {
+//            delay(5_000)
+//            job.cancel()
+//            Log.e("!!!", "stop")
+//        }
 
 
 //        MainScope().launch(Dispatchers.IO) {
@@ -529,7 +529,7 @@ class MainActivity : ComponentActivity() {
 //            Log.e("!!!", "set 112")
 //        }
     }
-}
+//}
 
 @Composable
 private fun MainActivityShow() {
