@@ -4,6 +4,7 @@ import android.app.Application
 import com.alenniboris.nba_app.data.source.local.database.test.TestModule
 import com.alenniboris.nba_app.presentation.test.di.testModule
 import com.alenniboris.nba_app.presentation.test_pagination.di.testPaginationModule
+import com.alenniboris.nba_app.presentation.test_raamcosta.testRaamcostaModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -25,7 +26,8 @@ class AppApplication : Application() {
                 NetworkModule,
                 DatabaseModule,
                 testModule,
-                testPaginationModule
+                testPaginationModule,
+                testRaamcostaModule
             )
         }
     }

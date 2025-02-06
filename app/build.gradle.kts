@@ -78,6 +78,10 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -121,4 +125,9 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.room:room-guava:2.6.1")
+
+    // raamcosta
+    implementation("io.github.raamcosta.compose-destinations:core:2.0.0-beta12")
+    ksp("io.github.raamcosta.compose-destinations:ksp:2.0.0-beta12")
+    implementation("io.github.raamcosta.compose-destinations:bottom-sheet:2.0.0-beta12")
 }

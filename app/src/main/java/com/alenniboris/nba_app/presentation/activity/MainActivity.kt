@@ -1,5 +1,6 @@
 package com.alenniboris.nba_app.presentation.activity
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,9 +12,11 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.alenniboris.nba_app.presentation.navigation.NavigationGraph
 import com.alenniboris.nba_app.presentation.test_permissions.TestPermissionScreen
+import com.alenniboris.nba_app.presentation.test_raamcosta.RaamcostaActivity
 import com.alenniboris.nba_app.presentation.uikit.theme.NBA_APPTheme
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -63,7 +67,17 @@ class MainActivity : ComponentActivity() {
         //                    TestPaginationUi()
         //                    MainActivityShow()
         //                    MainActivityShow()
-                            TestPermissionScreen()
+//                            TestPermissionScreen()
+
+                            Button(
+                                onClick = {
+                                    val intent = Intent(
+                                        this@MainActivity, RaamcostaActivity::class.java
+                                    )
+                                    startActivity(intent)
+                                }
+                            ) { Text("To raamcosta") }
+
                         }
                     }
                 }
