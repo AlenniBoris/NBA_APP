@@ -45,7 +45,7 @@ data class LeaguesResponseErrorsModelData(
     @SerializedName("name")
     val name: String,
     @SerializedName("country_id")
-    val country_id: String,
+    val countryId: String,
     @SerializedName("country")
     val country: String,
     @SerializedName("type")

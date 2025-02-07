@@ -1,10 +1,8 @@
 package com.alenniboris.nba_app.presentation.uikit.views
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -17,17 +15,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.presentation.uikit.theme.EmptyScreenFontSize
 import com.alenniboris.nba_app.presentation.uikit.theme.EmptyScreenSpacerHeight
-import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.emptyScreenIconColor
 
 @Composable
 @Preview
-fun AppEmptyScreen() {
+fun AppEmptyScreen(
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(appColor),
+        modifier = modifier,
     ) {
         Column(
             modifier = Modifier.align(Alignment.Center)

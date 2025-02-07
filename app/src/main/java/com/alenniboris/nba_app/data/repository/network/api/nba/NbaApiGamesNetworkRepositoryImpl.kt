@@ -1,6 +1,5 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import android.util.Log
 import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.game.toModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.player.toModelDomain

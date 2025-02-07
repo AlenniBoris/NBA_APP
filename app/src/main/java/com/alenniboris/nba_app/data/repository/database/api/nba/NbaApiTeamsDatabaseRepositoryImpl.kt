@@ -26,16 +26,9 @@ class NbaApiTeamsDatabaseRepositoryImpl(
         withContext(dispatchers.IO) {
             user?.let {
                 val entity = team.toEntityModel(it.userUid)
-                return@withContext if (entity != null) {
-                    nbaApiTeamsDao.addTeamToDatabase(entity)
-                    CustomResultModelDomain.Success(Unit)
-                } else {
-                    CustomResultModelDomain.Error(
-                        NbaApiExceptionModelDomain.SavingElementError
-                    )
-                }
-            }
-            return@withContext CustomResultModelDomain.Error(
+                nbaApiTeamsDao.addTeamToDatabase(entity)
+                CustomResultModelDomain.Success(Unit)
+            } ?: CustomResultModelDomain.Error(
                 NbaApiExceptionModelDomain.SavingElementError
             )
         }
@@ -47,16 +40,9 @@ class NbaApiTeamsDatabaseRepositoryImpl(
         withContext(dispatchers.IO) {
             user?.let {
                 val entity = team.toEntityModel(it.userUid)
-                return@withContext if (entity != null) {
-                    nbaApiTeamsDao.deleteTeamFromDatabase(entity)
-                    CustomResultModelDomain.Success(Unit)
-                } else {
-                    CustomResultModelDomain.Error(
-                        NbaApiExceptionModelDomain.SavingElementError
-                    )
-                }
-            }
-            return@withContext CustomResultModelDomain.Error(
+                nbaApiTeamsDao.deleteTeamFromDatabase(entity)
+                CustomResultModelDomain.Success(Unit)
+            } ?: CustomResultModelDomain.Error(
                 NbaApiExceptionModelDomain.SavingElementError
             )
         }

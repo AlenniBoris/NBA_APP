@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
@@ -33,12 +34,11 @@ class TeamDetailsScreenVM(
     private val _event = SingleFlowEvent<ITeamDetailsScreenEvent>(viewModelScope)
     val event = _event.flow
 
-    private var _seasonsJob: Job? = null
+    private var _statisticsJob: Job? = null
+    private var _teamPlayersJob: Job? = null
 
     init {
         reloadDataForTeamAndLoadLeagues()
-        loadSeasons()
-        loadTeamStatisticsBySelectedLeagueAndSeason()
     }
 
     init {
@@ -58,8 +58,7 @@ class TeamDetailsScreenVM(
     }
 
     private fun loadSeasons() {
-        _seasonsJob?.cancel()
-        _seasonsJob = viewModelScope.launch {
+        viewModelScope.launch {
             _screenState.update { it.copy(isSeasonsLoading = true) }
 
             when (val res = nbaApiManager.getAllSeasons()) {
@@ -70,6 +69,7 @@ class TeamDetailsScreenVM(
                             listOfSeasons = res.result
                         )
                     }
+                    loadTeamPlayersInSeason()
                 }
 
                 is CustomResultModelDomain.Error -> {
@@ -85,6 +85,32 @@ class TeamDetailsScreenVM(
         }
     }
 
+    private fun loadTeamPlayersInSeason() {
+        _teamPlayersJob?.cancel()
+        _teamPlayersJob = viewModelScope.launch {
+            _screenState.update { it.copy(isTeamPlayersLoading = true) }
+
+            _screenState.value.selectedSeason?.let { season ->
+                when (val res = nbaApiManager.getPlayersOfTeamInSeason(
+                    team = _screenState.value.team,
+                    season = season
+                )) {
+                    is CustomResultModelDomain.Success -> {
+                        _screenState.update { it.copy(teamPlayers = res.result) }
+                    }
+
+                    is CustomResultModelDomain.Error -> {
+                        _event.emit(
+                            ITeamDetailsScreenEvent.ShowToastMessage(res.exception.toUiMessageString())
+                        )
+                    }
+                }
+            }
+
+            _screenState.update { it.copy(isTeamPlayersLoading = false) }
+        }
+    }
+
     private fun reloadDataForTeamAndLoadLeagues() {
         viewModelScope.launch {
             _screenState.update { it.copy(isTeamDataReloading = true) }
@@ -95,12 +121,15 @@ class TeamDetailsScreenVM(
                     _screenState.update {
                         it.copy(
                             team = res.result.teamData,
-                            listOfLeagues = res.result.leaguesData
+                            listOfLeagues = res.result.leaguesData,
+                            isTeamDataReloadedWithError = false
                         )
                     }
+                    loadSeasons()
                 }
 
                 is CustomResultModelDomain.Error -> {
+                    _screenState.update { it.copy(isTeamDataReloadedWithError = true) }
                     _event.emit(
                         ITeamDetailsScreenEvent.ShowToastMessage(res.exception.toUiMessageString())
                     )
@@ -121,6 +150,15 @@ class TeamDetailsScreenVM(
         ITeamDetailsScreenUpdateIntent.NavigateToPreviousScreen -> navigateToPreviousScreen()
 
         ITeamDetailsScreenUpdateIntent.ProceedIsFollowedAction -> proceedIsFollowedAction()
+
+        is ITeamDetailsScreenUpdateIntent.NavigateToPlayerDetailsScreen ->
+            navigateToPlayerDetailsScreen(
+                intent.player
+            )
+    }
+
+    private fun navigateToPlayerDetailsScreen(player: PlayerModelDomain) {
+        _event.emit(ITeamDetailsScreenEvent.NavigateToPlayerDetailsScreen(player))
     }
 
     private fun navigateToPreviousScreen() {
@@ -145,6 +183,17 @@ class TeamDetailsScreenVM(
         if (!isValueTheSame && league != null) {
             loadTeamStatisticsBySelectedLeagueAndSeason()
         }
+        if (isValueTheSame) {
+            _teamPlayersJob?.cancel()
+            _screenState.update {
+                it.copy(
+                    teamStatistics = null,
+                    teamPlayers = emptyList()
+                )
+            }
+        } else {
+            loadTeamPlayersInSeason()
+        }
     }
 
     private fun updateSelectedLeague(newSelectedLeague: LeagueModelDomain) {
@@ -158,10 +207,20 @@ class TeamDetailsScreenVM(
         if (!isValueTheSame && season != null) {
             loadTeamStatisticsBySelectedLeagueAndSeason()
         }
+        if (isValueTheSame) {
+            _statisticsJob?.cancel()
+            _screenState.update {
+                it.copy(
+                    teamStatistics = null,
+                )
+            }
+        }
     }
 
     private fun loadTeamStatisticsBySelectedLeagueAndSeason() {
-        viewModelScope.launch {
+        _statisticsJob?.cancel()
+        _statisticsJob = viewModelScope.launch {
+            _screenState.update { it.copy(isStatisticsDataLoading = true) }
             when (
                 val res = nbaApiManager.requestForTeamStatistics(
                     team = _screenState.value.team,
@@ -179,6 +238,7 @@ class TeamDetailsScreenVM(
                     )
                 }
             }
+            _screenState.update { it.copy(isStatisticsDataLoading = false) }
         }
     }
 

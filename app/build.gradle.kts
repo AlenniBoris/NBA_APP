@@ -1,3 +1,4 @@
+import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -34,17 +35,42 @@ android {
         )
     }
 
-    ksp{
+    ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
+    signingConfigs {
+        getByName("debug") {
+            val keystorePropertiesFile = rootProject.file("signin.properties")
+            val keystoreProperties = Properties()
+            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+            keyAlias = keystoreProperties["debugKey"].toString()
+            keyPassword = keystoreProperties["debugKeyPassword"].toString()
+            storeFile = file(keystoreProperties["storeFile"].toString())
+            storePassword = keystoreProperties["storePassword"].toString()
+        }
+    }
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            isDebuggable = true
+            isShrinkResources = false
         }
     }
     compileOptions {
@@ -79,6 +105,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -121,4 +148,19 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.room:room-guava:2.6.1")
+
+    // raamcosta
+    implementation("io.github.raamcosta.compose-destinations:core:1.10.2")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.10.2")
+
+    // junit + mockito
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.15.2")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // koin test
+    testImplementation("io.insert-koin:koin-test:4.0.2")
+    testImplementation("io.insert-koin:koin-test-junit4:4.0.2")
+    testImplementation("io.insert-koin:koin-test-junit5:4.0.2")
 }

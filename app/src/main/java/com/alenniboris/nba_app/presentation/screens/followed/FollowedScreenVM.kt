@@ -11,7 +11,6 @@ import com.alenniboris.nba_app.domain.model.entity.api.nba.toGameModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.toPlayerModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.toTeamModelDomain
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,7 +30,7 @@ class FollowedScreenVM(
     val event = _event.flow
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             nbaApiManager.followedGames
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
@@ -53,7 +52,7 @@ class FollowedScreenVM(
                 .collect { elements ->
                     _screenState.update {
                         it.copy(
-                            followedTeams = elements.mapNotNull { it.toTeamModelDomain() }
+                            followedTeams = elements.map { it.toTeamModelDomain() }
                         )
                     }
                 }
@@ -117,7 +116,7 @@ class FollowedScreenVM(
     }
 
     private fun deleteElementFromDatabase(element: IStateModel) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             nbaApiManager.proceedElementIsFollowingUpdate(element)
         }
     }

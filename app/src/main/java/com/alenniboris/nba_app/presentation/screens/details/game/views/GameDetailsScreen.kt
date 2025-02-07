@@ -1,6 +1,5 @@
 package com.alenniboris.nba_app.presentation.screens.details.game.views
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -36,45 +35,42 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayerStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamInGameStatisticsModelDomain
-import com.alenniboris.nba_app.presentation.navigation.Route
+import com.alenniboris.nba_app.presentation.screens.destinations.PlayerDetailsScreenDestination
+import com.alenniboris.nba_app.presentation.screens.destinations.TeamDetailsScreenDestination
 import com.alenniboris.nba_app.presentation.screens.details.game.GameDetailsScreenState
 import com.alenniboris.nba_app.presentation.screens.details.game.GameDetailsScreenVM
 import com.alenniboris.nba_app.presentation.screens.details.game.GameStatisticsType
 import com.alenniboris.nba_app.presentation.screens.details.game.GameTeamType
 import com.alenniboris.nba_app.presentation.screens.details.game.IGameDetailsScreenEvent
 import com.alenniboris.nba_app.presentation.screens.details.game.IGameDetailsScreenUpdateIntent
-import com.alenniboris.nba_app.presentation.screens.details.player.views.getPlayerDetailsScreenRoute
-import com.alenniboris.nba_app.presentation.screens.details.team.views.getTeamDetailsScreenRoute
 import com.alenniboris.nba_app.presentation.screens.utils.GameElementContentContainer
 import com.alenniboris.nba_app.presentation.screens.utils.PlayerStatisticsCard
 import com.alenniboris.nba_app.presentation.uikit.theme.TBShowingScreenPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 import com.alenniboris.nba_app.presentation.uikit.theme.appTopBarElementsColor
-import com.alenniboris.nba_app.presentation.uikit.theme.statisticsPBHeight
+import com.alenniboris.nba_app.presentation.uikit.views.AppAlertScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppEmptyScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppProgressBar
 import com.alenniboris.nba_app.presentation.uikit.views.AppTopBar
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 
-fun getGameDetailsScreenRoute(
-    gameId: Int
-): String {
-    return Route.GameDetailsScreenRoute.baseRoute + gameId
-}
-
+@RootNavGraph
+@Destination
 @Composable
 fun GameDetailsScreen(
     gameId: Int,
-    navHostController: NavHostController
+    navigator: DestinationsNavigator
 ) {
     val gameDetailsScreenVM = koinViewModel<GameDetailsScreenVM> { parametersOf(gameId) }
     val state by gameDetailsScreenVM.screenState.collectAsStateWithLifecycle()
@@ -90,29 +86,21 @@ fun GameDetailsScreen(
     LaunchedEffect(Unit) {
         launch {
             event.filterIsInstance<IGameDetailsScreenEvent.NavigateToPreviousPage>().collect() {
-                navHostController.popBackStack()
+                navigator.popBackStack()
             }
         }
 
         launch {
             event.filterIsInstance<IGameDetailsScreenEvent.NavigateToPlayerDetailsScreen>()
                 .collect() {
-                    navHostController.navigate(
-                        getPlayerDetailsScreenRoute(
-                            playerId = it.player.id,
-                        )
-                    )
+                    navigator.navigate(PlayerDetailsScreenDestination(playerId = it.player.id))
                 }
         }
 
         launch {
             event.filterIsInstance<IGameDetailsScreenEvent.NavigateToTeamDetailsScreen>()
                 .collect() {
-                    navHostController.navigate(
-                        getTeamDetailsScreenRoute(
-                            teamId = it.team.id,
-                        )
-                    )
+                    navigator.navigate(TeamDetailsScreenDestination(teamId = it.team.id))
                 }
         }
 
@@ -175,44 +163,50 @@ private fun GameDetailsScreenUi(
                 .verticalScroll(rememberScrollState()),
         ) {
 
-            if (state.isGameDataReloading) {
-                AppProgressBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(statisticsPBHeight)
-                        .align(Alignment.CenterHorizontally)
-                )
-            } else {
-                GameElementContentContainer(
-                    modifier = Modifier.fillMaxWidth(),
-                    textColor = appTopBarElementsColor,
-                    element = state.game,
-                    onTeamSectionClicked = { id ->
-                        proceedIntentAction(
-                            IGameDetailsScreenUpdateIntent.NavigateToTeamDetailsScreen(
-                                id
+            when {
+                state.isLoading -> {
+                    AppProgressBar(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
+
+                state.isReloadedWithError -> {
+                    AppAlertScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
+
+                else -> {
+                    GameElementContentContainer(
+                        modifier = Modifier.fillMaxWidth(),
+                        textColor = appTopBarElementsColor,
+                        element = state.game,
+                        onTeamSectionClicked = { id ->
+                            proceedIntentAction(
+                                IGameDetailsScreenUpdateIntent.NavigateToTeamDetailsScreen(
+                                    id
+                                )
                             )
-                        )
-                    }
-                )
+                        }
+                    )
+
+                    GameDetailsTabSection(
+                        currentlyViewedTeam = state.currentlyViewedTeam,
+                        playersStatisticsModelDomain = when (state.currentlyViewedTeam) {
+                            GameTeamType.Home -> state.gameStatistics.homePlayersStatistics
+                            GameTeamType.Visitors -> state.gameStatistics.visitorPlayersStatistics
+                        },
+                        teamStatisticsModelDomain = when (state.currentlyViewedTeam) {
+                            GameTeamType.Home -> state.gameStatistics.homeTeamStatistics
+                            GameTeamType.Visitors -> state.gameStatistics.visitorsTeamStatistics
+                        },
+                        proceedIntentAction = proceedIntentAction
+                    )
+                }
             }
-
-            GameDetailsTabSection(
-                isLoading = state.isGameStatisticsLoading,
-                currentlyViewedTeam = state.currentlyViewedTeam,
-                playersStatisticsModelDomain = when (state.currentlyViewedTeam) {
-                    GameTeamType.Home -> state.gameStatistics.homePlayersStatistics
-                    GameTeamType.Visitors -> state.gameStatistics.visitorPlayersStatistics
-                },
-                teamStatisticsModelDomain = when (state.currentlyViewedTeam) {
-                    GameTeamType.Home -> state.gameStatistics.homeTeamStatistics
-                    GameTeamType.Visitors -> state.gameStatistics.visitorsTeamStatistics
-                },
-                proceedIntentAction = proceedIntentAction
-            )
-
         }
-
     }
 
 }
@@ -220,7 +214,6 @@ private fun GameDetailsScreenUi(
 @Composable
 @Preview
 private fun GameDetailsTabSection(
-    isLoading: Boolean = true,
     currentlyViewedTeam: GameTeamType = GameTeamType.Home,
     playersStatisticsModelDomain: List<PlayerStatisticsModelDomain> = emptyList(),
     teamStatisticsModelDomain: TeamInGameStatisticsModelDomain? = TeamInGameStatisticsModelDomain(),
@@ -236,17 +229,12 @@ private fun GameDetailsTabSection(
             proceedIntentAction = proceedIntentAction
         )
 
-        if (isLoading) {
-            AppProgressBar(
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else {
-            CurrentViewedGameStatisticsContainer(
-                playersStatisticsModelDomain = playersStatisticsModelDomain,
-                teamStatisticsModelDomain = teamStatisticsModelDomain,
-                proceedIntentAction = proceedIntentAction
-            )
-        }
+        CurrentViewedGameStatisticsContainer(
+            playersStatisticsModelDomain = playersStatisticsModelDomain,
+            teamStatisticsModelDomain = teamStatisticsModelDomain,
+            proceedIntentAction = proceedIntentAction
+        )
+
     }
 
 }
@@ -381,28 +369,33 @@ private fun CurrentViewedGameStatisticsContainer(
                                         )
                                     },
                                 )
-                                Log.e("!!!", "playersStatisticsModelDomain not empty")
                             }
                         }
 
                     } else {
-                        Log.e("!!!", "playersStatisticsModelDomain  empty")
-                        AppEmptyScreen()
+                        AppEmptyScreen(
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
                     }
                 }
 
                 GameStatisticsType.Game -> {
                     teamStatisticsModelDomain?.let {
                         if (!teamStatisticsModelDomain.isEmpty) {
-                            Log.e("!!!", "teamStatisticsModelDomain not empty")
                             TeamStatisticsInGameUi(
                                 teamStatistics = teamStatisticsModelDomain
                             )
                         } else {
-                            Log.e("!!!", "teamStatisticsModelDomain  empty")
-                            AppEmptyScreen()
+                            AppEmptyScreen(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
                         }
-                    } ?: AppEmptyScreen()
+                    } ?: AppEmptyScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
                 }
             }
         }

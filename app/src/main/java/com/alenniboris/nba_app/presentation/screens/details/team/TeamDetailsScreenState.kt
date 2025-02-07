@@ -1,5 +1,6 @@
 package com.alenniboris.nba_app.presentation.screens.details.team
 
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
@@ -10,9 +11,14 @@ data class TeamDetailsScreenState(
     val teamStatistics: TeamStatisticsModelDomain? = null,
 
     val isTeamDataReloading: Boolean = false,
+
+    val isTeamDataReloadedWithError: Boolean = false,
+
     val isStatisticsDataLoading: Boolean = false,
 
-    val isLeaguesLoading: Boolean = false,
+    val isTeamPlayersLoading: Boolean = false,
+    val teamPlayers: List<PlayerModelDomain> = emptyList(),
+
     val listOfLeagues: List<LeagueModelDomain> = emptyList(),
     val selectedLeague: LeagueModelDomain? = null,
 

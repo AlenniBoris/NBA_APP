@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# for Gson'а in Gradle 8.x
+-keep class com.google.gson.reflect.TypeToken
+-keep class * extends com.google.gson.reflect.TypeToken
+-keep public class * implements java.lang.reflect.Type
+
+# for network and database models
+-keep class com.alenniboris.nba_app.data.source.remote.api.nba.model.response.** { *; }
+-keep class com.alenniboris.nba_app.data.model.api.nba.** { *; }

@@ -6,7 +6,7 @@ import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.GameStatisti
 data class GameDetailsScreenState(
     val game: GameModelDomain,
     val gameStatistics: GameStatisticsModelDomain = GameStatisticsModelDomain(),
-    val isGameDataReloading: Boolean = false,
-    val isGameStatisticsLoading: Boolean = false,
+    val isReloadedWithError: Boolean = false,
+    val isLoading: Boolean = false,
     val currentlyViewedTeam: GameTeamType = GameTeamType.Home,
 )

@@ -47,13 +47,16 @@ import com.alenniboris.nba_app.presentation.uikit.theme.bodyStyle
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldColor
 import com.alenniboris.nba_app.presentation.uikit.theme.enterTextFieldTextColor
 import com.alenniboris.nba_app.presentation.uikit.views.AppTextField
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@RootNavGraph(start = true)
+@Destination
 @Composable
 fun EnterScreen() {
-
     val authViewModel: EnterScreenVM = koinViewModel<EnterScreenVM>()
 
     val state by authViewModel.screenState.collectAsStateWithLifecycle()

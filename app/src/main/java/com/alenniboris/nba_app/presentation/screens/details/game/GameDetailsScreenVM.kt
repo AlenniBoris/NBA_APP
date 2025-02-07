@@ -33,11 +33,8 @@ class GameDetailsScreenVM(
     private val _event = SingleFlowEvent<IGameDetailsScreenEvent>(viewModelScope)
     val event = _event.flow
 
-    val a: Job? = null
-
     init {
-        reloadDataForGame()
-        loadGameStatistics()
+        loadGameDataAndStatistics()
     }
 
     init {
@@ -60,29 +57,36 @@ class GameDetailsScreenVM(
         }
     }
 
-    private fun reloadDataForGame() {
-        viewModelScope.launch {
-            _screenState.update { it.copy(isGameDataReloading = true) }
 
-            when (val gameRes =
-                nbaApiManager.getGameDataById(id = _screenState.value.game.id)) {
+    private fun loadGameDataAndStatistics() {
+
+        viewModelScope.launch {
+            _screenState.update { it.copy(isLoading = true) }
+
+            when (val res =
+                nbaApiManager.getGameDataAndStatistics(gameId = _screenState.value.game.id)) {
                 is CustomResultModelDomain.Success -> {
-                    _screenState.update { state ->
-                        state.copy(game = gameRes.result)
+                    val loadedData = res.result
+                    _screenState.update {
+                        it.copy(
+                            game = loadedData.game,
+                            gameStatistics = loadedData.statistics,
+                            isReloadedWithError = false
+                        )
                     }
                 }
 
                 is CustomResultModelDomain.Error -> {
+                    _screenState.update { it.copy(isReloadedWithError = true) }
                     _event.emit(
-                        IGameDetailsScreenEvent.ShowToastMessage(
-                            gameRes.exception.toUiMessageString()
-                        )
+                        IGameDetailsScreenEvent.ShowToastMessage(res.exception.toUiMessageString())
                     )
                 }
             }
 
-            _screenState.update { it.copy(isGameDataReloading = false) }
+            _screenState.update { it.copy(isLoading = false) }
         }
+
     }
 
     fun proceedUpdateIntent(intent: IGameDetailsScreenUpdateIntent) = when (intent) {
@@ -120,29 +124,6 @@ class GameDetailsScreenVM(
     private fun proceedIsFollowedAction() {
         viewModelScope.launch {
             nbaApiManager.proceedElementIsFollowingUpdate(_screenState.value.game)
-        }
-    }
-
-    private fun loadGameStatistics() {
-        viewModelScope.launch {
-            _screenState.update { it.copy(isGameStatisticsLoading = true) }
-
-            when (val statsRes =
-                nbaApiManager.requestForGameStatistics(game = _screenState.value.game)) {
-                is CustomResultModelDomain.Success -> {
-                    _screenState.update {
-                        it.copy(
-                            gameStatistics = statsRes.result
-                        )
-                    }
-                }
-
-                is CustomResultModelDomain.Error -> {
-                    _event.emit(IGameDetailsScreenEvent.ShowToastMessage(statsRes.exception.toUiMessageString()))
-                }
-            }
-
-            _screenState.update { it.copy(isGameStatisticsLoading = false) }
         }
     }
 

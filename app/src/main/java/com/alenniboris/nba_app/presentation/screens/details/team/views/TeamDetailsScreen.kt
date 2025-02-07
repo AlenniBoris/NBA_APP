@@ -8,20 +8,32 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,23 +41,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.alenniboris.nba_app.R
+import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.GamesDetailedStatsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.extra.GamesSimpleStatsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
-import com.alenniboris.nba_app.presentation.navigation.Route
+import com.alenniboris.nba_app.presentation.screens.destinations.PlayerDetailsScreenDestination
 import com.alenniboris.nba_app.presentation.screens.details.team.ITeamDetailsScreenEvent
 import com.alenniboris.nba_app.presentation.screens.details.team.ITeamDetailsScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.details.team.TeamDetailsScreenState
 import com.alenniboris.nba_app.presentation.screens.details.team.TeamDetailsScreenVM
+import com.alenniboris.nba_app.presentation.screens.details.team.TeamDetailsType
 import com.alenniboris.nba_app.presentation.screens.utils.StatisticAtActivityComplicatedScoreboard
 import com.alenniboris.nba_app.presentation.uikit.theme.CustomRowFilterTopPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.DividerWithHeaderTextSize
+import com.alenniboris.nba_app.presentation.uikit.theme.ESCustomTextFieldShape
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionDateTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionMainTextSize
 import com.alenniboris.nba_app.presentation.uikit.theme.GameColumnItemTextSectionStartTextPadding
@@ -65,6 +81,7 @@ import com.alenniboris.nba_app.presentation.uikit.theme.statisticsElementTopPadd
 import com.alenniboris.nba_app.presentation.uikit.theme.statisticsElementVerticalPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.statisticsPBHeight
 import com.alenniboris.nba_app.presentation.uikit.theme.statisticsRowFontSize
+import com.alenniboris.nba_app.presentation.uikit.views.AppAlertScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppDividerWithHeader
 import com.alenniboris.nba_app.presentation.uikit.views.AppEmptyScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
@@ -72,22 +89,21 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppItemPictureSection
 import com.alenniboris.nba_app.presentation.uikit.views.AppProgressBar
 import com.alenniboris.nba_app.presentation.uikit.views.AppRowFilter
 import com.alenniboris.nba_app.presentation.uikit.views.AppTopBar
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 
-fun getTeamDetailsScreenRoute(
-    teamId: Int
-): String {
-    return Route.TeamDetailsScreenRoute.baseRoute + teamId
-}
-
+@RootNavGraph
+@Destination
 @Composable
 fun TeamDetailsScreen(
     teamId: Int,
-    navHostController: NavHostController
+    navigator: DestinationsNavigator
 ) {
 
     val teamDetailsScreenVM = koinViewModel<TeamDetailsScreenVM> { parametersOf(teamId) }
@@ -117,8 +133,15 @@ fun TeamDetailsScreen(
 
         launch {
             event.filterIsInstance<ITeamDetailsScreenEvent.NavigateToPreviousPage>().collect() {
-                navHostController.popBackStack()
+                navigator.popBackStack()
             }
+        }
+
+        launch {
+            event.filterIsInstance<ITeamDetailsScreenEvent.NavigateToPlayerDetailsScreen>()
+                .collect() {
+                    navigator.navigate(PlayerDetailsScreenDestination(playerId = it.player.id))
+                }
         }
     }
 
@@ -171,77 +194,246 @@ fun TeamDetailsScreenUi(
                 .verticalScroll(rememberScrollState()),
         ) {
 
-            if (state.isTeamDataReloading) {
-                AppProgressBar(
-                    modifier = Modifier
-                        .height(statisticsPBHeight)
-                        .fillMaxWidth()
+            when {
+                state.isTeamDataReloading -> {
+                    AppProgressBar(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
+
+                state.isTeamDataReloadedWithError -> {
+                    AppAlertScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
+
+                else -> {
+                    TeamDetailsInfoSection(
+                        modifier = Modifier.fillMaxWidth(),
+                        element = state.team
+                    )
+
+                    AppRowFilter(
+                        modifier = Modifier
+                            .padding(CustomRowFilterTopPadding)
+                            .fillMaxWidth(),
+                        headerColor = appTopBarElementsColor,
+                        headerText = stringResource(R.string.season_filter),
+                        elements = state.listOfSeasons.map {
+                            ActionImplementedUiModel(
+                                name = it.name,
+                                onClick = {
+                                    proceedIntentAction(
+                                        ITeamDetailsScreenUpdateIntent.UpdateSelectedSeason(it)
+                                    )
+                                }
+                            )
+                        },
+                        isLoading = state.isSeasonsLoading,
+                        currentSelectedElement = ActionImplementedUiModel(
+                            name = state.selectedSeason?.name ?: stringResource(R.string.nan_text)
+                        )
+                    )
+
+                    AppRowFilter(
+                        modifier = Modifier
+                            .padding(CustomRowFilterTopPadding)
+                            .fillMaxWidth(),
+                        headerColor = appTopBarElementsColor,
+                        headerText = stringResource(R.string.league_filter),
+                        emptyText = stringResource(R.string.nothing_found),
+                        elements = state.listOfLeagues.map {
+                            ActionImplementedUiModel(
+                                name = it.name,
+                                onClick = {
+                                    proceedIntentAction(
+                                        ITeamDetailsScreenUpdateIntent.UpdateSelectedLeague(it)
+                                    )
+                                }
+                            )
+                        },
+                        currentSelectedElement = ActionImplementedUiModel(
+                            name = state.selectedLeague?.name ?: stringResource(R.string.nan_text)
+                        ),
+                    )
+
+                    TeamDetailsContainerWithInformation(
+                        isStatisticsDataLoading = state.isStatisticsDataLoading,
+                        teamStatistics = state.teamStatistics,
+                        isTeamPlayersLoading = state.isTeamPlayersLoading,
+                        teamPlayers = state.teamPlayers,
+                        proceedIntentAction = proceedIntentAction
+                    )
+                }
+            }
+        }
+
+    }
+
+}
+
+
+@Composable
+@Preview
+fun TeamDetailsContainerWithInformation(
+    isStatisticsDataLoading: Boolean = false,
+    teamStatistics: TeamStatisticsModelDomain? = null,
+    isTeamPlayersLoading: Boolean = false,
+    teamPlayers: List<PlayerModelDomain> = emptyList(),
+    proceedIntentAction: (ITeamDetailsScreenUpdateIntent) -> Unit = {}
+) {
+
+    Column(
+        modifier = Modifier.fillMaxHeight()
+    ) {
+
+        val detailsTypes by remember { mutableStateOf(TeamDetailsType.entries.toList()) }
+        val detailsPagerState = rememberPagerState(pageCount = { detailsTypes.size })
+        val scope = rememberCoroutineScope()
+
+        TabRow(
+            selectedTabIndex = detailsPagerState.currentPage,
+            divider = {
+                Spacer(modifier = Modifier.height(5.dp))
+            },
+            indicator = { tabPositions ->
+                SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[detailsPagerState.currentPage]),
+                    height = 5.dp,
+                    color = appTopBarElementsColor
                 )
-            } else {
-                TeamDetailsInfoSection(
-                    modifier = Modifier.fillMaxWidth(),
-                    element = state.team
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            detailsTypes.forEachIndexed { index, statisticsType ->
+                Tab(
+                    modifier = Modifier
+                        .background(appColor)
+                        .fillMaxWidth(),
+                    text = {
+                        Text(
+                            text = statisticsType.name,
+                            color = appTopBarElementsColor
+                        )
+                    },
+                    selected = detailsPagerState.currentPage == index,
+                    onClick = {
+                        scope.launch {
+                            detailsPagerState.animateScrollToPage(index)
+                        }
+                    }
                 )
             }
+        }
 
-            AppRowFilter(
-                modifier = Modifier
-                    .padding(CustomRowFilterTopPadding)
-                    .fillMaxWidth(),
-                headerColor = appTopBarElementsColor,
-                headerText = stringResource(R.string.season_filter),
-                elements = state.listOfSeasons.map {
-                    ActionImplementedUiModel(
-                        name = it.name,
-                        onClick = {
-                            proceedIntentAction(
-                                ITeamDetailsScreenUpdateIntent.UpdateSelectedSeason(it)
+        HorizontalPager(
+            state = detailsPagerState,
+            verticalAlignment = Alignment.Top
+        ) { ind ->
+
+            val currentStatisticsType by remember { mutableStateOf(detailsTypes[ind]) }
+
+            when (currentStatisticsType) {
+                TeamDetailsType.Statistics -> {
+                    when {
+                        isStatisticsDataLoading -> {
+                            AppProgressBar(
+                                modifier = Modifier
+                                    .height(statisticsPBHeight)
+                                    .fillMaxWidth()
                             )
                         }
-                    )
-                },
-                isLoading = state.isSeasonsLoading,
-                currentSelectedElement = ActionImplementedUiModel(
-                    name = state.selectedSeason?.name ?: stringResource(R.string.nan_text)
-                )
-            )
 
-            AppRowFilter(
-                modifier = Modifier
-                    .padding(CustomRowFilterTopPadding)
-                    .fillMaxWidth(),
-                headerColor = appTopBarElementsColor,
-                headerText = stringResource(R.string.league_filter),
-                emptyText = stringResource(R.string.nothing_found),
-                elements = state.listOfLeagues.map {
-                    ActionImplementedUiModel(
-                        name = it.name,
-                        onClick = {
-                            proceedIntentAction(
-                                ITeamDetailsScreenUpdateIntent.UpdateSelectedLeague(it)
+                        teamStatistics == null -> {
+                            AppEmptyScreen(
+                                modifier = Modifier
+                                    .fillMaxSize()
                             )
                         }
-                    )
-                },
-                isLoading = state.isLeaguesLoading,
-                currentSelectedElement = ActionImplementedUiModel(
-                    name = state.selectedLeague?.name ?: stringResource(R.string.nan_text)
-                ),
-            )
 
-            if (state.isStatisticsDataLoading) {
-                AppProgressBar(
-                    modifier = Modifier
-                        .height(statisticsPBHeight)
-                        .fillMaxWidth()
-                )
-            } else if (state.teamStatistics == null) {
-                AppEmptyScreen()
-            } else {
-                TeamStatisticsSection(
-                    modifier = Modifier.fillMaxWidth(),
-                    teamStatistics = state.teamStatistics
-                )
+                        else -> {
+                            TeamStatisticsSection(
+                                modifier = Modifier.fillMaxWidth(),
+                                teamStatistics = teamStatistics
+                            )
+                        }
+                    }
+                }
+
+                TeamDetailsType.Players -> {
+                    when {
+                        isTeamPlayersLoading -> {
+                            AppProgressBar(
+                                modifier = Modifier
+                                    .height(statisticsPBHeight)
+                                    .fillMaxWidth()
+                            )
+                        }
+
+                        teamPlayers.isEmpty() -> {
+                            AppEmptyScreen(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        }
+
+                        else -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                            ) {
+                                teamPlayers.forEach { player ->
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(statisticsColumnTopPadding)
+                                            .fillMaxWidth()
+                                            .background(
+                                                color = rowItemColor,
+                                                shape = statisticsColumnShape
+                                            )
+                                            .padding(statisticsColumnHorizontalPadding),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+
+                                        Text(
+                                            text = player.name,
+                                            color = rowItemTextColor,
+                                            style = bodyStyle.copy(
+                                                fontSize = 15.sp
+                                            )
+                                        )
+
+                                        Button(
+                                            onClick = {
+                                                proceedIntentAction(
+                                                    ITeamDetailsScreenUpdateIntent.NavigateToPlayerDetailsScreen(
+                                                        player
+                                                    )
+                                                )
+                                            },
+                                            colors = ButtonColors(
+                                                containerColor = rowItemColor,
+                                                contentColor = rowItemTextColor,
+                                                disabledContainerColor = rowItemColor,
+                                                disabledContentColor = rowItemTextColor
+                                            ),
+                                            shape = ESCustomTextFieldShape
+                                        ) {
+                                            Text(
+                                                text = stringResource(R.string.player_explore_btn_text)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
         }
@@ -249,7 +441,6 @@ fun TeamDetailsScreenUi(
     }
 
 }
-
 
 @Composable
 @Preview

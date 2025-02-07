@@ -10,6 +10,7 @@ import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,10 +34,11 @@ class PlayerDetailsScreenVM(
     private val _event = SingleFlowEvent<IPlayerDetailsScreenEvent>(viewModelScope)
     val event = _event.flow
 
+    private var _statisticsJob: Job? = null
+
+
     init {
-        loadSeasons()
         reloadDataForPlayer()
-        loadPlayersStatisticsForSeason()
     }
 
 
@@ -57,23 +59,30 @@ class PlayerDetailsScreenVM(
     }
 
     private fun reloadDataForPlayer() {
-        _screenState.update { it.copy(isPlayerDataLoading = true) }
-
         viewModelScope.launch {
+            _screenState.update { it.copy(isPlayerDataLoading = true) }
+
             when (val res = nbaApiManager.getPlayerDataById(_screenState.value.player.id)) {
                 is CustomResultModelDomain.Success -> {
-                    _screenState.update { it.copy(player = res.result) }
+                    _screenState.update {
+                        it.copy(
+                            player = res.result,
+                            isPlayerStatisticsReloadedWithError = false
+                        )
+                    }
+                    loadSeasons()
                 }
 
                 is CustomResultModelDomain.Error -> {
+                    _screenState.update { it.copy(isPlayerStatisticsReloadedWithError = true) }
                     _event.emit(
                         IPlayerDetailsScreenEvent.ShowToastMessage(res.exception.toUiMessageString())
                     )
                 }
             }
-        }
 
-        _screenState.update { it.copy(isPlayerDataLoading = false) }
+            _screenState.update { it.copy(isPlayerDataLoading = false) }
+        }
     }
 
     private fun loadSeasons() {
@@ -138,11 +147,15 @@ class PlayerDetailsScreenVM(
         }
         if (!isValueTheSame) {
             loadPlayersStatisticsForSeason()
+        } else {
+            _statisticsJob?.cancel()
+            _screenState.update { it.copy(playerStatistics = emptyList()) }
         }
     }
 
     private fun loadPlayersStatisticsForSeason() {
-        viewModelScope.launch {
+        _statisticsJob?.cancel()
+        _statisticsJob = viewModelScope.launch {
             _screenState.value.selectedSeason?.let { season ->
                 _screenState.update { it.copy(isPlayerStatisticsLoading = true) }
                 when (val res =

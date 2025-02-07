@@ -2,6 +2,7 @@ package com.alenniboris.nba_app.domain.manager
 
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.api.nba.GameReloadingResult
 import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
@@ -14,7 +15,6 @@ import com.alenniboris.nba_app.domain.model.filters.CountryModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestParams
-import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.GameStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayerStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamStatisticsModelDomain
 import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.TeamsInGameStatisticsModelDomain
@@ -34,10 +34,6 @@ interface INbaApiManager {
 
     suspend fun getAllCountries(): CustomResultModelDomain<List<CountryModelDomain>, NbaApiExceptionModelDomain>
 
-    suspend fun getGameDataById(
-        id: Int
-    ): CustomResultModelDomain<GameModelDomain, NbaApiExceptionModelDomain>
-
     suspend fun reloadDataForTeamAndLoadLeagues(
         team: TeamModelDomain
     ): CustomResultModelDomain<TeamReloadingResult, NbaApiExceptionModelDomain>
@@ -54,10 +50,6 @@ interface INbaApiManager {
         game: GameModelDomain
     ): CustomResultModelDomain<TeamsInGameStatisticsModelDomain, NbaApiExceptionModelDomain>
 
-    suspend fun requestForGameStatistics(
-        game: GameModelDomain
-    ): CustomResultModelDomain<GameStatisticsModelDomain, NbaApiExceptionModelDomain>
-
     suspend fun requestForTeamStatistics(
         team: TeamModelDomain,
         season: SeasonModelDomain?,
@@ -72,5 +64,14 @@ interface INbaApiManager {
     suspend fun getPlayerDataById(
         id: Int
     ): CustomResultModelDomain<PlayerModelDomain, NbaApiExceptionModelDomain>
+
+    suspend fun getGameDataAndStatistics(
+        gameId: Int
+    ): CustomResultModelDomain<GameReloadingResult, NbaApiExceptionModelDomain>
+
+    suspend fun getPlayersOfTeamInSeason(
+        team: TeamModelDomain,
+        season: SeasonModelDomain
+    ): CustomResultModelDomain<List<PlayerModelDomain>, NbaApiExceptionModelDomain>
 
 }

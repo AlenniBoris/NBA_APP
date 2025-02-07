@@ -38,7 +38,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
@@ -51,10 +50,10 @@ import com.alenniboris.nba_app.domain.model.params.api.nba.toRequestString
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.mappers.toStringMessage
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
-import com.alenniboris.nba_app.presentation.navigation.Route
-import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
-import com.alenniboris.nba_app.presentation.screens.details.player.views.getPlayerDetailsScreenRoute
-import com.alenniboris.nba_app.presentation.screens.details.team.views.getTeamDetailsScreenRoute
+import com.alenniboris.nba_app.presentation.screens.destinations.FollowedScreenDestination
+import com.alenniboris.nba_app.presentation.screens.destinations.GameDetailsScreenDestination
+import com.alenniboris.nba_app.presentation.screens.destinations.PlayerDetailsScreenDestination
+import com.alenniboris.nba_app.presentation.screens.destinations.TeamDetailsScreenDestination
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenEvent
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
@@ -83,13 +82,18 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppEmptyScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppIconButton
 import com.alenniboris.nba_app.presentation.uikit.views.AppProgressBar
 import com.alenniboris.nba_app.presentation.uikit.views.AppTopBar
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@RootNavGraph
+@Destination
 @Composable
 fun ShowingScreen(
-    navHostController: NavHostController
+    navigator: DestinationsNavigator
 ) {
 
     val showingScreenVM: ShowingScreenVM = koinViewModel<ShowingScreenVM>()
@@ -122,25 +126,25 @@ fun ShowingScreen(
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToUserDetailsScreen>().collect {
-                navHostController.navigate(Route.FollowedScreenRoute.route)
+                navigator.navigate(FollowedScreenDestination)
             }
         }
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToGameDetailsPage>().collect {
-                navHostController.navigate(getGameDetailsScreenRoute(gameId = it.game.id))
+                navigator.navigate(GameDetailsScreenDestination(gameId = it.game.id))
             }
         }
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToTeamDetailsPage>().collect {
-                navHostController.navigate(getTeamDetailsScreenRoute(teamId = it.team.id))
+                navigator.navigate(TeamDetailsScreenDestination(teamId = it.team.id))
             }
         }
 
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToPlayerDetailsPage>().collect {
-                navHostController.navigate(getPlayerDetailsScreenRoute(playerId = it.player.id))
+                navigator.navigate(PlayerDetailsScreenDestination(playerId = it.player.id))
             }
         }
     }
@@ -215,7 +219,10 @@ private fun ShowingScreenUi(
                     modifier = Modifier.fillMaxSize(),
                 )
             } else if (state.elements.isEmpty()) {
-                AppEmptyScreen()
+                AppEmptyScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
             } else {
                 ShowElementsUi(
                     category = state.currentCategory,

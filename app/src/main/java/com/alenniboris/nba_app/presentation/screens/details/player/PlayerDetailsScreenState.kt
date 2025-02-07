@@ -7,6 +7,7 @@ import com.alenniboris.nba_app.domain.model.statistics.api.nba.main.PlayerStatis
 data class PlayerDetailsScreenState(
     val player: PlayerModelDomain,
     val isPlayerDataLoading: Boolean = false,
+    val isPlayerStatisticsReloadedWithError: Boolean = false,
     val playerStatistics: List<PlayerStatisticsModelDomain> = emptyList(),
     val isPlayerStatisticsLoading: Boolean = false,
     val listOfSeasons: List<SeasonModelDomain> = emptyList(),

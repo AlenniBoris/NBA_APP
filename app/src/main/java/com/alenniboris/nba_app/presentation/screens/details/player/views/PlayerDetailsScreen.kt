@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,12 +22,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
-import com.alenniboris.nba_app.presentation.navigation.Route
-import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
+import com.alenniboris.nba_app.presentation.screens.destinations.GameDetailsScreenDestination
 import com.alenniboris.nba_app.presentation.screens.details.player.IPlayerDetailsScreenEvent
 import com.alenniboris.nba_app.presentation.screens.details.player.IPlayerDetailsScreenUpdateIntent
 import com.alenniboris.nba_app.presentation.screens.details.player.PlayerDetailsScreenState
@@ -39,26 +36,26 @@ import com.alenniboris.nba_app.presentation.uikit.theme.CustomRowFilterTopPaddin
 import com.alenniboris.nba_app.presentation.uikit.theme.TBShowingScreenPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.appColor
 import com.alenniboris.nba_app.presentation.uikit.theme.appTopBarElementsColor
-import com.alenniboris.nba_app.presentation.uikit.theme.statisticsPBHeight
+import com.alenniboris.nba_app.presentation.uikit.views.AppAlertScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppEmptyScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppProgressBar
 import com.alenniboris.nba_app.presentation.uikit.views.AppRowFilter
 import com.alenniboris.nba_app.presentation.uikit.views.AppTopBar
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-fun getPlayerDetailsScreenRoute(
-    playerId: Int,
-): String {
-    return Route.PlayerDetailsScreenRoute.baseRoute + playerId
-}
 
+@RootNavGraph
+@Destination
 @Composable
 fun PlayerDetailsScreen(
     playerId: Int,
-    navHostController: NavHostController
+    navigator: DestinationsNavigator
 ) {
 
     val playerDetailsScreenVM = koinViewModel<PlayerDetailsScreenVM> { parametersOf(playerId) }
@@ -75,18 +72,14 @@ fun PlayerDetailsScreen(
     LaunchedEffect(Unit) {
         launch {
             event.filterIsInstance<IPlayerDetailsScreenEvent.NavigateToPreviousPage>().collect {
-                navHostController.popBackStack()
+                navigator.popBackStack()
             }
         }
 
         launch {
             event.filterIsInstance<IPlayerDetailsScreenEvent.NavigateToGameDetailsScreen>()
-                .collect { value ->
-                    navHostController.navigate(
-                        getGameDetailsScreenRoute(
-                            gameId = value.game.id
-                        )
-                    )
+                .collect {
+                    navigator.navigate(GameDetailsScreenDestination(gameId = it.game.id))
                 }
         }
 
@@ -152,68 +145,87 @@ fun PlayerDetailsScreenUi(
                 .verticalScroll(rememberScrollState()),
         ) {
 
-            if (state.isPlayerDataLoading) {
-                AppProgressBar(
-                    modifier = Modifier
-                        .height(statisticsPBHeight)
-                        .fillMaxWidth()
-                )
-            } else {
-                PlayerElementContentContainer(
-                    modifier = Modifier.fillMaxWidth(),
-                    element = state.player,
-                    textColor = appTopBarElementsColor
-                )
-            }
+            when {
+                state.isPlayerDataLoading -> {
+                    AppProgressBar(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
 
-            AppRowFilter(
-                modifier = Modifier
-                    .padding(CustomRowFilterTopPadding)
-                    .fillMaxWidth(),
-                headerColor = appTopBarElementsColor,
-                headerText = stringResource(R.string.season_filter),
-                elements = state.listOfSeasons.map {
-                    ActionImplementedUiModel(
-                        name = it.name,
-                        onClick = {
-                            proceedIntentAction(
-                                IPlayerDetailsScreenUpdateIntent.UpdateSelectedSeason(it)
+                state.isPlayerStatisticsReloadedWithError -> {
+                    AppAlertScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
+
+                else -> {
+                    PlayerElementContentContainer(
+                        modifier = Modifier.fillMaxWidth(),
+                        element = state.player,
+                        textColor = appTopBarElementsColor
+                    )
+
+                    AppRowFilter(
+                        modifier = Modifier
+                            .padding(CustomRowFilterTopPadding)
+                            .fillMaxWidth(),
+                        headerColor = appTopBarElementsColor,
+                        headerText = stringResource(R.string.season_filter),
+                        elements = state.listOfSeasons.map {
+                            ActionImplementedUiModel(
+                                name = it.name,
+                                onClick = {
+                                    proceedIntentAction(
+                                        IPlayerDetailsScreenUpdateIntent.UpdateSelectedSeason(it)
+                                    )
+                                }
+                            )
+                        },
+                        isLoading = state.isSeasonsLoading,
+                        currentSelectedElement = ActionImplementedUiModel(
+                            name = state.selectedSeason?.name ?: stringResource(R.string.nan_text)
+                        )
+                    )
+
+                    when {
+                        state.isPlayerStatisticsLoading -> {
+                            AppProgressBar(
+                                modifier = Modifier
+                                    .fillMaxSize()
                             )
                         }
-                    )
-                },
-                isLoading = state.isSeasonsLoading,
-                currentSelectedElement = ActionImplementedUiModel(
-                    name = state.selectedSeason?.name ?: stringResource(R.string.nan_text)
-                )
-            )
 
-            if (state.isPlayerStatisticsLoading) {
-                AppProgressBar(
-                    modifier = Modifier
-                        .height(statisticsPBHeight)
-                        .fillMaxWidth()
-                )
-            } else if (state.playerStatistics.isEmpty()) {
-                AppEmptyScreen()
-            } else {
-                Column(modifier = Modifier.fillMaxHeight()) {
-                    state.playerStatistics.forEach { playerStatistics ->
-                        PlayerStatisticsCard(
-                            playerStatistics = playerStatistics,
-                            exploreBtnText = stringResource(R.string.game_explore_btn_text),
-                            isExploreBtnNeeded = true,
-                            onExploreBtnClicked = {
-                                proceedIntentAction(
-                                    IPlayerDetailsScreenUpdateIntent.NavigateToGameDetailsScreen(
-                                        gameId = playerStatistics.gameId
+                        state.playerStatistics.isEmpty() -> {
+                            AppEmptyScreen(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        }
+
+                        else -> {
+                            Column(modifier = Modifier.fillMaxHeight()) {
+                                state.playerStatistics.forEach { playerStatistics ->
+                                    PlayerStatisticsCard(
+                                        playerStatistics = playerStatistics,
+                                        exploreBtnText = stringResource(R.string.game_explore_btn_text),
+                                        isExploreBtnNeeded = true,
+                                        onExploreBtnClicked = {
+                                            proceedIntentAction(
+                                                IPlayerDetailsScreenUpdateIntent.NavigateToGameDetailsScreen(
+                                                    gameId = playerStatistics.gameId
+                                                )
+                                            )
+                                        }
                                     )
-                                )
+                                }
                             }
-                        )
+                        }
                     }
                 }
             }
+
         }
 
     }

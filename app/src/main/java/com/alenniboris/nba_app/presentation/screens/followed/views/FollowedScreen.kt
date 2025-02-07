@@ -32,7 +32,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
@@ -40,9 +39,9 @@ import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.presentation.mappers.toStringMessage
-import com.alenniboris.nba_app.presentation.screens.details.game.views.getGameDetailsScreenRoute
-import com.alenniboris.nba_app.presentation.screens.details.player.views.getPlayerDetailsScreenRoute
-import com.alenniboris.nba_app.presentation.screens.details.team.views.getTeamDetailsScreenRoute
+import com.alenniboris.nba_app.presentation.screens.destinations.GameDetailsScreenDestination
+import com.alenniboris.nba_app.presentation.screens.destinations.PlayerDetailsScreenDestination
+import com.alenniboris.nba_app.presentation.screens.destinations.TeamDetailsScreenDestination
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedState
 import com.alenniboris.nba_app.presentation.screens.followed.IFollowedScreenEvent
@@ -63,13 +62,18 @@ import com.alenniboris.nba_app.presentation.uikit.theme.pagerSectionPadding
 import com.alenniboris.nba_app.presentation.uikit.theme.pagerSelectedColor
 import com.alenniboris.nba_app.presentation.uikit.views.AppDividerWithHeader
 import com.alenniboris.nba_app.presentation.uikit.views.AppTopBar
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@RootNavGraph
+@Destination
 @Composable
 fun FollowedScreen(
-    navHostController: NavHostController
+    navigator: DestinationsNavigator
 ) {
 
     val followedScreenVM: FollowedScreenVM = koinViewModel<FollowedScreenVM>()
@@ -82,37 +86,25 @@ fun FollowedScreen(
     LaunchedEffect(Unit) {
         launch {
             event.filterIsInstance<IFollowedScreenEvent.NavigateToPreviousPage>().collect() {
-                navHostController.popBackStack()
+                navigator.popBackStack()
             }
         }
 
         launch {
             event.filterIsInstance<IFollowedScreenEvent.NavigateToGameDetailsPage>().collect {
-                navHostController.navigate(
-                    getGameDetailsScreenRoute(
-                        gameId = it.game.id
-                    )
-                )
+                navigator.navigate(GameDetailsScreenDestination(gameId = it.game.id))
             }
         }
 
         launch {
             event.filterIsInstance<IFollowedScreenEvent.NavigateToTeamDetailsPage>().collect {
-                navHostController.navigate(
-                    getTeamDetailsScreenRoute(
-                        teamId = it.team.id
-                    )
-                )
+                navigator.navigate(TeamDetailsScreenDestination(teamId = it.team.id))
             }
         }
 
         launch {
             event.filterIsInstance<IFollowedScreenEvent.NavigateToPlayerDetailsPage>().collect {
-                navHostController.navigate(
-                    getPlayerDetailsScreenRoute(
-                        playerId = it.player.id
-                    )
-                )
+                navigator.navigate(PlayerDetailsScreenDestination(playerId = it.player.id))
             }
         }
     }
