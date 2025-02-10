@@ -25,17 +25,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.alenniboris.nba_app.presentation.navigation.NavigationGraph
-import com.alenniboris.nba_app.presentation.test_permissions.TestPermissionScreen
+import com.alenniboris.nba_app.presentation.test_moving_box.TestMovingBoxUi
 import com.alenniboris.nba_app.presentation.uikit.theme.NBA_APPTheme
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
@@ -59,11 +57,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold {
                         Box(Modifier.padding(it)) {
-        //                    TestDatabaseUi()
-        //                    TestPaginationUi()
-        //                    MainActivityShow()
-        //                    MainActivityShow()
-                            TestPermissionScreen()
+//                            TestDatabaseUi()
+//                            TestPaginationUi()
+//                            MainActivityShow()
+//                            MainActivityShow()
+//                            TestPermissionScreen()
+                            TestMovingBoxUi()
                         }
                     }
                 }
@@ -528,7 +527,7 @@ class MainActivity : ComponentActivity() {
 //            test.update { "112" }
 //            Log.e("!!!", "set 112")
 //        }
-    }
+}
 //}
 
 @Composable
