@@ -1,6 +1,6 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
-import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
+import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiSeasonsService
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GamesResponseErrorsModelData
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
@@ -10,7 +10,7 @@ import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiSeasonsN
 import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
 
 class NbaApiSeasonsNetworkRepositoryImpl(
-    private val apiService: INbaApiService,
+    private val apiService: INbaApiSeasonsService,
     private val dispatchers: IAppDispatchers
 ) : INbaApiSeasonsNetworkRepository {
 

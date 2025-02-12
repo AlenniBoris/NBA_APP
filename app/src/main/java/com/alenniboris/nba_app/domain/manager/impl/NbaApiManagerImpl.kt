@@ -463,9 +463,13 @@ class NbaApiManagerImpl(
                         teamsStatistics is CustomResultModelDomain.Success &&
                         playersStatistics is CustomResultModelDomain.Success
                     ) {
+
+                        val ids = followedGames.firstOrNull().orEmpty().map { it.gameId }
+                        val game = gameDataRes.result
+
                         return@withContext CustomResultModelDomain.Success(
                             GameReloadingResult(
-                                game = gameDataRes.result,
+                                game = game.copy(isFollowed = ids.contains(game.id)),
                                 statistics = GameStatisticsModelDomain(
                                     homeTeamStatistics = teamsStatistics.result.homeTeamStatistics,
                                     homePlayersStatistics = playersStatistics.result.homeTeamPlayersStatistics,
@@ -474,6 +478,7 @@ class NbaApiManagerImpl(
                                 )
                             )
                         )
+
                     }
 
                     return@withContext CustomResultModelDomain.Error(

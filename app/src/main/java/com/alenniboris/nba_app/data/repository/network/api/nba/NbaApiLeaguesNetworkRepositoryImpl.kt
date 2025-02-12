@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
 import com.alenniboris.nba_app.data.model.api.nba.league.toModelDomain
-import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
+import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiLeaguesService
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.league.LeaguesResponseErrorsModelData
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
@@ -13,7 +13,7 @@ import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
 import kotlinx.coroutines.withContext
 
 class NbaApiLeaguesNetworkRepositoryImpl(
-    private val apiService: INbaApiService,
+    private val apiService: INbaApiLeaguesService,
     private val dispatchers: IAppDispatchers
 ) : INbaApiLeaguesNetworkRepository {
 

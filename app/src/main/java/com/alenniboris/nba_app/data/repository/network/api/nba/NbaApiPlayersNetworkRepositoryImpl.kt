@@ -2,7 +2,7 @@ package com.alenniboris.nba_app.data.repository.network.api.nba
 
 import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.player.toModelDomain
-import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
+import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiPlayerService
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GamePlayerStatisticsErrorsModelData
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.player.PlayerResponseErrorsModelData
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.player.PlayerResponseModel
@@ -20,7 +20,7 @@ import com.alenniboris.nba_app.domain.utils.LogPrinter
 import kotlinx.coroutines.withContext
 
 class NbaApiPlayersNetworkRepositoryImpl(
-    private val apiService: INbaApiService,
+    private val apiService: INbaApiPlayerService,
     private val dispatchers: IAppDispatchers
 ) : INbaApiPlayersNetworkRepository {
 

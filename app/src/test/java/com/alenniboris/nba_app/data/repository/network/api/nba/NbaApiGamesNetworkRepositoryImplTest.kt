@@ -2,12 +2,12 @@ package com.alenniboris.nba_app.data.repository.network.api.nba
 
 import com.alenniboris.nba_app.data.model.api.nba.game.GameModelData
 import com.alenniboris.nba_app.data.model.api.nba.game.toModelDomain
-import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
+import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiGameService
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GameResponseModel
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GameStatisticsForPlayersResponseModel
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GameStatisticsForTeamsResponseModel
+import com.alenniboris.nba_app.di.myModules
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
@@ -17,7 +17,6 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -30,7 +29,6 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.inject
-import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.Date
 
@@ -39,31 +37,7 @@ import java.util.Date
 @OptIn(ExperimentalCoroutinesApi::class)
 class NbaApiGamesNetworkRepositoryImplTest : KoinTest {
 
-    private val testScheduler = TestCoroutineScheduler()
-    private val ioDispatcher = StandardTestDispatcher(testScheduler)
-
-    private val testModule = module {
-        single<INbaApiService> { Mockito.mock(INbaApiService::class.java) }
-        single<IAppDispatchers> {
-            Mockito.mock(IAppDispatchers::class.java).apply {
-                Mockito.`when`(this.IO).thenReturn(ioDispatcher)
-            }
-        }
-        single<INbaApiGamesNetworkRepository> {
-            NbaApiGamesNetworkRepositoryImpl(
-                apiService = get<INbaApiService>(),
-                dispatchers = get<IAppDispatchers>()
-            )
-        }
-    }
-
-    @get:Rule
-    val koinTestRule = KoinTestRule.create {
-        modules(testModule)
-    }
-
-    private val apiService: INbaApiService by inject()
-    private val repository: INbaApiGamesNetworkRepository by inject()
+    private val ioDispatcher = StandardTestDispatcher()
 
     private val game = """
         {
@@ -167,75 +141,6 @@ class NbaApiGamesNetworkRepositoryImplTest : KoinTest {
                     },
                     "assists": 0,
                     "points": 12
-                }
-            ]
-        }
-    """.trimIndent().fromJson<GameResponseModel>()
-    private val mockedGameErrorResponse = """
-        {
-            "get": "games",
-            "parameters": {
-                "id": "414628"
-            },
-            "errors": [],
-            "response": [
-                {
-                    "id": 414628,
-                    "date": "2025-02-11T00:00:00+00:00",
-                    "time": "00:00",
-                    "timestamp": 1739232000,
-                    "timezone": "UTC",
-                    "stage": null,
-                    "week": null,
-                    "venue": "Rocket Mortgage FieldHouse",
-                    "status": {
-                        "long": "Game Finished",
-                        "short": "FT",
-                        "timer": null
-                    },
-                    "league": {
-                        "id": 12,
-                        "name": "NBA",
-                        "type": "League",
-                        "season": "2024-2025",
-                        "logo": "https:\/\/media.api-sports.io\/basketball\/leagues\/12.png"
-                    },
-                    "country": {
-                        "id": 5,
-                        "name": "USA",
-                        "code": "US",
-                        "flag": "https:\/\/media.api-sports.io\/flags\/us.svg"
-                    },
-                    "teams": {
-                        "home": {
-                            "id": 137,
-                            "name": "Cleveland Cavaliers",
-                            "logo": "https:\/\/media.api-sports.io\/basketball\/teams\/137.png"
-                        },
-                        "away": {
-                            "id": 149,
-                            "name": "Minnesota Timberwolves",
-                            "logo": "https:\/\/media.api-sports.io\/basketball\/teams\/149.png"
-                        }
-                    },
-                    "scores": {
-                        "home": {
-                            "quarter_1": 30,
-                            "quarter_2": 36,
-                            "quarter_3": 38,
-                            "quarter_4": 24,
-                            "over_time": null,
-                            "total": 128
-                        },
-                        "away": {
-                            "quarter_1": 12,
-                            "quarter_2": 32,
-                            "quarter_3": 34,
-                            "quarter_4": 29,
-                            "over_time": null,
-                            "total": 107
-                        }
-                    }
                 }
             ]
         }
@@ -1184,6 +1089,42 @@ class NbaApiGamesNetworkRepositoryImplTest : KoinTest {
     private val nullSeason: SeasonModelDomain? = null
     private val league = LeagueModelDomain(id = 12)
 
+    private val testModule = module {
+        single<INbaApiGameService> {
+            object : INbaApiGameService {
+                override suspend fun getGamesByDate(date: String): GameResponseModel {
+                    return mockedGameResponse
+                }
+
+                override suspend fun getGamesBySeasonAndLeague(
+                    leagueId: Int,
+                    season: String
+                ): GameResponseModel {
+                    return mockedGameResponse
+                }
+
+                override suspend fun getGameStatisticsForTeamsByGameId(gameId: Int): GameStatisticsForTeamsResponseModel {
+                    return mockedTeamStatisticsResponse
+                }
+
+                override suspend fun getGameStatisticsForPlayersByGameId(gameId: Int): GameStatisticsForPlayersResponseModel {
+                    return mockedPlayersStatisticsResponse
+                }
+
+                override suspend fun getDataForGameById(gameId: Int): GameResponseModel {
+                    return mockedGameResponse
+                }
+            }
+        }
+    }
+
+    @get:Rule
+    val koinTestRule = KoinTestRule.create {
+        modules(myModules + testModule)
+    }
+
+    private val repository: INbaApiGamesNetworkRepository by inject()
+
     @Before
     fun setUp() {
         Dispatchers.setMain(ioDispatcher)
@@ -1196,40 +1137,31 @@ class NbaApiGamesNetworkRepositoryImplTest : KoinTest {
 
     @Test
     fun `if response for request came with some error`() = runTest {
-        Mockito.`when`(apiService.getDataForGameById(game.id!!.toInt()))
-            .thenReturn(mockedGameErrorResponse)
         val res = repository.getGameDataById(game.id!!.toInt())
         assert(res is CustomResultModelDomain.Error)
         assertEquals(res.result, null)
     }
 
-    // хэзэ .спросить
     @Test
     fun `getting games by id returns correctly`() = runTest {
-        Mockito.`when`(apiService.getDataForGameById(414628)).thenReturn(mockedGameResponse)
         val res = repository.getGameDataById(414628)
         assertEquals(res.result, game.toModelDomain())
     }
 
     @Test
     fun `statistics for players in game returns correctly`() = runTest {
-        Mockito.`when`(apiService.getGameStatisticsForPlayersByGameId(414628))
-            .thenReturn(mockedPlayersStatisticsResponse)
         val res = repository.getGameStatisticsForPlayersInGame(GameModelDomain(414628))
         assert(res is CustomResultModelDomain.Success)
     }
 
     @Test
     fun `statistics for teams in game returns correctly`() = runTest {
-        Mockito.`when`(apiService.getGameStatisticsForTeamsByGameId(414628))
-            .thenReturn(mockedTeamStatisticsResponse)
         val res = repository.getTeamsStatisticsInGame(GameModelDomain(414628))
         assert(res is CustomResultModelDomain.Success)
     }
 
     @Test
     fun `getting games by date returns correctly`() = runTest {
-        Mockito.`when`(apiService.getGamesByDate("2025-01-19")).thenReturn(mockedGameResponse)
         val res = repository.getGamesByDate(Date(1737244800000))
         assert(res is CustomResultModelDomain.Success)
     }
@@ -1242,10 +1174,12 @@ class NbaApiGamesNetworkRepositoryImplTest : KoinTest {
 
     @Test
     fun `getting games by season and league returns correctly`() = runTest {
-        Mockito.`when`(apiService.getGamesBySeasonAndLeague(league.id, season.name))
-            .thenReturn(mockedGameResponse)
         val res = repository.getGamesBySeasonAndLeague(season, league)
         assert(res is CustomResultModelDomain.Success)
+        assertEquals(
+            mockedGameResponse.responseList?.mapNotNull { it?.toModelDomain() },
+            res.result
+        )
     }
 
 }

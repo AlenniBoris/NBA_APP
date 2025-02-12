@@ -1,20 +1,19 @@
 package com.alenniboris.nba_app.data.repository.database.api.nba
 
 import com.alenniboris.nba_app.data.source.local.dao.api.nba.INbaTeamsDao
-import com.alenniboris.nba_app.data.source.local.model.api.nba.toEntityModel
-import com.alenniboris.nba_app.data.source.local.model.api.nba.toModelDomain
+import com.alenniboris.nba_app.data.source.local.model.api.nba.TeamEntityModelData
+import com.alenniboris.nba_app.di.myModules
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
-import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.UserModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.repository.database.api.nba.INbaApiTeamsDatabaseRepository
-import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -27,34 +26,41 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.inject
-import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import kotlin.test.assertEquals
 
 @RunWith(MockitoJUnitRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
 class NbaApiTeamsDatabaseRepositoryImplTest : KoinTest {
 
-    private val testScheduler = TestCoroutineScheduler()
-    private val ioDispatcher = StandardTestDispatcher(testScheduler)
+    private val ioDispatcher = StandardTestDispatcher()
 
+    private val databaseFlow = MutableStateFlow<List<TeamEntityModelData>>(emptyList())
     private val testModule = module {
-        single<INbaTeamsDao> { Mockito.mock(INbaTeamsDao::class.java) }
-        single<IAppDispatchers> {
-            Mockito.mock(IAppDispatchers::class.java).apply {
-                Mockito.`when`(this.IO).thenReturn(ioDispatcher)
+        single<INbaTeamsDao> {
+            object : INbaTeamsDao {
+                override suspend fun addTeamToDatabase(team: TeamEntityModelData) {
+                    if (!databaseFlow.value.contains(team)) {
+                        databaseFlow.update { it + team }
+                    }
+                }
+
+                override suspend fun deleteTeamFromDatabase(team: TeamEntityModelData) {
+                    if (databaseFlow.value.contains(team)) {
+                        databaseFlow.update { it - team }
+                    }
+                }
+
+                override fun getAllTeamsForUser(userId: String): Flow<List<TeamEntityModelData>> {
+                    return databaseFlow
+                }
             }
-        }
-        single<INbaApiTeamsDatabaseRepository> {
-            NbaApiTeamsDatabaseRepositoryImpl(
-                nbaApiTeamsDao = get<INbaTeamsDao>(),
-                dispatchers = get<IAppDispatchers>()
-            )
         }
     }
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
-        modules(testModule)
+        modules(myModules + testModule)
     }
 
     private val dao: INbaTeamsDao by inject()
@@ -79,8 +85,9 @@ class NbaApiTeamsDatabaseRepositoryImplTest : KoinTest {
     @Test
     fun `adds an entity if the user is not null`() = runTest {
         val actualRes = repository.addTeamToDatabase(firstTeam, notNullUser)
+        val afterOperation = dao.getAllTeamsForUser(notNullUser.userUid).firstOrNull()?.size
         assert(actualRes is CustomResultModelDomain.Success)
-        Mockito.verify(dao).addTeamToDatabase(firstTeam.toEntityModel(notNullUser.userUid))
+        assertEquals(1, afterOperation)
     }
 
     @Test
@@ -93,8 +100,9 @@ class NbaApiTeamsDatabaseRepositoryImplTest : KoinTest {
     fun `deletes add an entity if the user is not null`() = runTest {
         repository.addTeamToDatabase(firstTeam, notNullUser)
         val deleteRes = repository.deleteTeamFromDatabase(firstTeam, notNullUser)
+        val afterOperation = dao.getAllTeamsForUser(notNullUser.userUid).firstOrNull()?.size
         assert(deleteRes is CustomResultModelDomain.Success)
-        Mockito.verify(dao).deleteTeamFromDatabase(firstTeam.toEntityModel(notNullUser.userUid))
+        assertEquals(0, afterOperation)
     }
 
     @Test
@@ -106,71 +114,17 @@ class NbaApiTeamsDatabaseRepositoryImplTest : KoinTest {
 
     @Test
     fun `returns exact number of entities if add one`() = runTest {
-        Mockito.`when`(dao.getAllTeamsForUser(notNullUser.userUid))
-            .thenReturn(
-                flowOf(
-                    listOf(
-                        firstTeam.toEntityModel(notNullUser.userUid)
-                    )
-                )
-            )
-
         repository.addTeamToDatabase(firstTeam, notNullUser)
-        val result = repository.getAllTeamsForUser(notNullUser).firstOrNull()
-
-        TestCase.assertEquals(
-            result,
-            listOf(firstTeam.toEntityModel(notNullUser.userUid).toModelDomain())
-        )
-        Mockito.verify(dao).getAllTeamsForUser(notNullUser.userUid)
+        repository.addTeamToDatabase(firstTeam, notNullUser)
+        val afterOperation = dao.getAllTeamsForUser(notNullUser.userUid).firstOrNull()?.size
+        assertEquals(1, afterOperation)
     }
 
     @Test
     fun `returns exact number of entities if delete one not existing`() = runTest {
-
-        Mockito.`when`(dao.getAllTeamsForUser(notNullUser.userUid))
-            .thenReturn(
-                flowOf(
-                    listOf(
-                        firstTeam.toEntityModel(notNullUser.userUid)
-                    )
-                )
-            )
-
         repository.addTeamToDatabase(firstTeam, notNullUser)
-
-        repository.deleteTeamFromDatabase(secondTeam, nullUser)
-
-        val result = repository.getAllTeamsForUser(notNullUser).firstOrNull()
-
-        TestCase.assertEquals(
-            result,
-            listOf(firstTeam.toEntityModel(notNullUser.userUid).toModelDomain())
-        )
-        Mockito.verify(dao).getAllTeamsForUser(notNullUser.userUid)
-    }
-
-    @Test
-    fun `returns exact number of entities if add one two times`() = runTest {
-        Mockito.`when`(dao.getAllTeamsForUser(notNullUser.userUid))
-            .thenReturn(
-                flowOf(
-                    listOf(
-                        firstTeam.toEntityModel(notNullUser.userUid)
-                    )
-                )
-            )
-
-        repository.addTeamToDatabase(firstTeam, notNullUser)
-        repository.addTeamToDatabase(firstTeam, notNullUser)
-
-        val result = repository.getAllTeamsForUser(notNullUser).firstOrNull()
-
-        TestCase.assertEquals(result?.size, 1)
-
-        Mockito.verify(dao, Mockito.times(2))
-            .addTeamToDatabase(firstTeam.toEntityModel(notNullUser.userUid))
-        Mockito.verify(dao).getAllTeamsForUser(notNullUser.userUid)
-
+        repository.deleteTeamFromDatabase(secondTeam, notNullUser)
+        val afterOperation = dao.getAllTeamsForUser(notNullUser.userUid).firstOrNull()?.size
+        assertEquals(1, afterOperation)
     }
 }

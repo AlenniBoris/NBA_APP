@@ -20,7 +20,4 @@ interface INbaTeamsDao {
     @Query("SELECT * FROM table_teams WHERE user_id=:userId")
     fun getAllTeamsForUser(userId: String): Flow<List<TeamEntityModelData>>
 
-    @Query("SELECT * FROM table_teams WHERE team_id=:teamId")
-    suspend fun getTeamById(teamId: Int): TeamEntityModelData
-
 }

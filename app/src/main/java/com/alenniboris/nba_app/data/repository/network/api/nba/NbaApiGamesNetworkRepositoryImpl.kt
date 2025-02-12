@@ -3,7 +3,7 @@ package com.alenniboris.nba_app.data.repository.network.api.nba
 import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.game.toModelDomain
 import com.alenniboris.nba_app.data.model.api.nba.player.toModelDomain
-import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
+import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiGameService
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GamePlayerStatisticsErrorsModelData
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GameResponseModel
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GameTeamStatisticsErrorsModelData
@@ -26,7 +26,7 @@ import java.util.Date
 import java.util.Locale
 
 class NbaApiGamesNetworkRepositoryImpl(
-    private val apiService: INbaApiService,
+    private val apiService: INbaApiGameService,
     private val dispatchers: IAppDispatchers
 ) : INbaApiGamesNetworkRepository {
 

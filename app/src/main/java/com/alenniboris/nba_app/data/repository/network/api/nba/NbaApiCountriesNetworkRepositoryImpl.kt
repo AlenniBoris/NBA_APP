@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
 import com.alenniboris.nba_app.data.model.api.nba.country.toModelDomain
-import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiService
+import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiCountriesService
 import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.country.CountriesResponseErrorsModelData
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
@@ -11,7 +11,7 @@ import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiCountrie
 import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
 
 class NbaApiCountriesNetworkRepositoryImpl(
-    private val apiService: INbaApiService,
+    private val apiService: INbaApiCountriesService,
     private val dispatchers: IAppDispatchers,
 ) : INbaApiCountriesNetworkRepository {
 

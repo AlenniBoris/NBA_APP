@@ -4,15 +4,19 @@ import android.util.Log
 import com.alenniboris.nba_app.BuildConfig
 
 object LogPrinter {
-    fun printLog(tag: String, message: String){
-        if(BuildConfig.DEBUG){
-            Log.e(tag,message)
-        } else{
-            println("""
-                $tag
-                --------------
-                $message
-            """.trimIndent())
+    fun printLog(tag: String, message: String) {
+        if (BuildConfig.DEBUG) {
+            runCatching {
+                Log.e(tag, message)
+            }.getOrElse {
+                println(
+                    """
+                        $tag
+                        --------------
+                        $message
+                    """.trimIndent()
+                )
+            }
         }
     }
 }
