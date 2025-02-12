@@ -56,6 +56,7 @@ import com.alenniboris.nba_app.presentation.uikit.views.AppAlertScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppEmptyScreen
 import com.alenniboris.nba_app.presentation.uikit.views.AppProgressBar
 import com.alenniboris.nba_app.presentation.uikit.views.AppTopBar
+import com.alenniboris.nba_app.presentation.uikit.views.appVideoPlayer.AppVideoPlayer
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -190,6 +191,16 @@ private fun GameDetailsScreenUi(
                                 )
                             )
                         }
+                    )
+
+                    AppVideoPlayer(
+                        modifier = Modifier
+                            .padding(top = 15.dp)
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        videoUrl = state.game.gameHighlightsUrl,
+                        textString = stringResource(R.string.highlights_text),
+                        textColor = appTopBarElementsColor
                     )
 
                     GameDetailsTabSection(

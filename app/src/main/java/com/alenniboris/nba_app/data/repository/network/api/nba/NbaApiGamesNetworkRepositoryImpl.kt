@@ -38,7 +38,11 @@ class NbaApiGamesNetworkRepositoryImpl(
             dispatcher = dispatchers.IO,
             transform = { responseList ->
                 responseList?.mapNotNull { game ->
-                    game?.toModelDomain()?.copy(isFollowed = false)
+                    game?.toModelDomain()
+                        ?.copy(
+                            isFollowed = false,
+                            gameHighlightsUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                        )
                 }
             },
             errorsParser = { json ->

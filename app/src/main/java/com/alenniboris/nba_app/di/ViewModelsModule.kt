@@ -9,6 +9,7 @@ import com.alenniboris.nba_app.presentation.screens.details.team.TeamDetailsScre
 import com.alenniboris.nba_app.presentation.screens.enter.EnterScreenVM
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
+import com.alenniboris.nba_app.presentation.uikit.views.appVideoPlayer.AppVideoPlayerVM
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -57,5 +58,9 @@ val ViewModels = module {
             teamId = teamId,
             nbaApiManager = get<INbaApiManager>()
         )
+    }
+
+    viewModel<AppVideoPlayerVM> {
+        AppVideoPlayerVM()
     }
 }

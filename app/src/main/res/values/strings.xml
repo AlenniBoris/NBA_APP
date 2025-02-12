@@ -96,6 +96,7 @@
     <string name="game_explore_btn_text">Explore game</string>
     <string name="player_explore_btn_text">Explore player</string>
     <string name="unknown_country_text">Country unknown</string>
+    <string name="highlights_text">Highlights</string>
 
     <string name="games_category">Games</string>
     <string name="teams_category">Teams</string>

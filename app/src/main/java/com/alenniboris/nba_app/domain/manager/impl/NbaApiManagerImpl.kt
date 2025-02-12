@@ -469,7 +469,10 @@ class NbaApiManagerImpl(
 
                         return@withContext CustomResultModelDomain.Success(
                             GameReloadingResult(
-                                game = game.copy(isFollowed = ids.contains(game.id)),
+                                game = game.copy(
+                                    isFollowed = ids.contains(game.id),
+                                    gameHighlightsUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                ),
                                 statistics = GameStatisticsModelDomain(
                                     homeTeamStatistics = teamsStatistics.result.homeTeamStatistics,
                                     homePlayersStatistics = playersStatistics.result.homeTeamPlayersStatistics,

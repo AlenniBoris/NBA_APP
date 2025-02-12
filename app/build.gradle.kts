@@ -157,4 +157,10 @@ dependencies {
     // koin test
     testImplementation("io.insert-koin:koin-test:4.0.2")
     testImplementation("io.insert-koin:koin-test-junit4:4.0.2")
+    testImplementation("io.insert-koin:koin-test-junit5:4.0.2")
+
+    //media 3 (exoplayer)
+    implementation("androidx.media3:media3-exoplayer:1.5.1")
+    implementation("androidx.media3:media3-ui:1.5.1")
+    implementation("androidx.media3:media3-common:1.5.1")
 }

@@ -7,6 +7,7 @@ import java.util.Date
 data class GameModelDomain(
     override val id: Int = 0,
     override val isFollowed: Boolean = false,
+    val gameHighlightsUrl: String? = null,
     val dateOfTheGame: Date = Calendar.getInstance().time,
     val gameStage: String? = null,
     val weekOfTheGame: String? = null,
