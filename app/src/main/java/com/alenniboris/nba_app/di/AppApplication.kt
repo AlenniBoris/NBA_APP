@@ -12,7 +12,8 @@ val myModules = listOf(
     AuthModule,
     DispatchersModule,
     NetworkModule,
-    DatabaseModule
+    DatabaseModule,
+    MediaModule
 )
 
 class AppApplication : Application() {

@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alenniboris.nba_app.presentation.audio_player.AudioPlayerUi
 import com.alenniboris.nba_app.presentation.screens.NavGraphs
 import com.alenniboris.nba_app.presentation.screens.destinations.EnterScreenDestination
 import com.alenniboris.nba_app.presentation.screens.destinations.ShowingScreenDestination
@@ -39,7 +40,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainActivityShow()
+                    Scaffold { pv ->
+                        Box(Modifier.padding(pv)){
+                            AudioPlayerUi()
+                        }
+                    }
+//                    MainActivityShow()
                 }
             }
         }
