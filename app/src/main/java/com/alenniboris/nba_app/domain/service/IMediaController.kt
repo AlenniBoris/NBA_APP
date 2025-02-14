@@ -12,4 +12,10 @@ interface IMediaController {
 
     fun updateData()
 
+    fun startPlayer()
+
+    fun pausePlayer()
+
+    fun clearMediaProcess()
+
 }

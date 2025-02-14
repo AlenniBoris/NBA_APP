@@ -6,14 +6,11 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.session.MediaSession
 import com.alenniboris.nba_app.R
+import com.alenniboris.nba_app.domain.service.IMediaController
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -23,19 +20,12 @@ import java.util.concurrent.TimeUnit
 
 class AudioPlayerService : LifecycleService() {
 
-    private lateinit var mediaSession: MediaSession
-    private val player: ExoPlayer by inject()
     private var updateJob: Job? = null
+    private val controller by inject<IMediaController>()
 
     override fun onCreate() {
         super.onCreate()
-        mediaSession = MediaSession.Builder(this, player).build()
         startForeground(notificationId, createNotification())
-        player.addListener(object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                updateNotification()
-            }
-        })
 
         updateJob = lifecycleScope.launch {
             while (isActive) {
@@ -43,13 +33,11 @@ class AudioPlayerService : LifecycleService() {
                 delay(1_000)
             }
         }
-
     }
 
     override fun onDestroy() {
+        updateJob?.cancel()
         super.onDestroy()
-        mediaSession.release()
-        player.release()
     }
 
     private fun createNotification(): Notification {
@@ -66,14 +54,16 @@ class AudioPlayerService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         when (intent?.action) {
-            actionPlay -> player.play()
-            actionPause -> player.pause()
+            actionPlay -> controller.startPlayer()
+            actionPause -> controller.pausePlayer()
         }
         updateNotification()
         return START_STICKY
     }
 
     private fun buildNotification(): Notification {
+
+        val isPlayerPlaying = controller.playerState.value.isPlaying
 
         val playPauseIntent = PendingIntent.getService(
             this,
@@ -82,23 +72,28 @@ class AudioPlayerService : LifecycleService() {
                 this,
                 AudioPlayerService::class.java
             ).apply {
-                action = if (player.isPlaying) actionPause else actionPlay
+                action = if (isPlayerPlaying) actionPause else actionPlay
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val playPauseAction = NotificationCompat.Action(
-            if (player.isPlaying) R.drawable.icon_video_to_stop else R.drawable.icon_video_to_play,
-            if (player.isPlaying) "Stop" else "Play",
+            if (isPlayerPlaying) R.drawable.icon_video_to_stop else R.drawable.icon_video_to_play,
+            if (isPlayerPlaying) "Stop" else "Play",
             playPauseIntent
         )
 
-        val progress = ((player.currentPosition.toFloat() / player.duration) * 100).toInt()
+        val currentTime = controller.playerState.value.currentTime
+        val audioDuration = controller.playerState.value.audioDuration
+
+        val progress = ((currentTime.toFloat() / audioDuration) * 100).toInt()
 
         return NotificationCompat.Builder(this, "audio_player_channel")
             .setContentTitle("Playing Audio")
             .setSmallIcon(R.drawable.icon_video_to_play)
-            .setContentText(getTextTime(player.currentPosition) + "/" + getTextTime(player.duration))
+            .setContentText(
+                getTextTime(currentTime) + "/" + getTextTime(audioDuration)
+            )
             .addAction(playPauseAction)
             .setProgress(100, progress, false)
             .build()
@@ -108,10 +103,6 @@ class AudioPlayerService : LifecycleService() {
     private fun updateNotification() {
         val nManager = getSystemService(NotificationManager::class.java)
         nManager.notify(notificationId, buildNotification())
-    }
-
-    override fun onBind(intent: Intent): IBinder? {
-        return super.onBind(intent)
     }
 
     private fun getTextTime(time: Long): String {
