@@ -16,3 +16,5 @@ local.properties
 .gradle
 apikey.properties
 signin.properties
+/apikey.properties
+/signin.properties
