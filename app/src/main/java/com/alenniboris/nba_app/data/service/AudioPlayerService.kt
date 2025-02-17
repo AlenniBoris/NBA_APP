@@ -28,9 +28,9 @@ class AudioPlayerService : LifecycleService() {
         startForeground(notificationId, createNotification())
 
         updateJob = lifecycleScope.launch {
-            while (isActive) {
+            controller.playerState.collect{
                 updateNotification()
-                delay(1_000)
+                delay(1000)
             }
         }
     }

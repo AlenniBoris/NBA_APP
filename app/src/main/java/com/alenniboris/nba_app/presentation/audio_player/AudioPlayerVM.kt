@@ -30,9 +30,4 @@ class AudioPlayerVM(
         }
     }
 
-    override fun onCleared() {
-        mediaController.clearMediaProcess()
-        super.onCleared()
-    }
-
 }

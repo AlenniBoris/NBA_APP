@@ -8,7 +8,7 @@ import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.service.AudioPlayerData
 import com.alenniboris.nba_app.domain.service.IMediaController
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +26,7 @@ class MediaControllerImpl(
     private val _playerState = MutableStateFlow(AudioPlayerData())
     override val playerState: StateFlow<AudioPlayerData> = _playerState.asStateFlow()
 
-    private val scope: CoroutineScope = CoroutineScope(dispatchers.Main + Job())
+    private val scope: CoroutineScope = CoroutineScope(dispatchers.Main + SupervisorJob())
 
     init {
         scope.launch {
@@ -43,13 +43,6 @@ class MediaControllerImpl(
 
     override fun pausePlayer() {
         player.pause()
-    }
-
-    override fun clearMediaProcess() {
-        player.clearMediaItems()
-        player.release()
-        val intent = Intent(apl, AudioPlayerService::class.java)
-        apl.stopService(intent)
     }
 
     override fun play(url: String) {
