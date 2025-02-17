@@ -1,6 +1,7 @@
 package com.alenniboris.nba_app.di
 
 import android.app.Application
+import com.alenniboris.nba_app.data.source.remote.test_loading_big_data.TestBigDataModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -12,7 +13,8 @@ val myModules = listOf(
     AuthModule,
     DispatchersModule,
     NetworkModule,
-    DatabaseModule
+    DatabaseModule,
+    TestBigDataModule
 )
 
 class AppApplication : Application() {
