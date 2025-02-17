@@ -83,7 +83,7 @@ fun GameDetailsScreen(
         )
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(event) {
         launch {
             event.filterIsInstance<IGameDetailsScreenEvent.NavigateToPreviousPage>().collect() {
                 navigator.popBackStack()
@@ -275,7 +275,7 @@ private fun CurrentViewedTeamSelectionTabRow(
                     .fillMaxWidth(),
                 text = {
                     Text(
-                        text = team.name,
+                        text = stringResource(team.stringRes),
                         color = appTopBarElementsColor
                     )
                 },
@@ -330,7 +330,7 @@ private fun CurrentViewedGameStatisticsContainer(
                         .fillMaxWidth(),
                     text = {
                         Text(
-                            text = statisticsType.name,
+                            text = stringResource(statisticsType.stringRes),
                             color = appTopBarElementsColor
                         )
                     },

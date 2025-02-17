@@ -83,7 +83,7 @@ fun FollowedScreen(
     }
     val event by remember { mutableStateOf(followedScreenVM.event) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(event) {
         launch {
             event.filterIsInstance<IFollowedScreenEvent.NavigateToPreviousPage>().collect() {
                 navigator.popBackStack()

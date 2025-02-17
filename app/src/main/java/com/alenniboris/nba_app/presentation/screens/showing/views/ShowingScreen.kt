@@ -110,7 +110,7 @@ fun ShowingScreen(
         mutableStateOf(showingScreenVM::proceedIntentAction)
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(event) {
         launch {
             event.filterIsInstance<IShowingScreenEvent.ShowToastMessage>().collect { value ->
                 toastMessage.cancel()
@@ -171,7 +171,7 @@ private fun ShowingScreenUi(
             .padding(TBShowingScreenPadding),
         topBar = {
             TopBarUI(
-                headerText = state.currentCategory.name,
+                headerText = stringResource(state.currentCategory.toStringMessage()),
                 isCategoriesListVisible = state.isCategoriesVisible,
                 isPersonalActionsVisible = state.isPersonalActionsVisible,
                 proceedIntentAction = proceedIntentAction
@@ -560,7 +560,7 @@ private fun TopBarUI(
                 },
                 listOfItems = listOfPersonalActions.map { action ->
                     ActionImplementedUiModel(
-                        name = action.name,
+                        name = stringResource(action.textResource),
                         onClick = {
                             proceedIntentAction(
                                 IShowingScreenUpdateIntent.ProceedPersonalAction(action)

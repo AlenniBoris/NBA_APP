@@ -16,7 +16,7 @@ data class GameStatisticsForTeamsResponseModel(
     override val resultsCount: String?,
     @SerializedName("response")
     override val responseList: List<GameStatisticsForTeamModelData?>?,
-) : NbaApiResponse<GameStatisticsForTeamModelData>(){
+) : NbaApiResponse<GameStatisticsForTeamModelData>() {
     override val isSomePropertyNotReceived: Boolean
         get() = getHeader == null || queryParameters == null || responseErrors == null ||
                 resultsCount == null || responseList == null

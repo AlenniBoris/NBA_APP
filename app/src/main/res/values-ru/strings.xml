@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NBA_APP</string>
+
+    <string name="game_request_id">Сделать запрос игры только по id</string>
+    <string name="game_request_date">Сделать запрос игр только по дате</string>
+    <string name="game_request_season_league">Сделать запрос на игры по сезону и лиге</string>
+    <string name="game_request_date_season_league">Сделать запрос на игры по сезону, дате и лиге</string>
+
+    <string name="team_request_country">Сделать запрос на команды по стране</string>
+    <string name="team_request_search">Сделать запрос на команды по запросу</string>
+    <string name="team_request_season_league">Сделать запрос на команды по сезону и лиге</string>
+    <string name="team_request_search_season_league">Сделать запрос на игры по запросу, сезону и лиге</string>
+    <string name="team_request_search_season_league_country">Сделать запрос на игры по запросу, стране, сезону и лиге</string>
+
+    <string name="player_request_search">Сделать запрос на игроков по запросу</string>
+    <string name="player_request_season_team">Сделать запрос на игроков по сезону и команде</string>
+    <string name="player_request_season_team_search">Сделать запрос на игроков по запросу, сезону и команде</string>
+
+
+    <string name="enter_logo_description">Enter screen logo</string>
+    <string name="sidebar_icon_description">Sidebar opening button</string>
+    <string name="add_to_followed_icon_description">Add to followed button</string>
+    <string name="open_personal_screen_icon_description">Go to personal screen button</string>
+    <string name="show_password_btn_description">Icon lock</string>
+    <string name="progress_bar_description">Progress bar</string>
+    <string name="fab_icon_description">Fab icon</string>
+    <string name="decline_icon_description">Icon decline</string>
+    <string name="accept_icon_description">Icon accept</string>
+    <string name="top_bar_left_btn_description">Top bar left btn</string>
+    <string name="top_bar_right_btn_description">Top bar right btn</string>
+    <string name="following_icon_description">Icon following</string>
+    <string name="team_picture_description">Team picture</string>
+    <string name="empty_screen_icon_description">Empty icon</string>
+    <string name="alert_screen_icon_description">Alert icon</string>
+    <string name="progress_bar_animation_description">Rotation progress animation</string>
+
+    <string name="home_team_text">Принимающая команда</string>
+    <string name="visitors_team_text">Гостевая команда</string>
+    <string name="text_email">Почта</string>
+    <string name="text_password">Пароль</string>
+    <string name="text_password_check">Повторитье пароль</string>
+    <string name="login_btn_text">Вход</string>
+    <string name="register_btn_text">Регистрация</string>
+    <string name="switch_to_login_process_text">Уже есть аккаунт? Войдите</string>
+    <string name="switch_to_registration_process_text">Нет аккаунта? Зарегестрируйтесь</string>
+    <string name="welcome_text">Добро пожаловать</string>
+    <string name="welcome_back_text">С вовращением</string>
+    <string name="goodbye_text">Прощайте</string>
+    <string name="search_text">Поиск</string>
+    <string name="query_filter_placeholder">Введите имя или команду</string>
+    <string name="date_selection_placeholder">Выберите дату</string>
+    <string name="date_chooser_btn_text">Дата игры</string>
+    <string name="date_chooser_approve_text">Подтверить</string>
+    <string name="date_chooser_cancel_text">Отменить</string>
+    <string name="country_filter">Страна</string>
+    <string name="nan_text">Нет инф.</string>
+    <string name="league_national_text">Национальная лига</string>
+    <string name="league_not_national_text">Лига не национальная</string>
+    <string name="league_national_no_text_text">Неизвестно национальная ли</string>
+    <string name="nothing_found">Ничего не найдено</string>
+    <string name="alert_screen_text">Что-то неизвестное произошло. Повторите операцию или перезапустите приложение</string>
+    <string name="empty_leagues_text">Выберите страну</string>
+    <string name="empty_teams_text">Выберите лигу</string>
+    <string name="action_to_followed_successful">Операция выполнена</string>
+    <string name="followed_screen_header">Отслеживаемые</string>
+    <string name="nothing_followed_category">В этой категории ничего не отслеживается</string>
+    <string name="versus_text">VS</string>
+    <string name="played_minutes_text">Сыгранное время</string>
+    <string name="assists_text">Голевые передачи</string>
+    <string name="steals_text">Кражи мяча</string>
+    <string name="blocks_text">Блокирований мяча</string>
+    <string name="turnovers_text">Потери мяча</string>
+    <string name="personal_fouls_text">Персональные фолы</string>
+    <string name="points_text">Очки</string>
+    <string name="field_goals_text">Полевые голы</string>
+    <string name="attempts_text">Попыток</string>
+    <string name="total_text">Всего</string>
+    <string name="percentage_text">Процент</string>
+    <string name="three_point_goals_text">Трехочковые голы</string>
+    <string name="free_throws_goals_text">Голы штрафных голов</string>
+    <string name="rebounds_text">Подборы</string>
+    <string name="defence_text">Защиты</string>
+    <string name="offence_text">Аттаки</string>
+    <string name="draws_text">Ничьи</string>
+    <string name="wins_text">Победы</string>
+    <string name="loses_text">Поражения</string>
+    <string name="played_games_text">Сыграно</string>
+    <string name="average_text">Среднее</string>
+    <string name="home_text">Принимающая команда</string>
+    <string name="away_text">Гостевая команда</string>
+    <string name="all_text">Всего</string>
+    <string name="team_games_results_text">Результаты игр</string>
+    <string name="points_for_text">Очки "ЗА"</string>
+    <string name="points_against_text">Очки "ПРОТИВ"</string>
+    <string name="game_explore_btn_text">Детали игры</string>
+    <string name="player_explore_btn_text">Детали игрока</string>
+    <string name="unknown_country_text">Страна неизвестна</string>
+
+    <string name="games_category">Игры</string>
+    <string name="teams_category">Команды</string>
+    <string name="players_category">Игроки</string>
+    <string name="open_personal_details">Отслеживаемые</string>
+    <string name="sign_out_action">Выйти</string>
+    <string name="filter_options_open_action">Фильтры</string>
+    <string name="statistics_category">Статистика</string>
+
+    <string name="status_filter">Статус</string>
+    <string name="league_filter">Лига</string>
+    <string name="season_filter">Сезон</string>
+    <string name="team_filter">Команда</string>
+
+    <string name="status_in_play">В игре</string>
+    <string name="status_not_started">Не начата</string>
+    <string name="status_finished">Закончилась</string>
+    <string name="status_postponed">Отложена</string>
+    <string name="status_cancelled">Отменена</string>
+    <string name="status_suspended">Приостановлена</string>
+    <string name="status_awarded">Награждена</string>
+    <string name="status_abandoned">Заброшена</string>
+
+    <string name="invalid_credentials_exception">Указан неверный пароль или адрес электронной почты. Проверьте введенные данные</string>
+    <string name="invalid_user_exception">Этот пользователь больше не действителен. Попробуйте зарегистрироваться еще раз</string>
+    <string name="not_email_type_value_exception">Проверьте свою электронную почту. Это должно выглядеть следующим образом: text@text.text</string>
+    <string name="password_is_not_equal_with_its_check_exception">Ваши пароли не совпадают</string>
+    <string name="weak_password_exception">Этот пароль ненадежен. Он должен содержать более шести символов</string>
+    <string name="web_exception">Проверьте подключение и повторите попытку.</string>
+    <string name="other_exception">Произошла непредвиденная ошибка. Попробуйте снова открыть приложение</string>
+    <string name="user_collision_exception">Конфликт с другим пользователем. Похоже, что эта почта уже используется.</string>
+    <string name="league_and_season_exception">Лига и сезон должны быть выбраны вместе</string>
+    <string name="response_field_errors_exception">В полях указаны ошибки. Проверьте их и повторите попытку</string>
+    <string name="response_missing_parameters_exception">Данные поступили с сервера с ошибками. Попробуйте еще раз позже</string>
+    <string name="request_country_missing">Для этого запроса следует выбрать страну</string>
+    <string name="request_query_size_to_small">Ваш запрос должен содержать более 3 символов</string>
+    <string name="request_team_season_smth_is_empty">Вы еще не выбрали команду или сезон. проверьте свои данные</string>
+    <string name="getting_followed_games_exception">Извините, мы не можем загрузить игры, на которые вы подписались. Снова откройте приложение</string>
+    <string name="getting_followed_teams_exception">Извините, мы не можем загрузить команды, на которые вы подписались. Снова откройте приложение</string>
+    <string name="another_season_statistics_exception">Извините, попробуйте другой сезон или лигу</string>
+    <string name="getting_followed_players_exception">Извините, мы не можем загрузить команды, на которые вы подписались. Снова откройте приложение</string>
+
+
+</resources>

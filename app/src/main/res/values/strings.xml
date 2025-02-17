@@ -100,9 +100,10 @@
     <string name="games_category">Games</string>
     <string name="teams_category">Teams</string>
     <string name="players_category">Players</string>
-    <string name="open_personal_details">Details</string>
+    <string name="open_personal_details">Followed details</string>
     <string name="sign_out_action">Sign out</string>
     <string name="filter_options_open_action">Filter</string>
+    <string name="statistics_category">Statistics</string>
 
     <string name="status_filter">Status</string>
     <string name="league_filter">League</string>

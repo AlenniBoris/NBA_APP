@@ -69,7 +69,7 @@ fun PlayerDetailsScreen(
         )
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(event) {
         launch {
             event.filterIsInstance<IPlayerDetailsScreenEvent.NavigateToPreviousPage>().collect {
                 navigator.popBackStack()

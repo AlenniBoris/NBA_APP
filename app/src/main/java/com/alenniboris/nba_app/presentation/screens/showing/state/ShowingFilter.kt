@@ -14,23 +14,18 @@ data class ShowingFilter(
     val listOfSeasons: List<SeasonModelDomain> = emptyList(),
     val selectedSeason: SeasonModelDomain? = null,
     val isSeasonsLoading: Boolean = false,
-
     val listOfLeagues: List<LeagueModelDomain> = emptyList(),
     val selectedLeague: LeagueModelDomain? = null,
     val isLeaguesLoading: Boolean = false,
-
     val listOfStatuses: List<GameStatus> =
         GameStatus.entries.toList().filter { it != GameStatus.NotDefined },
     val selectedStatus: GameStatus? = GameStatus.In_Play,
-
     val listOfCountries: List<CountryModelDomain> = emptyList(),
     val selectedCountry: CountryModelDomain? = null,
     val isCountriesLoading: Boolean = false,
-
     val listOfTeams: List<TeamModelDomain> = emptyList(),
     val selectedTeam: TeamModelDomain? = null,
     val isTeamsLoading: Boolean = false,
-
     val enteredQuery: String = "",
     val selectedDate: Date = Calendar.getInstance().time
 ) {

@@ -1,7 +1,7 @@
 package com.alenniboris.nba_app.data.repository.network.api.nba
 
 import com.alenniboris.nba_app.data.source.remote.api.nba.INbaApiSeasonsService
-import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.game.GamesResponseErrorsModelData
+import com.alenniboris.nba_app.data.source.remote.api.nba.model.response.season.SeasonsResponseErrorModelData
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
@@ -30,7 +30,7 @@ class NbaApiSeasonsNetworkRepositoryImpl(
                 }
             },
             errorsParser = { json ->
-                json?.fromJson<GamesResponseErrorsModelData>()
+                json?.fromJson<SeasonsResponseErrorModelData>()
             }
         )
 

@@ -117,7 +117,7 @@ fun TeamDetailsScreen(
         )
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(event) {
         launch {
             event.filterIsInstance<ITeamDetailsScreenEvent.ShowToastMessage>().collect { value ->
                 toastMessage.cancel()
@@ -316,7 +316,7 @@ fun TeamDetailsContainerWithInformation(
                         .fillMaxWidth(),
                     text = {
                         Text(
-                            text = statisticsType.name,
+                            text = stringResource(statisticsType.stringRes),
                             color = appTopBarElementsColor
                         )
                     },

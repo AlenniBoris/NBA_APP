@@ -69,7 +69,7 @@ fun EnterScreen() {
         )
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(event) {
         launch {
             event.filterIsInstance<EnterScreenEvent.ShowToastMessage>().collect { ev ->
                 toastMessage.cancel()

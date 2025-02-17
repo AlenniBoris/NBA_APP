@@ -65,7 +65,7 @@ private fun MainActivityShow() {
         )
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(event) {
         launch {
             event.filterIsInstance<MainActivityEvent.ShowToastMessage>().collect { ev ->
                 toastMessage.cancel()

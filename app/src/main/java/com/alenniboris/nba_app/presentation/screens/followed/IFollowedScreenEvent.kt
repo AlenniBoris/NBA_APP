@@ -1,4 +1,5 @@
 package com.alenniboris.nba_app.presentation.screens.followed
+
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain

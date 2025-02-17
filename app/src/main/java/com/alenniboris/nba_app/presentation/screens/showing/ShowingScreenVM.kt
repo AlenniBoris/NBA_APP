@@ -376,8 +376,7 @@ class ShowingScreenVM(
         }
     }
 
-    private fun makeSearchRequest(
-    ) {
+    private fun makeSearchRequest() {
         _jobLoadingElements?.cancel()
         _jobLoadingElements = viewModelScope.launch {
 
