@@ -5,6 +5,12 @@ The NBA_APP app is a convenient service for viewing various basketball informati
 The service provides access to information about various games, players, and teams. 
 It uses the BASKETBALL-API, a special API that provides access to information.
 
+To use it you need to create your apikey.properties file, where your apikey will be stored.
+You may get it from https://dashboard.api-football.com/ .
+
+Also you need to have your signin.properties file,  which contains passwords to your release and debug builds.
+You can ask contact our developers to ask for passwords.
+
 **Stack**:
 - Jetpack Compose
 - Coroutines + Flow
