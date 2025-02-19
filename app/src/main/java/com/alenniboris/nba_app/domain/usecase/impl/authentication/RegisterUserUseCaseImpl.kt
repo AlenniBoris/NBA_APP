@@ -1,29 +1,18 @@
-package com.alenniboris.nba_app.domain.manager.impl
+package com.alenniboris.nba_app.domain.usecase.impl.authentication
 
-import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.exception.AuthenticationExceptionModelDomain
 import com.alenniboris.nba_app.domain.repository.authentication.IAuthenticationRepository
+import com.alenniboris.nba_app.domain.usecase.authentication.IRegisterUserUseCase
 import kotlinx.coroutines.withContext
 
-class AuthenticationManagerImpl(
+class RegisterUserUseCaseImpl(
     private val authenticationRepository: IAuthenticationRepository,
     private val dispatchers: IAppDispatchers
-) : IAuthenticationManager {
+) : IRegisterUserUseCase {
 
-    private val _user = authenticationRepository.user
-    override val user = _user
-
-    override suspend fun loginUser(
-        email: String,
-        password: String
-    ): CustomResultModelDomain<Unit, AuthenticationExceptionModelDomain> =
-        withContext(dispatchers.IO) {
-            return@withContext authenticationRepository.loginUser(email, password)
-        }
-
-    override suspend fun registerUser(
+    override suspend fun invoke(
         email: String,
         password: String,
         passwordCheck: String
@@ -41,11 +30,6 @@ class AuthenticationManagerImpl(
 
                 is CustomResultModelDomain.Error -> CustomResultModelDomain.Error(registerResult.exception)
             }
-        }
-
-    override suspend fun signOut(): CustomResultModelDomain<Unit, AuthenticationExceptionModelDomain> =
-        withContext(dispatchers.IO) {
-            return@withContext authenticationRepository.signOut()
         }
 
 }

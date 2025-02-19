@@ -2,11 +2,13 @@ package com.alenniboris.nba_app.presentation.screens.details.game
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
+import com.alenniboris.nba_app.domain.usecase.game.IGetFollowedGamesUseCase
+import com.alenniboris.nba_app.domain.usecase.game.IGetGameDataAndStatisticsByIdUseCase
+import com.alenniboris.nba_app.domain.usecase.game.IUpdateGameIsFollowedUseCase
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import kotlinx.coroutines.channels.BufferOverflow
@@ -18,8 +20,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class GameDetailsScreenVM(
-    private val nbaApiManager: INbaApiManager,
-    private val gameId: Int
+    private val gameId: Int,
+    private val getFollowedGamesUseCase: IGetFollowedGamesUseCase,
+    private val getGameDataAndStatisticsByIdUseCase: IGetGameDataAndStatisticsByIdUseCase,
+    private val updateGameIsFollowedUseCase: IUpdateGameIsFollowedUseCase
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow(
@@ -38,12 +42,11 @@ class GameDetailsScreenVM(
 
     init {
         viewModelScope.launch {
-            nbaApiManager.followedGames
+            getFollowedGamesUseCase.followedFlow
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
                 .collect { games ->
                     val ids = games.map { it.gameId }.toList()
-
                     _screenState.update { state ->
                         state.copy(
                             game = state.game.copy(
@@ -52,7 +55,6 @@ class GameDetailsScreenVM(
                         )
                     }
                 }
-
         }
     }
 
@@ -62,8 +64,10 @@ class GameDetailsScreenVM(
         viewModelScope.launch {
             _screenState.update { it.copy(isLoading = true) }
 
-            when (val res =
-                nbaApiManager.getGameDataAndStatistics(gameId = _screenState.value.game.id)) {
+            when (
+                val res =
+                    getGameDataAndStatisticsByIdUseCase.invoke(gameId = _screenState.value.game.id)
+            ) {
                 is CustomResultModelDomain.Success -> {
                     val loadedData = res.result
                     _screenState.update {
@@ -122,7 +126,7 @@ class GameDetailsScreenVM(
 
     private fun proceedIsFollowedAction() {
         viewModelScope.launch {
-            nbaApiManager.proceedElementIsFollowingUpdate(_screenState.value.game)
+            updateGameIsFollowedUseCase.invoke(_screenState.value.game)
         }
     }
 

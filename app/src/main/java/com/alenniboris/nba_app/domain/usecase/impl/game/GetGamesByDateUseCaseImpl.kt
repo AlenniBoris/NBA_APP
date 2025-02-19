@@ -1,0 +1,43 @@
+package com.alenniboris.nba_app.domain.usecase.impl.game
+
+import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
+import com.alenniboris.nba_app.domain.model.IAppDispatchers
+import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
+import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
+import com.alenniboris.nba_app.domain.repository.network.api.nba.INbaApiGamesNetworkRepository
+import com.alenniboris.nba_app.domain.usecase.game.IGetFollowedGamesUseCase
+import com.alenniboris.nba_app.domain.usecase.game.IGetGamesByDateUseCase
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.withContext
+import java.util.Date
+
+class GetGamesByDateUseCaseImpl(
+    private val getFollowedGamesUseCase: IGetFollowedGamesUseCase,
+    private val nbaApiGamesNetworkRepository: INbaApiGamesNetworkRepository,
+    private val dispatchers: IAppDispatchers
+) : IGetGamesByDateUseCase {
+
+    override suspend fun invoke(date: Date)
+            : CustomResultModelDomain<List<GameModelDomain>, NbaApiExceptionModelDomain> =
+        withContext(dispatchers.IO) {
+            return@withContext when (
+                val requestResult =
+                    nbaApiGamesNetworkRepository.getGamesByDate(date = date)
+            ) {
+                is CustomResultModelDomain.Success -> {
+                    val followed = getFollowedGamesUseCase.followedFlow.firstOrNull().orEmpty()
+                        .map { it.gameId }
+                    CustomResultModelDomain.Success(
+                        requestResult.result.map {
+                            it.copy(isFollowed = followed.contains(it.id))
+                        }
+                    )
+                }
+
+                is CustomResultModelDomain.Error -> {
+                    CustomResultModelDomain.Error(requestResult.exception)
+                }
+            }
+        }
+
+}
