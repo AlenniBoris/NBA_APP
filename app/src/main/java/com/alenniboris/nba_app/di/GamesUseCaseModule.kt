@@ -25,7 +25,7 @@ val GamesUseCaseModule = module {
         )
     }
 
-    single<IGetGamesByDateUseCase> {
+    factory<IGetGamesByDateUseCase> {
         GetGamesByDateUseCaseImpl(
             getFollowedGamesUseCase = get<IGetFollowedGamesUseCase>(),
             nbaApiGamesNetworkRepository = get<INbaApiGamesNetworkRepository>(),
@@ -33,7 +33,7 @@ val GamesUseCaseModule = module {
         )
     }
 
-    single<IGetGamesBySeasonAndLeagueUseCase> {
+    factory<IGetGamesBySeasonAndLeagueUseCase> {
         GetGamesBySeasonAndLeagueUseCaseImpl(
             getFollowedGamesUseCase = get<IGetFollowedGamesUseCase>(),
             nbaApiGamesNetworkRepository = get<INbaApiGamesNetworkRepository>(),
@@ -41,7 +41,7 @@ val GamesUseCaseModule = module {
         )
     }
 
-    single<IUpdateGameIsFollowedUseCase> {
+    factory<IUpdateGameIsFollowedUseCase> {
         UpdateGameIsFollowedUseCaseImpl(
             authenticationRepository = get<IAuthenticationRepository>(),
             nbaApiGamesDatabaseRepository = get<INbaApiGamesDatabaseRepository>(),
@@ -49,7 +49,7 @@ val GamesUseCaseModule = module {
         )
     }
 
-    single<IGetGameDataAndStatisticsByIdUseCase> {
+    factory<IGetGameDataAndStatisticsByIdUseCase> {
         GetGameDataAndStatisticsByIdUseCaseImpl(
             getFollowedGamesUseCase = get<IGetFollowedGamesUseCase>(),
             nbaApiGamesNetworkRepository = get<INbaApiGamesNetworkRepository>(),

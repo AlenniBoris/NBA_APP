@@ -38,7 +38,7 @@ val TeamsUseCaseModule = module {
         )
     }
 
-    single<IGetTeamsByCountryUseCase> {
+    factory<IGetTeamsByCountryUseCase> {
         GetTeamsByCountryUseCaseImpl(
             getFollowedTeamsUseCase = get<IGetFollowedTeamsUseCase>(),
             nbaApiTeamsNetworkRepository = get<INbaApiTeamsNetworkRepository>(),
@@ -46,7 +46,7 @@ val TeamsUseCaseModule = module {
         )
     }
 
-    single<IGetTeamsByQueryUseCase> {
+    factory<IGetTeamsByQueryUseCase> {
         GetTeamsByQueryUseCaseImpl(
             getFollowedTeamsUseCase = get<IGetFollowedTeamsUseCase>(),
             nbaApiTeamsNetworkRepository = get<INbaApiTeamsNetworkRepository>(),
@@ -54,7 +54,7 @@ val TeamsUseCaseModule = module {
         )
     }
 
-    single<IGetTeamsBySeasonAndLeagueUseCase> {
+    factory<IGetTeamsBySeasonAndLeagueUseCase> {
         GetTeamsBySeasonAndLeagueUseCaseImpl(
             getFollowedTeamsUseCase = get<IGetFollowedTeamsUseCase>(),
             nbaApiTeamsNetworkRepository = get<INbaApiTeamsNetworkRepository>(),
@@ -62,7 +62,7 @@ val TeamsUseCaseModule = module {
         )
     }
 
-    single<IGetTeamsByQuerySeasonLeagueUseCase> {
+    factory<IGetTeamsByQuerySeasonLeagueUseCase> {
         GetTeamsByQuerySeasonLeagueUseCaseImpl(
             getFollowedTeamsUseCase = get<IGetFollowedTeamsUseCase>(),
             nbaApiTeamsNetworkRepository = get<INbaApiTeamsNetworkRepository>(),
@@ -70,7 +70,7 @@ val TeamsUseCaseModule = module {
         )
     }
 
-    single<IGetTeamsByQuerySeasonLeagueCountryUseCase> {
+    factory<IGetTeamsByQuerySeasonLeagueCountryUseCase> {
         GetTeamsByQuerySeasonLeagueCountryUseCaseImpl(
             getFollowedTeamsUseCase = get<IGetFollowedTeamsUseCase>(),
             nbaApiTeamsNetworkRepository = get<INbaApiTeamsNetworkRepository>(),
@@ -78,7 +78,7 @@ val TeamsUseCaseModule = module {
         )
     }
 
-    single<IUpdateTeamIsFollowedUseCase> {
+    factory<IUpdateTeamIsFollowedUseCase> {
         UpdateTeamIsFollowedUseCaseImpl(
             authenticationRepository = get<IAuthenticationRepository>(),
             nbaApiTeamsDatabaseRepository = get<INbaApiTeamsDatabaseRepository>(),
@@ -86,7 +86,7 @@ val TeamsUseCaseModule = module {
         )
     }
 
-    single<IReloadDataForTeamAndLoadLeaguesUseCase> {
+    factory<IReloadDataForTeamAndLoadLeaguesUseCase> {
         ReloadDataForTeamAndLoadLeaguesUseCaseImpl(
             dispatchers = get<IAppDispatchers>(),
             nbaApiTeamsNetworkRepository = get<INbaApiTeamsNetworkRepository>(),
@@ -95,14 +95,14 @@ val TeamsUseCaseModule = module {
         )
     }
 
-    single<IGetTeamStatisticsInGameUseCase> {
+    factory<IGetTeamStatisticsInGameUseCase> {
         GetTeamStatisticsInGameUseCaseImpl(
             nbaApiGamesNetworkRepository = get<INbaApiGamesNetworkRepository>(),
             dispatchers = get<IAppDispatchers>()
         )
     }
 
-    single<IGetTeamStatisticsUseCase> {
+    factory<IGetTeamStatisticsUseCase> {
         GetTeamStatisticsUseCaseImpl(
             nbaApiTeamsNetworkRepository = get<INbaApiTeamsNetworkRepository>(),
             dispatchers = get<IAppDispatchers>()

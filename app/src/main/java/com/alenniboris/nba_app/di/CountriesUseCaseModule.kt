@@ -8,7 +8,7 @@ import org.koin.dsl.module
 
 val CountriesUseCaseModule = module {
 
-    single<IGetCountriesUseCase> {
+    factory<IGetCountriesUseCase> {
         GetCountriesUseCaseImpl(
             dispatchers = get<IAppDispatchers>(),
             nbaApiCountriesNetworkRepository = get<INbaApiCountriesNetworkRepository>()
