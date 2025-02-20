@@ -8,7 +8,7 @@ import org.koin.dsl.module
 
 val SeasonsUseCaseModule = module {
 
-    single<IGetSeasonsUseCase> {
+    factory<IGetSeasonsUseCase> {
         GetSeasonsUseCaseImpl(
             nbaApiSeasonsNetworkRepository = get<INbaApiSeasonsNetworkRepository>(),
             dispatchers = get<IAppDispatchers>()

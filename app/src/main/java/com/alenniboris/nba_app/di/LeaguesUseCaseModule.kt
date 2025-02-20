@@ -8,7 +8,7 @@ import org.koin.dsl.module
 
 val LeaguesUseCaseModule = module {
 
-    single<IGetLeaguesByCountryUseCase> {
+    factory<IGetLeaguesByCountryUseCase> {
         GetLeaguesByCountryUseCaseImpl(
             nbaApiLeaguesNetworkRepository = get<INbaApiLeaguesNetworkRepository>(),
             dispatchers = get<IAppDispatchers>()
