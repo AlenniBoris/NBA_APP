@@ -3,8 +3,6 @@ package com.alenniboris.nba_app.presentation.screens.showing
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
-import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
@@ -19,16 +17,37 @@ import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.GameRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.INbaApiElementsRequestType
+import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiGameTypeElementsRequest
+import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiPlayerTypeElementsRequest
 import com.alenniboris.nba_app.domain.model.params.api.nba.NbaApiTeamTypeElementsRequest
 import com.alenniboris.nba_app.domain.model.params.api.nba.PlayerRequestParamsModelDomain
 import com.alenniboris.nba_app.domain.model.params.api.nba.TeamRequestParamsModelDomain
+import com.alenniboris.nba_app.domain.usecase.authentication.ISignOutUserUseCase
+import com.alenniboris.nba_app.domain.usecase.countries.IGetCountriesUseCase
+import com.alenniboris.nba_app.domain.usecase.game.IGetFollowedGamesUseCase
+import com.alenniboris.nba_app.domain.usecase.game.IGetGamesByDateUseCase
+import com.alenniboris.nba_app.domain.usecase.game.IGetGamesBySeasonAndLeagueUseCase
+import com.alenniboris.nba_app.domain.usecase.game.IUpdateGameIsFollowedUseCase
+import com.alenniboris.nba_app.domain.usecase.leagues.IGetLeaguesByCountryUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IGetFollowedPlayersUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IGetPlayersByQuerySeasonTeamUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IGetPlayersByQueryUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IGetPlayersBySeasonTeamUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IUpdatePlayerIsFollowedUseCase
+import com.alenniboris.nba_app.domain.usecase.seasons.IGetSeasonsUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetFollowedTeamsUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetTeamsByCountryUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetTeamsByQuerySeasonLeagueCountryUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetTeamsByQuerySeasonLeagueUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetTeamsByQueryUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetTeamsBySeasonAndLeagueUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IUpdateTeamIsFollowedUseCase
 import com.alenniboris.nba_app.domain.utils.GameStatus
 import com.alenniboris.nba_app.domain.utils.NbaApiCategory
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenValues.PersonalBtnAction
 import com.alenniboris.nba_app.presentation.screens.showing.state.ShowingState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,10 +60,27 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ShowingScreenVM(
-    private val authenticationManager: IAuthenticationManager,
-    private val nbaApiManager: INbaApiManager
+    private val signOutUserUseCase: ISignOutUserUseCase,
+    private val getFollowedGamesUseCase: IGetFollowedGamesUseCase,
+    private val getFollowedPlayersUseCase: IGetFollowedPlayersUseCase,
+    private val getFollowedTeamsUseCase: IGetFollowedTeamsUseCase,
+    private val updateGameIsFollowedUseCase: IUpdateGameIsFollowedUseCase,
+    private val updateTeamIsFollowedUseCase: IUpdateTeamIsFollowedUseCase,
+    private val updatePlayerIsFollowedUseCase: IUpdatePlayerIsFollowedUseCase,
+    private val getSeasonsUseCase: IGetSeasonsUseCase,
+    private val getCountriesUseCase: IGetCountriesUseCase,
+    private val getGamesByDateUseCase: IGetGamesByDateUseCase,
+    private val getGamesBySeasonAndLeague: IGetGamesBySeasonAndLeagueUseCase,
+    private val getPlayersByQueryUseCase: IGetPlayersByQueryUseCase,
+    private val getPlayersBySeasonAndTeamUseCase: IGetPlayersBySeasonTeamUseCase,
+    private val getPlayersBySeasonAndTeamAndQueryUseCase: IGetPlayersByQuerySeasonTeamUseCase,
+    private val getTeamsByCountryUseCase: IGetTeamsByCountryUseCase,
+    private val getTeamsByQueryAndSeasonAndLeagueAndCountryUseCase: IGetTeamsByQuerySeasonLeagueCountryUseCase,
+    private val getTeamsByQueryAndSeasonAndLeagueUseCase: IGetTeamsByQuerySeasonLeagueUseCase,
+    private val getTeamsByQueryUseCase: IGetTeamsByQueryUseCase,
+    private val getTeamsBySeasonAndLeagueUseCase: IGetTeamsBySeasonAndLeagueUseCase,
+    private val getLeaguesByCountryUseCase: IGetLeaguesByCountryUseCase
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow(ShowingState())
@@ -57,22 +93,20 @@ class ShowingScreenVM(
     private var _jobLoadingLeagues: Job? = null
     private var _jobLoadingTeams: Job? = null
 
+
     init {
         viewModelScope.launch {
-            _screenState.map {
-                it.currentCategory
-            }
+            _screenState.map { it.currentCategory }
                 .flatMapLatest { category ->
                     when (category) {
-                        NbaApiCategory.Games -> nbaApiManager.followedGames
-                        NbaApiCategory.Teams -> nbaApiManager.followedTeams
-                        NbaApiCategory.Players -> nbaApiManager.followedPlayers
+                        NbaApiCategory.Games -> getFollowedGamesUseCase.followedFlow
+                        NbaApiCategory.Teams -> getFollowedTeamsUseCase.followedFlow
+                        NbaApiCategory.Players -> getFollowedPlayersUseCase.followedFlow
                     }
                 }
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
                 .collect { selected ->
-
                     val ids = selected.map {
                         when (it) {
                             is GameEntityModelDomain -> it.gameId
@@ -84,20 +118,12 @@ class ShowingScreenVM(
                     _screenState.update { state ->
                         state.copy(
                             elements = state.elements.map { el ->
-                                if (ids.contains(el.id)) {
-                                    when (el) {
-                                        is GameModelDomain -> el.copy(isFollowed = true)
-                                        is PlayerModelDomain -> el.copy(isFollowed = true)
-                                        is TeamModelDomain -> el.copy(isFollowed = true)
-                                    }
-                                } else {
-                                    when (el) {
-                                        is GameModelDomain -> el.copy(isFollowed = false)
-                                        is PlayerModelDomain -> el.copy(isFollowed = false)
-                                        is TeamModelDomain -> el.copy(isFollowed = false)
-                                    }
+                                when (el) {
+                                    is GameModelDomain -> el.copy(isFollowed = ids.contains(el.id))
+                                    is PlayerModelDomain -> el.copy(isFollowed = ids.contains(el.id))
+                                    is TeamModelDomain -> el.copy(isFollowed = ids.contains(el.id))
                                 }
-                            },
+                            }
                         )
                     }
                 }
@@ -114,7 +140,9 @@ class ShowingScreenVM(
         viewModelScope.launch {
             changeIsSeasonsLoading(true)
 
-            when (val seasonsResult = nbaApiManager.getAllSeasons()) {
+            when (
+                val seasonsResult = getSeasonsUseCase.invoke()
+            ) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update { state ->
                         state.copy(
@@ -143,7 +171,9 @@ class ShowingScreenVM(
         viewModelScope.launch {
             changeIsCountriesLoading(true)
 
-            when (val countriesResult = nbaApiManager.getAllCountries()) {
+            when (
+                val countriesResult = getCountriesUseCase.invoke()
+            ) {
                 is CustomResultModelDomain.Success -> {
                     val newCountries = countriesResult.result
                         .sortedBy { it.name }
@@ -302,8 +332,16 @@ class ShowingScreenVM(
 
     private fun proceedElementActionWithFollowedDatabase(element: IStateModel) {
         viewModelScope.launch {
-            val followingActionResult =
-                nbaApiManager.proceedElementIsFollowingUpdate(element)
+            val followingActionResult = when (element) {
+                is GameModelDomain ->
+                    updateGameIsFollowedUseCase.invoke(game = element)
+
+                is PlayerModelDomain ->
+                    updatePlayerIsFollowedUseCase.invoke(player = element)
+
+                is TeamModelDomain ->
+                    updateTeamIsFollowedUseCase.invoke(team = element)
+            }
             when (followingActionResult) {
                 is CustomResultModelDomain.Success ->
                     _event.emit(
@@ -384,9 +422,95 @@ class ShowingScreenVM(
 
             changeIsElementsLoading(true)
 
-            val requestResult = nbaApiManager.makeRequestForListOfElements(
-                elementsRequestParameters = params
-            )
+            val requestResult = when (params.elementsRequestType) {
+                NbaApiGameTypeElementsRequest.GAMES_DATE -> {
+                    (params as? GameRequestParamsModelDomain)?.let {
+                        getGamesByDateUseCase.invoke(it.requestedDate)
+                    }
+                }
+
+                NbaApiGameTypeElementsRequest.GAMES_SEASON_LEAGUE -> {
+                    (params as? GameRequestParamsModelDomain)?.let {
+                        getGamesBySeasonAndLeague.invoke(
+                            season = params.requestedSeason,
+                            league = params.requestedLeague
+                        )
+                    }
+                }
+
+                NbaApiPlayerTypeElementsRequest.PLAYER_SEARCH -> {
+                    (params as? PlayerRequestParamsModelDomain)?.let {
+                        getPlayersByQueryUseCase.invoke(
+                            query = params.requestedQuery
+                        )
+                    }
+                }
+
+                NbaApiPlayerTypeElementsRequest.PLAYER_SEASON_TEAM -> {
+                    (params as? PlayerRequestParamsModelDomain)?.let {
+                        getPlayersBySeasonAndTeamUseCase.invoke(
+                            season = params.requestedSeason,
+                            team = params.requestedTeam
+                        )
+                    }
+                }
+
+                NbaApiPlayerTypeElementsRequest.PLAYER_SEASON_TEAM_SEARCH -> {
+                    (params as? PlayerRequestParamsModelDomain)?.let {
+                        getPlayersBySeasonAndTeamAndQueryUseCase.invoke(
+                            season = params.requestedSeason,
+                            team = params.requestedTeam,
+                            query = params.requestedQuery
+                        )
+                    }
+                }
+
+                NbaApiTeamTypeElementsRequest.TEAMS_SEARCH -> {
+                    (params as? TeamRequestParamsModelDomain)?.let {
+                        getTeamsByQueryUseCase.invoke(
+                            query = params.requestedQuery
+                        )
+                    }
+                }
+
+                NbaApiTeamTypeElementsRequest.TEAMS_COUNTRY -> {
+                    (params as? TeamRequestParamsModelDomain)?.let {
+                        getTeamsByCountryUseCase.invoke(
+                            country = params.requestedCountry
+                        )
+                    }
+                }
+
+                NbaApiTeamTypeElementsRequest.TEAMS_SEASON_LEAGUE -> {
+                    (params as? TeamRequestParamsModelDomain)?.let {
+                        getTeamsBySeasonAndLeagueUseCase.invoke(
+                            season = params.requestedSeason,
+                            league = params.requestedLeague
+                        )
+                    }
+                }
+
+                NbaApiTeamTypeElementsRequest.TEAMS_SEARCH_SEASON_LEAGUE -> {
+                    (params as? TeamRequestParamsModelDomain)?.let {
+                        getTeamsByQueryAndSeasonAndLeagueUseCase.invoke(
+                            query = params.requestedQuery,
+                            season = params.requestedSeason,
+                            league = params.requestedLeague
+                        )
+                    }
+                }
+
+                NbaApiTeamTypeElementsRequest.TEAMS_SEARCH_SEASON_LEAGUE_COUNTRY -> {
+                    (params as? TeamRequestParamsModelDomain)?.let {
+                        getTeamsByQueryAndSeasonAndLeagueAndCountryUseCase.invoke(
+                            query = params.requestedQuery,
+                            season = params.requestedSeason,
+                            league = params.requestedLeague,
+                            country = params.requestedCountry
+                        )
+                    }
+                }
+            }
 
             requestResult?.let {
 
@@ -449,7 +573,7 @@ class ShowingScreenVM(
 
     private fun signOutCurrentUserFromApplication() {
         viewModelScope.launch {
-            authenticationManager.signOut()
+            signOutUserUseCase.invoke()
         }
     }
 
@@ -646,7 +770,9 @@ class ShowingScreenVM(
         _jobLoadingLeagues = viewModelScope.launch {
             changeIsLeaguesLoading(true)
 
-            when (val leaguesResult = nbaApiManager.getLeaguesByCountry(selectedCountry)) {
+            when (
+                val leaguesResult = getLeaguesByCountryUseCase.invoke(selectedCountry)
+            ) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update { state ->
                         state.copy(
@@ -680,39 +806,30 @@ class ShowingScreenVM(
         _jobLoadingTeams = viewModelScope.launch {
             changeIsTeamsLoading(true)
 
-            val requestParams = TeamRequestParamsModelDomain(
-                elementsRequestType = NbaApiTeamTypeElementsRequest.TEAMS_SEASON_LEAGUE,
-                requestedLeague = league,
-                requestedSeason = season
-            )
+            when (
+                val teamsResult = getTeamsBySeasonAndLeagueUseCase.invoke(
+                    season = season,
+                    league = league
+                )
+            ) {
+                is CustomResultModelDomain.Success -> {
 
-            val teamsResult = nbaApiManager.makeRequestForListOfElements(
-                elementsRequestParameters = requestParams
-            )
+                    val newList = teamsResult.result.mapNotNull { it as? TeamModelDomain }
 
-            teamsResult?.let {
-
-                when (teamsResult) {
-                    is CustomResultModelDomain.Success -> {
-
-                        val newList = teamsResult.result.mapNotNull { it as? TeamModelDomain }
-
-                        _screenState.update { state ->
-                            state.copy(
-                                mutableFilter = state.mutableFilter.copy(
-                                    listOfTeams = newList,
-                                    selectedTeam = newList.firstOrNull()
-                                )
+                    _screenState.update { state ->
+                        state.copy(
+                            mutableFilter = state.mutableFilter.copy(
+                                listOfTeams = newList,
+                                selectedTeam = newList.firstOrNull()
                             )
-                        }
-
+                        )
                     }
 
-                    is CustomResultModelDomain.Error -> {
-                        _event.emit(IShowingScreenEvent.ShowToastMessage(teamsResult.exception.toUiMessageString()))
-                    }
                 }
 
+                is CustomResultModelDomain.Error -> {
+                    _event.emit(IShowingScreenEvent.ShowToastMessage(teamsResult.exception.toUiMessageString()))
+                }
             }
 
             changeIsTeamsLoading(false)

@@ -2,7 +2,6 @@ package com.alenniboris.nba_app.presentation.screens.followed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.IStateModel
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
@@ -10,6 +9,12 @@ import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.toGameModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.toPlayerModelDomain
 import com.alenniboris.nba_app.domain.model.entity.api.nba.toTeamModelDomain
+import com.alenniboris.nba_app.domain.usecase.game.IGetFollowedGamesUseCase
+import com.alenniboris.nba_app.domain.usecase.game.IUpdateGameIsFollowedUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IGetFollowedPlayersUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IUpdatePlayerIsFollowedUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetFollowedTeamsUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IUpdateTeamIsFollowedUseCase
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +25,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FollowedScreenVM(
-    private val nbaApiManager: INbaApiManager
+    private val getFollowedGamesUseCase: IGetFollowedGamesUseCase,
+    private val getFollowedPlayersUseCase: IGetFollowedPlayersUseCase,
+    private val getFollowedTeamsUseCase: IGetFollowedTeamsUseCase,
+    private val updateGameIsFollowedUseCase: IUpdateGameIsFollowedUseCase,
+    private val updateTeamIsFollowedUseCase: IUpdateTeamIsFollowedUseCase,
+    private val updatePlayerIsFollowedUseCase: IUpdatePlayerIsFollowedUseCase
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow(FollowedState())
@@ -31,7 +41,7 @@ class FollowedScreenVM(
 
     init {
         viewModelScope.launch {
-            nbaApiManager.followedGames
+            getFollowedGamesUseCase.followedFlow
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
                 .collect { elements ->
@@ -46,7 +56,7 @@ class FollowedScreenVM(
 
     init {
         viewModelScope.launch {
-            nbaApiManager.followedTeams
+            getFollowedTeamsUseCase.followedFlow
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
                 .collect { elements ->
@@ -61,7 +71,7 @@ class FollowedScreenVM(
 
     init {
         viewModelScope.launch {
-            nbaApiManager.followedPlayers
+            getFollowedPlayersUseCase.followedFlow
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
                 .collect { elements ->
@@ -72,7 +82,6 @@ class FollowedScreenVM(
                     }
                 }
         }
-
     }
 
     fun proceedUpdateIntent(intent: IFollowedScreenUpdateIntent) {
@@ -117,7 +126,19 @@ class FollowedScreenVM(
 
     private fun deleteElementFromDatabase(element: IStateModel) {
         viewModelScope.launch {
-            nbaApiManager.proceedElementIsFollowingUpdate(element)
+            when (element) {
+                is GameModelDomain -> {
+                    updateGameIsFollowedUseCase.invoke(game = element)
+                }
+
+                is PlayerModelDomain -> {
+                    updatePlayerIsFollowedUseCase.invoke(player = element)
+                }
+
+                is TeamModelDomain -> {
+                    updateTeamIsFollowedUseCase.invoke(team = element)
+                }
+            }
         }
     }
 

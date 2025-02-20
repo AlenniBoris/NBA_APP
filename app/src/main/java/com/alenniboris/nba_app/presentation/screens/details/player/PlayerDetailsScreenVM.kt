@@ -2,12 +2,16 @@ package com.alenniboris.nba_app.presentation.screens.details.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.GameModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
+import com.alenniboris.nba_app.domain.usecase.player.IGetFollowedPlayersUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IGetPlayerDataByIdUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IGetPlayerStatisticsInSeasonUseCase
+import com.alenniboris.nba_app.domain.usecase.player.IUpdatePlayerIsFollowedUseCase
+import com.alenniboris.nba_app.domain.usecase.seasons.IGetSeasonsUseCase
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import kotlinx.coroutines.Job
@@ -20,7 +24,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PlayerDetailsScreenVM(
-    private val nbaApiManager: INbaApiManager,
+    private val getFollowedPlayersUseCase: IGetFollowedPlayersUseCase,
+    private val getPlayerDataByIdUseCase: IGetPlayerDataByIdUseCase,
+    private val getSeasonsUseCase: IGetSeasonsUseCase,
+    private val updatePlayerIsFollowedUseCase: IUpdatePlayerIsFollowedUseCase,
+    private val getPlayerStatisticsInSeasonUseCase: IGetPlayerStatisticsInSeasonUseCase,
     private val playerId: Int,
 ) : ViewModel() {
 
@@ -44,14 +52,16 @@ class PlayerDetailsScreenVM(
 
     init {
         viewModelScope.launch {
-            nbaApiManager.followedPlayers
+            getFollowedPlayersUseCase.followedFlow
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
-                .collect { players ->
-                    val ids = players.map { it.playerId }
+                .collect { games ->
+                    val ids = games.map { it.playerId }.toList()
                     _screenState.update { state ->
                         state.copy(
-                            player = state.player.copy(isFollowed = ids.contains(state.player.id))
+                            player = state.player.copy(
+                                isFollowed = ids.contains(state.player.id)
+                            )
                         )
                     }
                 }
@@ -62,7 +72,9 @@ class PlayerDetailsScreenVM(
         viewModelScope.launch {
             _screenState.update { it.copy(isPlayerDataLoading = true) }
 
-            when (val res = nbaApiManager.getPlayerDataById(_screenState.value.player.id)) {
+            when (
+                val res = getPlayerDataByIdUseCase.invoke(_screenState.value.player.id)
+            ) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update {
                         it.copy(
@@ -89,7 +101,9 @@ class PlayerDetailsScreenVM(
         viewModelScope.launch {
             _screenState.update { it.copy(isSeasonsLoading = true) }
 
-            when (val seasonsResult = nbaApiManager.getAllSeasons()) {
+            when (
+                val seasonsResult = getSeasonsUseCase.invoke()
+            ) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update { state ->
                         state.copy(
@@ -134,7 +148,7 @@ class PlayerDetailsScreenVM(
 
     private fun proceedIsFollowedAction() {
         viewModelScope.launch {
-            nbaApiManager.proceedElementIsFollowingUpdate(element = _screenState.value.player)
+            updatePlayerIsFollowedUseCase.invoke(player = _screenState.value.player)
         }
     }
 
@@ -158,11 +172,13 @@ class PlayerDetailsScreenVM(
         _statisticsJob = viewModelScope.launch {
             _screenState.value.selectedSeason?.let { season ->
                 _screenState.update { it.copy(isPlayerStatisticsLoading = true) }
-                when (val res =
-                    nbaApiManager.requestForPlayersStatisticsInSeason(
-                        season = season,
-                        player = _screenState.value.player
-                    )) {
+                when (
+                    val res =
+                        getPlayerStatisticsInSeasonUseCase.invoke(
+                            season = season,
+                            player = _screenState.value.player
+                        )
+                ) {
                     is CustomResultModelDomain.Success -> {
                         _screenState.update {
                             it.copy(playerStatistics = res.result)

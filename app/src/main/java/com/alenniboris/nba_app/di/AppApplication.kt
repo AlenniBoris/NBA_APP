@@ -7,12 +7,17 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
 val myModules = listOf(
-    ManagerModule,
     ViewModels,
     AuthModule,
     DispatchersModule,
     NetworkModule,
-    DatabaseModule
+    DatabaseModule,
+    GamesUseCaseModule,
+    TeamsUseCaseModule,
+    PlayersUseCaseModule,
+    SeasonsUseCaseModule,
+    CountriesUseCaseModule,
+    LeaguesUseCaseModule
 )
 
 class AppApplication : Application() {

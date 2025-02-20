@@ -2,9 +2,10 @@ package com.alenniboris.nba_app.presentation.screens.enter
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.exception.AuthenticationExceptionModelDomain
+import com.alenniboris.nba_app.domain.usecase.authentication.ILoginUserUseCase
+import com.alenniboris.nba_app.domain.usecase.authentication.IRegisterUserUseCase
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import com.alenniboris.nba_app.presentation.screens.enter.state.IEnterState
@@ -16,7 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class EnterScreenVM(
-    private val authenticationManager: IAuthenticationManager,
+    private val loginUserUseCase: ILoginUserUseCase,
+    private val registerUserUseCase: IRegisterUserUseCase
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow<IEnterState>(LoginState())
@@ -71,7 +73,7 @@ class EnterScreenVM(
     private fun loginUser() {
         viewModelScope.launch {
             val currentState = _screenState.value
-            val loginResult = authenticationManager.loginUser(
+            val loginResult = loginUserUseCase.invoke(
                 currentState.enteredEmail, currentState.enteredPassword
             )
 
@@ -85,7 +87,7 @@ class EnterScreenVM(
             val currentState = _screenState.value
 
             (currentState as? RegistrationState)?.let {
-                val registerResult = authenticationManager.registerUser(
+                val registerResult = registerUserUseCase.invoke(
                     currentState.enteredEmail,
                     currentState.enteredPassword,
                     currentState.enteredPasswordCheck

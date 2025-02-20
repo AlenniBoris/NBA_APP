@@ -2,12 +2,17 @@ package com.alenniboris.nba_app.presentation.screens.details.team
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alenniboris.nba_app.domain.manager.INbaApiManager
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.PlayerModelDomain
 import com.alenniboris.nba_app.domain.model.api.nba.TeamModelDomain
 import com.alenniboris.nba_app.domain.model.filters.LeagueModelDomain
 import com.alenniboris.nba_app.domain.model.filters.SeasonModelDomain
+import com.alenniboris.nba_app.domain.usecase.player.IGetPlayersForTeamInSeasonUseCase
+import com.alenniboris.nba_app.domain.usecase.seasons.IGetSeasonsUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetFollowedTeamsUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IGetTeamStatisticsUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IReloadDataForTeamAndLoadLeaguesUseCase
+import com.alenniboris.nba_app.domain.usecase.team.IUpdateTeamIsFollowedUseCase
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import com.alenniboris.nba_app.presentation.mappers.toUiMessageString
 import kotlinx.coroutines.Job
@@ -21,7 +26,12 @@ import kotlinx.coroutines.launch
 
 class TeamDetailsScreenVM(
     private val teamId: Int,
-    private val nbaApiManager: INbaApiManager
+    private val getFollowedTeamsUseCase: IGetFollowedTeamsUseCase,
+    private val getSeasonsUseCase: IGetSeasonsUseCase,
+    private val getPlayersForTeamInSeasonUseCase: IGetPlayersForTeamInSeasonUseCase,
+    private val reloadDataForTeamAndLoadLeaguesUseCase: IReloadDataForTeamAndLoadLeaguesUseCase,
+    private val updateTeamIsFollowedUseCase: IUpdateTeamIsFollowedUseCase,
+    private val getTeamStatisticsUseCase: IGetTeamStatisticsUseCase
 ) : ViewModel() {
 
     private val _screenState = MutableStateFlow(
@@ -43,14 +53,16 @@ class TeamDetailsScreenVM(
 
     init {
         viewModelScope.launch {
-            nbaApiManager.followedTeams
+            getFollowedTeamsUseCase.followedFlow
                 .buffer(onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .distinctUntilChanged()
-                .collect { teams ->
-                    val ids = teams.map { it.teamId }
-                    _screenState.update {
-                        it.copy(
-                            team = it.team.copy(isFollowed = ids.contains(it.team.id))
+                .collect { games ->
+                    val ids = games.map { it.teamId }.toList()
+                    _screenState.update { state ->
+                        state.copy(
+                            team = state.team.copy(
+                                isFollowed = ids.contains(state.team.id)
+                            )
                         )
                     }
                 }
@@ -61,7 +73,9 @@ class TeamDetailsScreenVM(
         viewModelScope.launch {
             _screenState.update { it.copy(isSeasonsLoading = true) }
 
-            when (val res = nbaApiManager.getAllSeasons()) {
+            when (
+                val res = getSeasonsUseCase.invoke()
+            ) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update {
                         it.copy(
@@ -91,10 +105,12 @@ class TeamDetailsScreenVM(
             _screenState.update { it.copy(isTeamPlayersLoading = true) }
 
             _screenState.value.selectedSeason?.let { season ->
-                when (val res = nbaApiManager.getPlayersOfTeamInSeason(
-                    team = _screenState.value.team,
-                    season = season
-                )) {
+                when (
+                    val res = getPlayersForTeamInSeasonUseCase.invoke(
+                        team = _screenState.value.team,
+                        season = season
+                    )
+                ) {
                     is CustomResultModelDomain.Success -> {
                         _screenState.update { it.copy(teamPlayers = res.result) }
                     }
@@ -115,8 +131,12 @@ class TeamDetailsScreenVM(
         viewModelScope.launch {
             _screenState.update { it.copy(isTeamDataReloading = true) }
 
-            when (val res =
-                nbaApiManager.reloadDataForTeamAndLoadLeagues(team = _screenState.value.team)) {
+            when (
+                val res =
+                    reloadDataForTeamAndLoadLeaguesUseCase.invoke(
+                        team = _screenState.value.team
+                    )
+            ) {
                 is CustomResultModelDomain.Success -> {
                     _screenState.update {
                         it.copy(
@@ -167,7 +187,7 @@ class TeamDetailsScreenVM(
 
     private fun proceedIsFollowedAction() {
         viewModelScope.launch {
-            nbaApiManager.proceedElementIsFollowingUpdate(_screenState.value.team)
+            updateTeamIsFollowedUseCase.invoke(_screenState.value.team)
         }
     }
 
@@ -222,7 +242,7 @@ class TeamDetailsScreenVM(
         _statisticsJob = viewModelScope.launch {
             _screenState.update { it.copy(isStatisticsDataLoading = true) }
             when (
-                val res = nbaApiManager.requestForTeamStatistics(
+                val res = getTeamStatisticsUseCase.invoke(
                     team = _screenState.value.team,
                     season = _screenState.value.selectedSeason,
                     league = _screenState.value.selectedLeague

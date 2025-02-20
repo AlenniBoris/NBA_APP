@@ -3,7 +3,7 @@ package com.alenniboris.nba_app.presentation.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.R
-import com.alenniboris.nba_app.domain.manager.IAuthenticationManager
+import com.alenniboris.nba_app.domain.usecase.authentication.IGetCurrentUserUseCase
 import com.alenniboris.nba_app.domain.utils.SingleFlowEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainActivityVM(
-    private val authenticationManager: IAuthenticationManager,
+    private val getCurrentUserUseCase: IGetCurrentUserUseCase,
 ) : ViewModel() {
 
     private val _userAuthenticationState = MutableStateFlow(
-        authenticationManager.user.value != null
+        getCurrentUserUseCase.userFlow.value != null
     )
     val userAuthenticationStatus = _userAuthenticationState.asStateFlow()
 
@@ -30,7 +30,7 @@ class MainActivityVM(
 
     init {
         viewModelScope.launch {
-            authenticationManager.user.collect { currentUser ->
+            getCurrentUserUseCase.userFlow.collect { currentUser ->
                 if (!_userAuthenticationState.value && currentUser != null) {
                     _event.emit(MainActivityEvent.ShowToastMessage(R.string.welcome_text))
                 }

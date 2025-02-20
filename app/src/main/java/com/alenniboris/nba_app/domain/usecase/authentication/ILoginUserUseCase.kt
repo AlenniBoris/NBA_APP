@@ -1,0 +1,13 @@
+package com.alenniboris.nba_app.domain.usecase.authentication
+
+import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
+import com.alenniboris.nba_app.domain.model.exception.AuthenticationExceptionModelDomain
+
+interface ILoginUserUseCase {
+
+    suspend fun invoke(
+        email: String,
+        password: String
+    ): CustomResultModelDomain<Unit, AuthenticationExceptionModelDomain>
+
+}
