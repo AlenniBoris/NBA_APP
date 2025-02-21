@@ -65,6 +65,9 @@
     <string name="empty_teams_text">Выберите лигу</string>
     <string name="action_to_followed_successful">Операция выполнена</string>
     <string name="followed_screen_header">Отслеживаемые</string>
+    <string name="settings_screen_header">Настройки</string>
+    <string name="languages_settings_header">Языки</string>
+    <string name="themes_settings_header">Темы</string>
     <string name="nothing_followed_category">В этой категории ничего не отслеживается</string>
     <string name="versus_text">VS</string>
     <string name="played_minutes_text">Сыгранное время</string>

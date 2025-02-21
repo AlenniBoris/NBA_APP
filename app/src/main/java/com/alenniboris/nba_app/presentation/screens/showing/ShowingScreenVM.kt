@@ -258,7 +258,15 @@ class ShowingScreenVM(
                 updateIntent.player
             )
 
+            is IShowingScreenUpdateIntent.ProceedNavigationToSettingsScreen -> navigateToSettingsScreen()
+
         }
+    }
+
+    private fun navigateToSettingsScreen() {
+        _event.emit(
+            IShowingScreenEvent.NavigateToSettingsPage
+        )
     }
 
     private fun navigateToGameDetailsScreen(game: GameModelDomain) {
@@ -562,6 +570,7 @@ class ShowingScreenVM(
         when (action) {
             PersonalBtnAction.Details -> emitOpenUserDetailScreenEvent()
             PersonalBtnAction.Exit -> signOutCurrentUserFromApplication()
+            PersonalBtnAction.Settings -> navigateToSettingsScreen()
         }
     }
 

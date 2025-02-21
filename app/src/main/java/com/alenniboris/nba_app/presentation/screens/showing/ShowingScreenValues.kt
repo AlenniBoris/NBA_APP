@@ -6,6 +6,7 @@ object ShowingScreenValues {
 
     enum class PersonalBtnAction(val textResource: Int) {
         Details(R.string.open_personal_details),
+        Settings(R.string.settings_screen_header),
         Exit(R.string.sign_out_action)
     }
 

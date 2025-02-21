@@ -35,7 +35,9 @@ import com.alenniboris.nba_app.presentation.screens.details.player.PlayerDetails
 import com.alenniboris.nba_app.presentation.screens.details.team.TeamDetailsScreenVM
 import com.alenniboris.nba_app.presentation.screens.enter.EnterScreenVM
 import com.alenniboris.nba_app.presentation.screens.followed.FollowedScreenVM
+import com.alenniboris.nba_app.presentation.screens.settings.SettingsScreenVM
 import com.alenniboris.nba_app.presentation.screens.showing.ShowingScreenVM
+import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -120,4 +122,9 @@ val ViewModels = module {
             getTeamStatisticsUseCase = get<IGetTeamStatisticsUseCase>()
         )
     }
+
+    viewModel<SettingsScreenVM> {
+        SettingsScreenVM()
+    }
+
 }

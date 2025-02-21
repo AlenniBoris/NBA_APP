@@ -116,3 +116,6 @@ val statisticsElementTopPadding = PaddingValues(top = 10.dp)
 val statisticsElementHorizontalPadding = PaddingValues(horizontal = 15.dp)
 val statisticsElementVerticalPadding = PaddingValues(vertical = 15.dp)
 val statisticsPBHeight = 100.dp
+
+//settings
+val settingsCardHeight = 50.dp

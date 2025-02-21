@@ -16,4 +16,6 @@ interface IShowingScreenEvent {
 
     data object NavigateToUserDetailsScreen : IShowingScreenEvent
 
+    data object NavigateToSettingsPage : IShowingScreenEvent
+
 }

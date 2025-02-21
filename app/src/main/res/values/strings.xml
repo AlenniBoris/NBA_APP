@@ -64,6 +64,9 @@
     <string name="empty_teams_text">Choose league</string>
     <string name="action_to_followed_successful">Operation successful</string>
     <string name="followed_screen_header">Followed</string>
+    <string name="settings_screen_header">Settings</string>
+    <string name="languages_settings_header">Languages</string>
+    <string name="themes_settings_header">Themes</string>
     <string name="nothing_followed_category">Nothing is followed in this category</string>
     <string name="versus_text">VS</string>
     <string name="played_minutes_text">Played minutes</string>
@@ -100,7 +103,7 @@
     <string name="games_category">Games</string>
     <string name="teams_category">Teams</string>
     <string name="players_category">Players</string>
-    <string name="open_personal_details">Followed details</string>
+    <string name="open_personal_details">Followed</string>
     <string name="sign_out_action">Sign out</string>
     <string name="filter_options_open_action">Filter</string>
     <string name="statistics_category">Statistics</string>

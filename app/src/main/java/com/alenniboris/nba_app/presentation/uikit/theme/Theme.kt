@@ -1,15 +1,14 @@
 package com.alenniboris.nba_app.presentation.uikit.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -37,43 +36,35 @@ fun NbaAppTheme(
     content: @Composable () -> Unit
 ) {
 
-    remember(darkTheme) {
-        ThemeChooser.setThemeMode(
-            if (darkTheme) ThemeChooser.ThemeMode.DARK else ThemeChooser.ThemeMode.LIGHT
-        )
-        null
+    val context = LocalContext.current
+    val themeModeInit = remember { context.getLastThemeAndApply(isSystemDarkMode = darkTheme) }
+    val langModeInit = remember { context.getLastLanguageAndApply() }
+    val colorScheme by remember(
+        key1 = currentThemeMode.collectAsStateWithLifecycle().value.isThemeDark,
+        key2 = currentLanguageMode.collectAsStateWithLifecycle().value
+    ) {
+        mutableStateOf(LightColorScheme.copy())
     }
-
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
 
     val view = LocalView.current
     if (!view.isInEditMode) {
 
-        val themeMode = ThemeChooser.themeMode.collectAsStateWithLifecycle()
+        val themeMode = currentThemeMode.collectAsStateWithLifecycle()
 
         SideEffect {
             val window = (view.context as Activity).window
 
-            val appBarColor = when (themeMode.value) {
-                ThemeChooser.ThemeMode.LIGHT -> Color(0xfff77e56)
-                ThemeChooser.ThemeMode.DARK -> Color(0xff050300)
+            val appBarColor = when (themeMode.value.isThemeDark) {
+                false -> Color(0xfff77e56)
+                true -> Color(0xff050300)
             }
 
             window.statusBarColor = appBarColor.toArgb()
             window.navigationBarColor = appBarColor.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
-                themeMode.value == ThemeChooser.ThemeMode.LIGHT
+                themeMode.value is ThemeMode.Light
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars =
-                themeMode.value == ThemeChooser.ThemeMode.LIGHT
+                themeMode.value is ThemeMode.Dark
         }
     }
 

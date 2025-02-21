@@ -225,7 +225,7 @@ private fun PagerSection(
 
 @Composable
 @Preview
-fun PagerSectionElementsCards(
+private fun PagerSectionElementsCards(
     modifier: Modifier = Modifier,
     list: List<IStateModel> = emptyList(),
     proceedIntentAction: (IFollowedScreenUpdateIntent) -> Unit = {}
@@ -275,7 +275,7 @@ fun PagerSectionElementsCards(
 
 @Composable
 @Preview
-fun PagerItem(
+private fun PagerItem(
     element: IStateModel? = GameModelDomain(),
     proceedIntentAction: (IFollowedScreenUpdateIntent) -> Unit = {}
 ) {

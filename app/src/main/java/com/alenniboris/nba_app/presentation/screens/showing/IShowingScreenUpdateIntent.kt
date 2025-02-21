@@ -66,4 +66,6 @@ interface IShowingScreenUpdateIntent {
     data class ProceedNavigationToPlayerDetailsScreen(val player: PlayerModelDomain) :
         IShowingScreenUpdateIntent
 
+    data object ProceedNavigationToSettingsScreen : IShowingScreenUpdateIntent
+
 }

@@ -53,6 +53,7 @@ import com.alenniboris.nba_app.presentation.model.ActionImplementedUiModel
 import com.alenniboris.nba_app.presentation.screens.destinations.FollowedScreenDestination
 import com.alenniboris.nba_app.presentation.screens.destinations.GameDetailsScreenDestination
 import com.alenniboris.nba_app.presentation.screens.destinations.PlayerDetailsScreenDestination
+import com.alenniboris.nba_app.presentation.screens.destinations.SettingsScreenDestination
 import com.alenniboris.nba_app.presentation.screens.destinations.TeamDetailsScreenDestination
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenEvent
 import com.alenniboris.nba_app.presentation.screens.showing.IShowingScreenUpdateIntent
@@ -145,6 +146,12 @@ fun ShowingScreen(
         launch {
             event.filterIsInstance<IShowingScreenEvent.NavigateToPlayerDetailsPage>().collect {
                 navigator.navigate(PlayerDetailsScreenDestination(playerId = it.player.id))
+            }
+        }
+
+        launch {
+            event.filterIsInstance<IShowingScreenEvent.NavigateToSettingsPage>().collect {
+                navigator.navigate(SettingsScreenDestination())
             }
         }
     }
