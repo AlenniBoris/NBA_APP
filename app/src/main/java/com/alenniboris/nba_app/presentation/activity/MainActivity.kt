@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -36,18 +37,11 @@ import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultA
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
-import java.util.UUID
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -66,10 +60,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Scaffold {
                         Box(Modifier.padding(it)) {
-        //                    TestDatabaseUi()
-        //                    TestPaginationUi()
-        //                    MainActivityShow()
-        //                    MainActivityShow()
+                            //                    TestDatabaseUi()
+                            //                    TestPaginationUi()
+                            //                    MainActivityShow()
+                            //                    MainActivityShow()
                             TestPermissionScreen()
                         }
                     }
@@ -314,48 +308,49 @@ class MainActivity : ComponentActivity() {
     }
 //}
 
-@Composable
-private fun MainActivityShow() {
+    @Composable
+    private fun MainActivityShow() {
 
-    val mainActivityVM = koinViewModel<MainActivityVM>()
-    val isUserAuthenticated by mainActivityVM.userAuthenticationStatus.collectAsStateWithLifecycle()
-    val event by remember { mutableStateOf(mainActivityVM.event) }
-    val context = LocalContext.current
-    var toastMessage by remember {
-        mutableStateOf(
-            Toast.makeText(context, "", Toast.LENGTH_SHORT)
-        )
-    }
-
-    LaunchedEffect(event) {
-        launch {
-            event.filterIsInstance<MainActivityEvent.ShowToastMessage>().collect { ev ->
-                toastMessage.cancel()
-                toastMessage =
-                    Toast.makeText(context, context.getString(ev.messageId), Toast.LENGTH_SHORT)
-                toastMessage.show()
-            }
-        }
-    }
-
-    val navHostEngine = rememberNavHostEngine(
-        navHostContentAlignment = Alignment.TopCenter,
-        rootDefaultAnimations = RootNavGraphDefaultAnimations(
-            enterTransition = { fadeIn(animationSpec = tween(1200)) },
-            exitTransition = { fadeOut(animationSpec = tween(1200)) }
-        )
-    )
-
-    Scaffold { pv ->
-        Box(modifier = Modifier.padding(pv)) {
-            DestinationsNavHost(
-                navGraph = NavGraphs.root,
-                startRoute = if (isUserAuthenticated) ShowingScreenDestination
-                else EnterScreenDestination,
-                engine = navHostEngine
+        val mainActivityVM = koinViewModel<MainActivityVM>()
+        val isUserAuthenticated by mainActivityVM.userAuthenticationStatus.collectAsStateWithLifecycle()
+        val event by remember { mutableStateOf(mainActivityVM.event) }
+        val context = LocalContext.current
+        var toastMessage by remember {
+            mutableStateOf(
+                Toast.makeText(context, "", Toast.LENGTH_SHORT)
             )
         }
 
-    }
+        LaunchedEffect(event) {
+            launch {
+                event.filterIsInstance<MainActivityEvent.ShowToastMessage>().collect { ev ->
+                    toastMessage.cancel()
+                    toastMessage =
+                        Toast.makeText(context, context.getString(ev.messageId), Toast.LENGTH_SHORT)
+                    toastMessage.show()
+                }
+            }
+        }
 
+        val navHostEngine = rememberNavHostEngine(
+            navHostContentAlignment = Alignment.TopCenter,
+            rootDefaultAnimations = RootNavGraphDefaultAnimations(
+                enterTransition = { fadeIn(animationSpec = tween(1200)) },
+                exitTransition = { fadeOut(animationSpec = tween(1200)) }
+            )
+        )
+
+        Scaffold { pv ->
+            Box(modifier = Modifier.padding(pv)) {
+                DestinationsNavHost(
+                    navGraph = NavGraphs.root,
+                    startRoute = if (isUserAuthenticated) ShowingScreenDestination
+                    else EnterScreenDestination,
+                    engine = navHostEngine
+                )
+            }
+
+        }
+
+    }
 }
