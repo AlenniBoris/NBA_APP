@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alenniboris.nba_app.databinding.ActivityMainBinding
 import com.alenniboris.nba_app.presentation.screens.NavGraphs
 import com.alenniboris.nba_app.presentation.screens.destinations.EnterScreenDestination
 import com.alenniboris.nba_app.presentation.screens.destinations.ShowingScreenDestination
@@ -44,32 +46,46 @@ import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 import kotlin.random.Random
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private var _mainActivityBinding: ActivityMainBinding? = null
+    private val binding
+        get() = _mainActivityBinding!!
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _mainActivityBinding = null
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        _mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+
 //        main()
 
-        enableEdgeToEdge()
-        setContent {
-            NbaAppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Scaffold {
-                        Box(Modifier.padding(it)) {
-                            //                    TestDatabaseUi()
-                            //                    TestPaginationUi()
-                            //                    MainActivityShow()
-                            //                    MainActivityShow()
-                            TestPermissionScreen()
-                        }
-                    }
-                }
-            }
-        }
+//        enableEdgeToEdge()
+//        setContent {
+//            NbaAppTheme {
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    Scaffold {
+//                        Box(Modifier.padding(it)) {
+//                            //                    TestDatabaseUi()
+//                            //                    TestPaginationUi()
+//                            //                    MainActivityShow()
+//                            //                    MainActivityShow()
+//                            TestPermissionScreen()
+//                        }
+//                    }
+//                }
+//            }
+//        }
 //        enableEdgeToEdge()
 //        setContent {
 //            NBA_APPTheme {
@@ -235,18 +251,18 @@ class MainActivity : ComponentActivity() {
 //    }
 
 
-    suspend fun test(a: Int): Unit = withContext(Dispatchers.IO) {
-        delay(a * 1000L)
-        if (Random.nextBoolean()) throw Exception("error - ${a}")
-        Log.e("!!!", "${a}")
-    }
-
-
-    fun main() {
-
-        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-            Log.e("!!!", "Exception: ${throwable.message}")
-        }
+//    suspend fun test(a: Int): Unit = withContext(Dispatchers.IO) {
+//        delay(a * 1000L)
+//        if (Random.nextBoolean()) throw Exception("error - ${a}")
+//        Log.e("!!!", "${a}")
+//    }
+//
+//
+//    fun main() {
+//
+//        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+//            Log.e("!!!", "Exception: ${throwable.message}")
+//        }
 
 //        val job = MainScope().launch(Dispatchers.IO + exceptionHandler) {
 //            (0..10).forEach {
@@ -305,52 +321,6 @@ class MainActivity : ComponentActivity() {
 //            test.update { "112" }
 //            Log.e("!!!", "set 112")
 //        }
-    }
+//    }
 //}
-
-    @Composable
-    private fun MainActivityShow() {
-
-        val mainActivityVM = koinViewModel<MainActivityVM>()
-        val isUserAuthenticated by mainActivityVM.userAuthenticationStatus.collectAsStateWithLifecycle()
-        val event by remember { mutableStateOf(mainActivityVM.event) }
-        val context = LocalContext.current
-        var toastMessage by remember {
-            mutableStateOf(
-                Toast.makeText(context, "", Toast.LENGTH_SHORT)
-            )
-        }
-
-        LaunchedEffect(event) {
-            launch {
-                event.filterIsInstance<MainActivityEvent.ShowToastMessage>().collect { ev ->
-                    toastMessage.cancel()
-                    toastMessage =
-                        Toast.makeText(context, context.getString(ev.messageId), Toast.LENGTH_SHORT)
-                    toastMessage.show()
-                }
-            }
-        }
-
-        val navHostEngine = rememberNavHostEngine(
-            navHostContentAlignment = Alignment.TopCenter,
-            rootDefaultAnimations = RootNavGraphDefaultAnimations(
-                enterTransition = { fadeIn(animationSpec = tween(1200)) },
-                exitTransition = { fadeOut(animationSpec = tween(1200)) }
-            )
-        )
-
-        Scaffold { pv ->
-            Box(modifier = Modifier.padding(pv)) {
-                DestinationsNavHost(
-                    navGraph = NavGraphs.root,
-                    startRoute = if (isUserAuthenticated) ShowingScreenDestination
-                    else EnterScreenDestination,
-                    engine = navHostEngine
-                )
-            }
-
-        }
-
-    }
 }

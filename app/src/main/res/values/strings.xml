@@ -137,5 +137,7 @@
     <string name="getting_followed_teams_exception">Sorry, we can`t load your followed teams. Reopen the app</string>
     <string name="another_season_statistics_exception">Sorry, try another season or league</string>
     <string name="getting_followed_players_exception">Sorry, we can`t load your followed players. Reopen the app</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/LRMainScreenFragment">
+
+    <fragment
+        android:id="@+id/LRMainScreenFragment"
+        android:name="com.alenniboris.nba_app.presentation.learning_recycler.main.views.LRMainScreenFragment"
+        android:label="fragment_lr_main_screen"
+        tools:layout="@layout/fragment_lr_main_screen">
+        <action
+            android:id="@+id/actionNavigateToDetailsScreen"
+            app:destination="@id/LRDetailsScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/LRDetailsScreenFragment"
+        android:name="com.alenniboris.nba_app.presentation.learning_recycler.details.views.LRDetailsScreenFragment"
+        android:label="fragment_lr_details_screen"
+        tools:layout="@layout/fragment_lr_details_screen">
+        <action
+            android:id="@+id/actionNavigateBackFromDetailsScreen"
+            app:destination="@id/LRMainScreenFragment" />
+    </fragment>
+</navigation>

@@ -17,7 +17,8 @@ val myModules = listOf(
     PlayersUseCaseModule,
     SeasonsUseCaseModule,
     CountriesUseCaseModule,
-    LeaguesUseCaseModule
+    LeaguesUseCaseModule,
+    LearningRecyclerModule
 )
 
 class AppApplication : Application() {
