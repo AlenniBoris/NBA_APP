@@ -1,8 +1,10 @@
 package com.alenniboris.nba_app.presentation.learning_recycler.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
+import com.alenniboris.nba_app.domain.model.learning_recycler.LRModelDomain
 import com.alenniboris.nba_app.domain.usecase.learning_recycler.IGetLearningRecyclerDataUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,15 +25,10 @@ class LRMainScreenVM(
         loadDataFromServer()
     }
 
-    fun loadDataFromServer() {
+    private fun loadDataFromServer() {
         loadingJob?.cancel()
         loadingJob = viewModelScope.launch {
-            _screenState.update {
-                it.copy(
-                    isLoading = true,
-                    isError = false
-                )
-            }
+            _screenState.update { it.copy(isLoading = true) }
 
             when (val result = getLearningRecyclerDataUseCase.invoke()) {
                 is CustomResultModelDomain.Success -> {
@@ -39,12 +36,22 @@ class LRMainScreenVM(
                 }
 
                 is CustomResultModelDomain.Error -> {
-                    _screenState.update { it.copy(isError = true) }
+                    Log.e("!!!", result.exception.stackTraceToString())
                 }
             }
 
             _screenState.update { it.copy(isLoading = false) }
         }
+    }
+
+    fun manageIsElementClicked(element: LRModelDomain) {
+        val oldList = _screenState.value.clickedElements.toMutableList()
+        if (oldList.contains(element)) {
+            oldList -= element
+        } else {
+            oldList += element
+        }
+        _screenState.update { it.copy(clickedElements = oldList.toList()) }
     }
 
 }

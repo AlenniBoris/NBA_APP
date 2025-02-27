@@ -1,23 +1,24 @@
 package com.alenniboris.nba_app.presentation.learning_recycler.main.views
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.databinding.FragmentLrMainScreenBinding
-import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson
+import com.alenniboris.nba_app.domain.model.learning_recycler.LRFirstTypeModelDomain
+import com.alenniboris.nba_app.domain.model.learning_recycler.LRSecondTypeModelDomain
+import com.alenniboris.nba_app.presentation.learning_recycler.collectFlow
+import com.alenniboris.nba_app.presentation.learning_recycler.details.views.LRDetailsScreenFragment
 import com.alenniboris.nba_app.presentation.learning_recycler.main.ElementsRecyclerViewAdapter
-import com.alenniboris.nba_app.presentation.learning_recycler.main.LRMainScreenState
 import com.alenniboris.nba_app.presentation.learning_recycler.main.LRMainScreenVM
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LRMainScreenFragment : Fragment() {
@@ -28,8 +29,24 @@ class LRMainScreenFragment : Fragment() {
 
     private val mainScreenVM by viewModel<LRMainScreenVM>()
 
-    private lateinit var elementsAdapter: ElementsRecyclerViewAdapter
-    private lateinit var context: Context
+    private val elementsAdapter: ElementsRecyclerViewAdapter = ElementsRecyclerViewAdapter(
+        onClick = { element ->
+            mainScreenVM.manageIsElementClicked(element)
+            when (element) {
+                is LRFirstTypeModelDomain -> {
+                    val detailsFragmentInstance =
+                        LRDetailsScreenFragment.getInstance(element = element)
+                    findNavController().navigate(
+                        detailsFragmentInstance.first,
+                        detailsFragmentInstance.second
+                    )
+                }
+
+                is LRSecondTypeModelDomain -> {
+                }
+            }
+        }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,24 +58,14 @@ class LRMainScreenFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         binding.elementsRv.adapter = null
         _mainScreenBinding = null
+        super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context = requireActivity().applicationContext
-
-        elementsAdapter = ElementsRecyclerViewAdapter(
-            onClick = { element ->
-                val bundle = Bundle()
-                bundle.putString("ELEMENT", element.toJson())
-                Navigation.findNavController(requireView())
-                    .navigate(R.id.actionNavigateToDetailsScreen, bundle)
-            }
-        )
         binding.elementsRv.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL,
@@ -66,47 +73,30 @@ class LRMainScreenFragment : Fragment() {
         )
         binding.elementsRv.adapter = elementsAdapter
 
-        setOnClicks()
-
-        mainScreenVM.state
-            .flowWithLifecycle(lifecycle = viewLifecycleOwner.lifecycle)
-            .onEach { state -> renderState(state = state) }
-            .launchIn(scope = viewLifecycleOwner.lifecycleScope)
-
-    }
-
-    private fun renderState(state: LRMainScreenState) {
-        when {
-            state.isLoading -> {
-                binding.elementsRv.visibility = View.GONE
-                binding.loadingIsActiveLayout.visibility = View.VISIBLE
-                binding.nothingFoundLayout.visibility = View.GONE
-            }
-
-            state.isError -> {
-                binding.elementsRv.visibility = View.GONE
-                binding.loadingIsActiveLayout.visibility = View.GONE
-                binding.nothingFoundLayout.visibility = View.VISIBLE
-            }
-
-            else -> {
-                binding.elementsRv.visibility = View.VISIBLE
-                binding.loadingIsActiveLayout.visibility = View.GONE
-                binding.nothingFoundLayout.visibility = View.GONE
-
-                elementsAdapter.submitList(state.data)
-            }
-        }
-    }
-
-    private fun setOnClicks() {
-        binding.btnSearchIfError.setOnClickListener {
-            mainScreenVM.loadDataFromServer()
+        collectFlow(
+            mainScreenVM.state
+                .map { it.isLoading }
+                .distinctUntilChanged()
+        ) { isLoading ->
+            binding.elementsRv.isVisible = !isLoading
+            binding.loadingIsActiveLayout.isVisible = isLoading
         }
 
-        binding.btnSearchIfNothingFound.setOnClickListener {
-            mainScreenVM.loadDataFromServer()
+        collectFlow(
+            mainScreenVM.state
+                .map { it.data }
+                .distinctUntilChanged()
+        ) { data ->
+            elementsAdapter.submitElementsList(data)
         }
-    }
 
+        collectFlow(
+            mainScreenVM.state
+                .map { it.clickedElements }
+                .distinctUntilChanged()
+        ) { selected ->
+            elementsAdapter.updateSelectedElements(selected = selected)
+        }
+
+    }
 }

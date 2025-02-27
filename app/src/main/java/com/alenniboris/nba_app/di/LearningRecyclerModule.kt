@@ -2,6 +2,7 @@ package com.alenniboris.nba_app.di
 
 import com.alenniboris.nba_app.data.repository.learning_recycler.LearningRecyclerRepositoryImpl
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
+import com.alenniboris.nba_app.domain.model.learning_recycler.LRFirstTypeModelDomain
 import com.alenniboris.nba_app.domain.repository.learning_recycler.ILearningRecyclerRepository
 import com.alenniboris.nba_app.domain.usecase.impl.learning_recycler.GetLearningRecyclerDataUseCaseImpl
 import com.alenniboris.nba_app.domain.usecase.learning_recycler.IGetLearningRecyclerDataUseCase
@@ -30,7 +31,9 @@ val LearningRecyclerModule = module {
         )
     }
 
-    viewModel<LRDetailsScreenVM> {
-        LRDetailsScreenVM()
+    viewModel<LRDetailsScreenVM> { (element: LRFirstTypeModelDomain) ->
+        LRDetailsScreenVM(
+            element = element
+        )
     }
 }

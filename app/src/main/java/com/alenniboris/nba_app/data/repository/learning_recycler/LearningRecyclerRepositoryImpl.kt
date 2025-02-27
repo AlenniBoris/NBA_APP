@@ -4,7 +4,9 @@ import com.alenniboris.nba_app.data.mappers.toNbaApiExceptionModelDomain
 import com.alenniboris.nba_app.domain.model.CustomResultModelDomain
 import com.alenniboris.nba_app.domain.model.IAppDispatchers
 import com.alenniboris.nba_app.domain.model.exception.NbaApiExceptionModelDomain
-import com.alenniboris.nba_app.domain.model.learning_recycler.LearningRecyclerDataModelDomain
+import com.alenniboris.nba_app.domain.model.learning_recycler.LRFirstTypeModelDomain
+import com.alenniboris.nba_app.domain.model.learning_recycler.LRModelDomain
+import com.alenniboris.nba_app.domain.model.learning_recycler.LRSecondTypeModelDomain
 import com.alenniboris.nba_app.domain.repository.learning_recycler.ILearningRecyclerRepository
 import com.alenniboris.nba_app.domain.utils.LogPrinter
 import kotlinx.coroutines.delay
@@ -15,23 +17,30 @@ class LearningRecyclerRepositoryImpl(
     private val dispatchers: IAppDispatchers
 ) : ILearningRecyclerRepository {
     override suspend fun getData():
-            CustomResultModelDomain<List<LearningRecyclerDataModelDomain>, NbaApiExceptionModelDomain> =
+            CustomResultModelDomain<List<LRModelDomain>, NbaApiExceptionModelDomain> =
         withContext(dispatchers.IO) {
             runCatching {
-                val list = emptyList<LearningRecyclerDataModelDomain>().toMutableList()
+                val list = emptyList<LRModelDomain>().toMutableList()
 
                 for (i in 0..100) {
                     delay(50)
                     list.add(
-                        LearningRecyclerDataModelDomain(
-                            id = i,
-                            name = "BORIS, ind = $i",
-                            text = UUID.randomUUID().toString()
-                        )
+                        if (i % 3 == 0) {
+                            LRSecondTypeModelDomain(
+                                id = i,
+                                name = "BORIS, ind = $i, second",
+                            )
+                        } else {
+                            LRFirstTypeModelDomain(
+                                id = i,
+                                name = "BORIS, ind = $i",
+                                text = UUID.randomUUID().toString()
+                            )
+                        }
                     )
                 }
 
-                CustomResultModelDomain.Success<List<LearningRecyclerDataModelDomain>, NbaApiExceptionModelDomain>(
+                CustomResultModelDomain.Success<List<LRModelDomain>, NbaApiExceptionModelDomain>(
                     list.toList()
                 )
             }.getOrElse { exception ->
