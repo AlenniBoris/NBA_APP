@@ -5,13 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".presentation.learning_recycler.main.views.LRMainScreenFragment">
 
-
-    <androidx.recyclerview.widget.RecyclerView
+    <com.alenniboris.nba_app.presentation.learning_recycler.main.BaseRecyclerView
         android:id="@+id/elements_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        tools:listitem="@layout/first_type_item" />
+        android:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/loading_is_active_layout"

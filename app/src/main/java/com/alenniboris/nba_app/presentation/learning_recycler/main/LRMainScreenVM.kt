@@ -44,14 +44,4 @@ class LRMainScreenVM(
         }
     }
 
-    fun manageIsElementClicked(element: LRModelDomain) {
-        val oldList = _screenState.value.clickedElements.toMutableList()
-        if (oldList.contains(element)) {
-            oldList -= element
-        } else {
-            oldList += element
-        }
-        _screenState.update { it.copy(clickedElements = oldList.toList()) }
-    }
-
 }

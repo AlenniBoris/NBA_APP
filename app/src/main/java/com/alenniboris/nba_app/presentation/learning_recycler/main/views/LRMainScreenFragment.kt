@@ -7,16 +7,15 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.alenniboris.nba_app.databinding.FragmentLrMainScreenBinding
 import com.alenniboris.nba_app.domain.model.learning_recycler.LRFirstTypeModelDomain
 import com.alenniboris.nba_app.domain.model.learning_recycler.LRSecondTypeModelDomain
 import com.alenniboris.nba_app.presentation.learning_recycler.collectFlow
 import com.alenniboris.nba_app.presentation.learning_recycler.details.views.LRDetailsScreenFragment
-import com.alenniboris.nba_app.presentation.learning_recycler.main.ElementsRecyclerViewAdapter
+import com.alenniboris.nba_app.presentation.learning_recycler.main.BaseRecyclerView
+import com.alenniboris.nba_app.presentation.learning_recycler.main.FirstTypeItem
 import com.alenniboris.nba_app.presentation.learning_recycler.main.LRMainScreenVM
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.buffer
+import com.alenniboris.nba_app.presentation.learning_recycler.main.SecondTypeItem
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -29,24 +28,7 @@ class LRMainScreenFragment : Fragment() {
 
     private val mainScreenVM by viewModel<LRMainScreenVM>()
 
-    private val elementsAdapter: ElementsRecyclerViewAdapter = ElementsRecyclerViewAdapter(
-        onClick = { element ->
-            mainScreenVM.manageIsElementClicked(element)
-            when (element) {
-                is LRFirstTypeModelDomain -> {
-                    val detailsFragmentInstance =
-                        LRDetailsScreenFragment.getInstance(element = element)
-                    findNavController().navigate(
-                        detailsFragmentInstance.first,
-                        detailsFragmentInstance.second
-                    )
-                }
-
-                is LRSecondTypeModelDomain -> {
-                }
-            }
-        }
-    )
+    private val adapter: BaseRecyclerView.BaseAdapter = BaseRecyclerView.BaseAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,12 +48,7 @@ class LRMainScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.elementsRv.layoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.VERTICAL,
-            false
-        )
-        binding.elementsRv.adapter = elementsAdapter
+        binding.elementsRv.adapter = adapter
 
         collectFlow(
             mainScreenVM.state
@@ -87,15 +64,32 @@ class LRMainScreenFragment : Fragment() {
                 .map { it.data }
                 .distinctUntilChanged()
         ) { data ->
-            elementsAdapter.submitElementsList(data)
-        }
+            adapter.update(
+                data.map {
+                    when (it) {
+                        is LRFirstTypeModelDomain ->
+                            FirstTypeItem(
+                                item = it,
+                                onClick = {
+                                    val detailsFragmentInstance =
+                                        LRDetailsScreenFragment.getInstance(element = it)
+                                    findNavController().navigate(
+                                        detailsFragmentInstance.first,
+                                        detailsFragmentInstance.second
+                                    )
+                                }
+                            )
 
-        collectFlow(
-            mainScreenVM.state
-                .map { it.clickedElements }
-                .distinctUntilChanged()
-        ) { selected ->
-            elementsAdapter.updateSelectedElements(selected = selected)
+                        is LRSecondTypeModelDomain ->
+                            SecondTypeItem(
+                                item = it,
+                                onClick = {}
+                            )
+
+                        else -> throw IllegalArgumentException("Invalid type of element")
+                    }
+                }
+            )
         }
 
     }

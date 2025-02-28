@@ -4,6 +4,5 @@ import com.alenniboris.nba_app.domain.model.learning_recycler.LRModelDomain
 
 data class LRMainScreenState(
     val isLoading: Boolean = false,
-    val data: List<LRModelDomain> = emptyList(),
-    val clickedElements: List<LRModelDomain> = emptyList()
+    val data: List<LRModelDomain> = emptyList()
 )

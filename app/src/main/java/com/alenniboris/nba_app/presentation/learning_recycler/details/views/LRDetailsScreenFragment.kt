@@ -13,8 +13,6 @@ import com.alenniboris.nba_app.domain.utils.GsonUtil.fromJson
 import com.alenniboris.nba_app.domain.utils.GsonUtil.toJson
 import com.alenniboris.nba_app.presentation.learning_recycler.collectFlow
 import com.alenniboris.nba_app.presentation.learning_recycler.details.LRDetailsScreenVM
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,7 +25,7 @@ class LRDetailsScreenFragment : Fragment() {
         get() = _detailsScreenBinding!!
     private val detailsScreenVM by viewModel<LRDetailsScreenVM>() {
         val transferredElement =
-            arguments?.getString("ELEMENT")?.fromJson<LRFirstTypeModelDomain>()
+            arguments?.getString(KEY_STRING)?.fromJson<LRFirstTypeModelDomain>()
         parametersOf(transferredElement)
     }
 
