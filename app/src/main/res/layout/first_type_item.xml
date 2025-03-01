@@ -15,7 +15,7 @@
         android:textColor="@drawable/first_type_item_text_color"
         android:textSize="30sp" />
 
-    <TextView
+    <EditText
         android:id="@+id/first_type_item_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
