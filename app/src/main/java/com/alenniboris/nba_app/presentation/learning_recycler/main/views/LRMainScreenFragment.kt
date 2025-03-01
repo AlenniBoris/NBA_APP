@@ -1,12 +1,12 @@
 package com.alenniboris.nba_app.presentation.learning_recycler.main.views
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.databinding.FragmentLrMainScreenBinding
 import com.alenniboris.nba_app.domain.model.learning_recycler.LRFirstTypeModelDomain
 import com.alenniboris.nba_app.domain.model.learning_recycler.LRSecondTypeModelDomain
@@ -20,30 +20,13 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LRMainScreenFragment : Fragment() {
+class LRMainScreenFragment : Fragment(R.layout.fragment_lr_main_screen) {
 
-    private var _mainScreenBinding: FragmentLrMainScreenBinding? = null
-    private val binding
-        get() = _mainScreenBinding!!
+    private val binding by viewBinding(FragmentLrMainScreenBinding::bind)
 
     private val mainScreenVM by viewModel<LRMainScreenVM>()
 
     private val adapter: BaseRecyclerView.BaseAdapter = BaseRecyclerView.BaseAdapter()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _mainScreenBinding =
-            FragmentLrMainScreenBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        binding.elementsRv.adapter = null
-        _mainScreenBinding = null
-        super.onDestroyView()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

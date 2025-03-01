@@ -166,4 +166,7 @@ dependencies {
     // Views/Fragments integration
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
+
+    //ViewBinding
+    implementation("com.github.kirich1409:viewbindingpropertydelegate:1.5.9")
 }

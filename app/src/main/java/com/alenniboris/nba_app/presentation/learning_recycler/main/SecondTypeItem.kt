@@ -7,19 +7,19 @@ import com.alenniboris.nba_app.domain.model.learning_recycler.LRSecondTypeModelD
 
 data class SecondTypeItem(
     val item: LRSecondTypeModelDomain,
-    val onClick: (LRSecondTypeModelDomain) -> Unit
+    val onClick: () -> Unit
 ) : BaseRecyclerView.BaseItem {
     override fun getItemViewType(): Int = R.layout.second_type_item
 
     override fun getItemsSame(): String = item.id.toString()
 
     override fun onBindViewHolder(view: View) {
-        view?.apply {
+        view.apply {
             val binding = SecondTypeItemBinding.bind(this)
 
             binding.secondTypeItemName.text = item.name
             binding.root.setOnClickListener {
-                onClick(item)
+                onClick()
             }
         }
     }
