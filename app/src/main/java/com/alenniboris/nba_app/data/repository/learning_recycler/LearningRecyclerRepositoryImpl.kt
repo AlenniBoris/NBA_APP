@@ -23,7 +23,7 @@ class LearningRecyclerRepositoryImpl(
                 val list = emptyList<LRModelDomain>().toMutableList()
 
                 for (i in 0..100) {
-                    delay(50)
+//                    delay(50)
                     list.add(
                         if (i % 3 == 0) {
                             LRSecondTypeModelDomain(

@@ -4,5 +4,6 @@ import com.alenniboris.nba_app.presentation.learning_recycler.model.LRModelUi
 
 data class LRMainScreenState(
     val isLoading: Boolean = false,
-    val data: List<LRModelUi> = emptyList()
+    val data: List<LRModelUi> = emptyList(),
+    val elementWithOpenedDialog: LRModelUi? = null
 )

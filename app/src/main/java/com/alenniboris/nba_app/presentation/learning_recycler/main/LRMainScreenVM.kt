@@ -67,6 +67,10 @@ class LRMainScreenVM(
         }
     }
 
+    fun setElementWithOpenedDialog(element: LRModelUi?) {
+        _screenState.update { it.copy(elementWithOpenedDialog = element) }
+    }
+
     fun changeElementText(
         element: LRModelUi,
         newText: String

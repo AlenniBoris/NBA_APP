@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="MyAlertDialogStyle" format="reference" />
+
+    <declare-styleable name="MyAlertDialog">
+        <attr name="_title_MyAlertDialog" format="string" />
+        <attr name="_message_string_MyAlertDialog" format="string" />
+        <attr name="_background_MyAlertDialog" format="reference" />
+        <attr name="_approve_button_text_resource_MyAlertDialog" format="reference" />
+        <attr name="_decline_button_text_resource_MyAlertDialog" format="reference" />
+    </declare-styleable>
+
+    <style name="MyAlertDialogDefaultStyle">
+        <item name="_approve_button_text_resource_MyAlertDialog">@string/date_chooser_approve_text</item>
+        <item name="_decline_button_text_resource_MyAlertDialog">@string/date_chooser_cancel_text</item>
+        <item name="_title_MyAlertDialog">Title</item>
+        <item name="_message_string_MyAlertDialog">Message text</item>
+        <item name="_background_MyAlertDialog">@drawable/my_alert_dialog_background</item>
+    </style>
+
+</resources>

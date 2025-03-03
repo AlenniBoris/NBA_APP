@@ -1,18 +1,13 @@
 package com.alenniboris.nba_app.presentation.learning_recycler.main.views
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.databinding.FragmentLrMainScreenBinding
-import com.alenniboris.nba_app.databinding.SecondTypeDialogBinding
 import com.alenniboris.nba_app.presentation.learning_recycler.collectFlow
 import com.alenniboris.nba_app.presentation.learning_recycler.main.BaseRecyclerView
 import com.alenniboris.nba_app.presentation.learning_recycler.main.FirstTypeItem
@@ -36,17 +31,84 @@ class LRMainScreenFragment : Fragment(R.layout.fragment_lr_main_screen) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.elementsRv.adapter = adapter
-
-        collectFlow(
-            mainScreenVM.state
-                .map { it.isLoading }
-                .distinctUntilChanged()
-        ) { isLoading ->
-            binding.elementsRv.isVisible = !isLoading
-            binding.loadingIsActiveLayout.isVisible = isLoading
-        }
+        binding.elementsRv.itemAnimator = null
 
         val cursorMap = mutableMapOf<Int, Int>()
+//        val dialogBuilder = AlertDialog.Builder(requireActivity())
+//        val dialogLayout: View =
+//            View.inflate(requireActivity(), R.layout.second_type_dialog, null)
+//        val dialogBinding = SecondTypeDialogBinding.bind(dialogLayout)
+//        dialogBuilder.setView(dialogBinding.root)
+//        val dialog = dialogBuilder.create()
+//
+//        collectFlow(
+//            mainScreenVM.state
+//                .map { it.elementWithOpenedDialog }
+//                .distinctUntilChanged()
+//        ) { element ->
+//            (element as? SecondTypeModelUi)?.let {
+//                var newText = ""
+//
+//                dialog.setOnDismissListener {
+//                    mainScreenVM.setElementWithOpenedDialog(null)
+//                }
+//
+//                dialogBinding.dialogEditText.apply {
+//                    setText(element.getModel().name)
+//                    addTextChangedListener(
+//                        afterTextChanged = { editable ->
+//                            newText = editable?.toString().orEmpty()
+//                        }
+//                    )
+//                }
+//
+//                dialogBinding.dialogApproveBtn.setOnClickListener {
+//                    Log.e("!!!", newText)
+//                    mainScreenVM.changeElementText(
+//                        element = element,
+//                        newText = newText
+//                    )
+//                    mainScreenVM.setElementWithOpenedDialog(null)
+//                    dialog.hide()
+//                }
+//
+//                dialogBinding.dialogCancelBtn.setOnClickListener {
+//                    mainScreenVM.setElementWithOpenedDialog(null)
+//                    dialog.hide()
+//                }
+//
+//                dialog.show()
+//            }
+//        }
+
+        val myDialog = binding.myAlertDialog
+        collectFlow(
+            mainScreenVM.state
+                .map { it.elementWithOpenedDialog }
+                .distinctUntilChanged()
+        ) { element ->
+            (element as? SecondTypeModelUi)?.let {
+
+                myDialog.header = element.getModel().name
+                myDialog.message = """
+                    Message:
+                    WELCOME BACK,  ${element.getModel().name.toUpperCase()} !!!
+                    """.trimIndent()
+
+                myDialog.approveButtonAction = {
+                    Log.e("!!!", "Approved, name = ${element.getModel().name}")
+                    mainScreenVM.setElementWithOpenedDialog(null)
+                }
+
+                myDialog.declineButtonAction = {
+                    Log.e("!!!", "Declined, name = ${element.getModel().name}")
+                    mainScreenVM.setElementWithOpenedDialog(null)
+                }
+
+            }
+            myDialog.isVisible = element != null
+        }
+
         collectFlow(
             mainScreenVM.state
                 .map { it.data }
@@ -79,44 +141,7 @@ class LRMainScreenFragment : Fragment(R.layout.fragment_lr_main_screen) {
                         is SecondTypeModelUi ->
                             SecondTypeItem(
                                 item = element,
-                                onClick = {
-                                    val dialogBuilder = AlertDialog.Builder(context)
-                                    val dialogLayout: View =
-                                        layoutInflater.inflate(R.layout.second_type_dialog, null)
-                                    val dialogBinding = SecondTypeDialogBinding.bind(dialogLayout)
-                                    dialogBuilder.setView(dialogBinding.root)
-                                    val dialog = dialogBuilder.create()
-                                    var newText = ""
-
-                                    dialogBinding.dialogEditText.apply{
-                                        setText(element.getModel().name)
-                                        addTextChangedListener(object : TextWatcher{
-                                            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                                            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                                            override fun afterTextChanged(p0: Editable?) {
-                                                newText = p0?.toString().orEmpty()
-                                            }
-
-                                        })
-                                    }
-
-                                    dialogBinding.dialogApproveBtn.setOnClickListener {
-                                        Log.e("!!!", newText)
-                                        mainScreenVM.changeElementText(
-                                            element = element,
-                                            newText = newText
-                                        )
-                                        dialog.hide()
-                                    }
-
-                                    dialogBinding.dialogCancelBtn.setOnClickListener {
-                                        dialog.hide()
-                                    }
-
-                                    dialog.show()
-                                }
+                                onClick = { mainScreenVM.setElementWithOpenedDialog(element) }
                             )
 
                         else -> throw IllegalArgumentException("Invalid type of element")
