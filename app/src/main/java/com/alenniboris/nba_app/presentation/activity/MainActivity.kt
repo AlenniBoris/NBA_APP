@@ -2,49 +2,9 @@ package com.alenniboris.nba_app.presentation.activity
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alenniboris.nba_app.databinding.ActivityMainBinding
-import com.alenniboris.nba_app.presentation.screens.NavGraphs
-import com.alenniboris.nba_app.presentation.screens.destinations.EnterScreenDestination
-import com.alenniboris.nba_app.presentation.screens.destinations.ShowingScreenDestination
-import com.alenniboris.nba_app.presentation.test_permissions.TestPermissionScreen
-import com.alenniboris.nba_app.presentation.uikit.theme.NbaAppTheme
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
-import com.ramcosta.composedestinations.rememberNavHostEngine
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.koin.androidx.compose.koinViewModel
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -63,6 +23,8 @@ class MainActivity : AppCompatActivity() {
 
         _mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
 
+        binding.appToolbar.title = ""
+        setSupportActionBar(binding.appToolbar)
         setContentView(binding.root)
 
 //        main()

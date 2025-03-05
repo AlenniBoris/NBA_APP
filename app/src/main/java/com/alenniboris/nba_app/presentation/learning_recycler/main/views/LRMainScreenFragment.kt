@@ -2,13 +2,20 @@ package com.alenniboris.nba_app.presentation.learning_recycler.main.views
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.activity.addCallback
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.databinding.FragmentLrMainScreenBinding
 import com.alenniboris.nba_app.presentation.learning_recycler.collectFlow
+import com.alenniboris.nba_app.presentation.learning_recycler.details.views.LRDetailsScreenFragment
 import com.alenniboris.nba_app.presentation.learning_recycler.main.BaseRecyclerView
 import com.alenniboris.nba_app.presentation.learning_recycler.main.FirstTypeItem
 import com.alenniboris.nba_app.presentation.learning_recycler.main.LRMainScreenVM
@@ -32,6 +39,29 @@ class LRMainScreenFragment : Fragment(R.layout.fragment_lr_main_screen) {
 
         binding.elementsRv.adapter = adapter
         binding.elementsRv.itemAnimator = null
+
+        requireActivity().addMenuProvider(object : MenuProvider{
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.toolbar_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.firstMenuItem -> {
+                        Log.e("!!!", "first menu item")
+                    }
+
+                    R.id.secondMenuItem -> {
+                        Log.e("!!!", "second menu item")
+                    }
+                }
+                return true
+            }
+        }, viewLifecycleOwner)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            Log.e("!!!", "pRESSED BACK")
+        }
 
         val cursorMap = mutableMapOf<Int, Int>()
 //        val dialogBuilder = AlertDialog.Builder(requireActivity())
@@ -121,12 +151,12 @@ class LRMainScreenFragment : Fragment(R.layout.fragment_lr_main_screen) {
                             FirstTypeItem(
                                 item = element,
                                 onClick = {
-//                                    val detailsFragmentInstance =
-//                                        LRDetailsScreenFragment.getInstance(element = it.getModel())
-//                                    findNavController().navigate(
-//                                        detailsFragmentInstance.first,
-//                                        detailsFragmentInstance.second
-//                                    )
+                                    val detailsFragmentInstance =
+                                        LRDetailsScreenFragment.getInstance(element = element.getModel())
+                                    findNavController().navigate(
+                                        detailsFragmentInstance.first,
+                                        detailsFragmentInstance.second
+                                    )
                                 },
                                 onText = { newText, position ->
                                     cursorMap[element.getModel().id] = position
