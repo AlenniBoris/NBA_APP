@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alenniboris.nba_app.presentation.screens.NavGraphs
 import com.alenniboris.nba_app.presentation.screens.destinations.EnterScreenDestination
 import com.alenniboris.nba_app.presentation.screens.destinations.ShowingScreenDestination
+import com.alenniboris.nba_app.presentation.test_livedata.TestLivedataUi
 import com.alenniboris.nba_app.presentation.test_permissions.TestPermissionScreen
 import com.alenniboris.nba_app.presentation.uikit.theme.NbaAppTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -64,7 +65,8 @@ class MainActivity : ComponentActivity() {
                             //                    TestPaginationUi()
                             //                    MainActivityShow()
                             //                    MainActivityShow()
-                            TestPermissionScreen()
+//                            TestPermissionScreen()
+                            TestLivedataUi()
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package com.alenniboris.nba_app.di
 
 import android.app.Application
+import com.alenniboris.nba_app.presentation.test_livedata.TestLivedataModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -17,7 +18,8 @@ val myModules = listOf(
     PlayersUseCaseModule,
     SeasonsUseCaseModule,
     CountriesUseCaseModule,
-    LeaguesUseCaseModule
+    LeaguesUseCaseModule,
+    TestLivedataModule
 )
 
 class AppApplication : Application() {
