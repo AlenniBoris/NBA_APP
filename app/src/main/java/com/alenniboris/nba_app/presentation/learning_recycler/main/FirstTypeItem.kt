@@ -2,6 +2,7 @@ package com.alenniboris.nba_app.presentation.learning_recycler.main
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import com.alenniboris.nba_app.R
 import com.alenniboris.nba_app.databinding.FirstTypeItemBinding
@@ -19,6 +20,9 @@ data class FirstTypeItem(
 
     override fun onBindViewHolder(view: View) {
         view.apply {
+
+
+
             val binding = FirstTypeItemBinding.bind(this)
 
             binding.firstTypeItemName.text = item.getModel().name
