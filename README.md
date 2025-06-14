@@ -43,12 +43,21 @@ You can ask contact our developers to ask for passwords.
 
 **SCreenshots**
 
-[1](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000235.jpg)
-[2](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000235.jpg)
-[3](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000328.jpg)
-[5](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000340.jpg)
-[6](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000357.jpg)
-[7](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000415.jpg)
-[8](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000529.jpg)
-[9](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/login%20screen.jpg)
-[10](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/main%20%20screen%20games.jpg)
+![1](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000235.jpg)
+
+![2](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000235.jpg)
+
+![3](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000328.jpg)
+
+![5](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000340.jpg)
+
+![6](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000357.jpg)
+
+![7](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000415.jpg)
+
+![8](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/Screenshot%202025-06-15%20000529.jpg)
+
+![9](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/login%20screen.jpg)
+
+![10](https://github.com/AlenniBoris/NBA_APP/blob/main/screenshots/main%20%20screen%20games.jpg)
+
